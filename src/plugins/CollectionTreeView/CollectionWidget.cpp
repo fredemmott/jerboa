@@ -69,6 +69,8 @@ void CollectionWidget::updateSearch()
 
 void CollectionWidget::acceptSearch()
 {
+	m_filter->setFilterString(m_searchBox->text());
+
 	QList<Jerboa::TrackData> tracks;
 	QAbstractItemModel* model = m_treeView->model();
 	for(int i = 0; i < model->rowCount(); ++i)
@@ -80,6 +82,8 @@ void CollectionWidget::acceptSearch()
 		return;
 	}
 	m_playlist->appendTracks(tracks);
+	m_searchBox->clear();
+	updateSearch();
 }
 
 void CollectionWidget::addItemToPlaylist(const QModelIndex& index)

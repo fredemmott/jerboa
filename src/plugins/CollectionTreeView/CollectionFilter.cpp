@@ -43,20 +43,19 @@ void CollectionFilter::setFilterString(const QString& filter)
 	}
 	else
 	{
-		m_filterTokens = filter.split(' ');
+		m_filterTokens = filter.simplified().split(' ', QString::SkipEmptyParts);
+		m_filterTokens.removeDuplicates();
 	}
 	invalidateFilter();
 }
 
 bool CollectionFilter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
 {
-	/*
-	 * Performance hints temporarily disabled for working on the search algorithm
 	if(m_filterTokens.isEmpty())
 	{
 		return true;
 	}
-	*/
+
 	const QList<Jerboa::TrackData> tracks = sourceModel()->index(source_row, 0, source_parent).data(Qt::UserRole).value<QList<Jerboa::TrackData> >();
 	Q_FOREACH(const Jerboa::TrackData& track, tracks)
 	{
