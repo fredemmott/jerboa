@@ -3,6 +3,7 @@ SET(
 	CollectionFilter
 	CollectionTreeView
 	CollectionWidget
+	SearchLineEdit
 )
 
 SET(SOURCES)

@@ -1,6 +1,7 @@
 #include "CollectionWidget.h"
 
 #include "CollectionFilter.h"
+#include "SearchLineEdit.h"
 
 #include <QDebug>
 #include <QLineEdit>
@@ -30,7 +31,7 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 	setLayout(new QVBoxLayout());
 	layout()->setContentsMargins(0, 0, 0, 0);
 
-	m_searchBox = new QLineEdit(this);
+	m_searchBox = new SearchLineEdit(this);
 	layout()->addWidget(m_searchBox);
 
 	connect(
