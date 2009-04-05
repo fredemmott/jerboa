@@ -72,13 +72,19 @@ QVariant NestedCollectionModel::Implementation::data(const QModelIndex& index, i
 	}
 	else if(role == Qt::UserRole)
 	{
-		switch(item->type)
+		QList<Jerboa::TrackData> tracks;
+		if(item->type == Item::TrackItem)
 		{
-			case Item::TrackItem:
-				return QVariant::fromValue(QList<Jerboa::TrackData>() << item->data);
-			default:
-				qDebug() << "TODO: only tracks supported right now";
+			tracks.append(item->data);
 		}
+		else
+		{
+			for(int i = 0; i < rowCount(index); ++i)
+			{
+				tracks.append(index.child(i, 0).data(Qt::UserRole).value<QList<Jerboa::TrackData> >());
+			}
+		}
+		return QVariant::fromValue(tracks);
 	}
 
 	return QVariant();
