@@ -48,20 +48,11 @@ namespace Jerboa
 			virtual QList<TrackData> tracks() const = 0;
 		public slots:
 			/** Appends a track.
-			 * 
-			 * Default implementation reads TrackData for the URL, then calls
-			 * appendTrack(const TrackData&).
-			 *
 			 * @returns the position in the playlist, or -1 on failure.
 			 */
-			virtual int appendTrack(const QUrl& url);
-			/** Appends a track.
-			 * @returns the position in the playlist, or -1 on failure.
-			 */
-			virtual int appendTrack(const TrackData& data) = 0;
-			virtual void insertTrack(int index, const QUrl& url);
-			virtual void insertTrack(int index, const TrackData& data) = 0;
-			virtual void removeTrack(int index) = 0;
+			virtual int appendTracks(const QList<Jerboa::TrackData>& data) = 0;
+			virtual void insertTracks(int index, const QList<Jerboa::TrackData>& data) = 0;
+			virtual void removeTracks(int index, int count) = 0;
 
 			virtual void setLoopMode(LoopMode) = 0;
 			virtual void setShuffleMode(ShuffleMode) = 0;
@@ -70,8 +61,8 @@ namespace Jerboa
 			void loopModeChanged(LoopMode);
 			void shuffleModeChanged(ShuffleMode);
 
-			void trackAdded(int index, const Jerboa::TrackData& data);
-			void trackRemoved(int index);
+			void tracksAdded(int index, const QList<Jerboa::TrackData>& data);
+			void tracksRemoved(int index, int count);
 
 			void trackListChanged();
 		protected:

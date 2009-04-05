@@ -11,15 +11,4 @@ namespace Jerboa
 	PlaylistInterface::~PlaylistInterface()
 	{
 	}
-
-	int PlaylistInterface::appendTrack(const QUrl& url)
-	{
-		Q_UNUSED(url);
-		return -1;
-	}
-
-	void PlaylistInterface::insertTrack(int index, const QUrl& url)
-	{
-		Q_UNUSED(url);
-	}
 }

@@ -16,9 +16,9 @@ class JerboaPlaylist::Implementation : public Jerboa::PlaylistInterface
 		int nextTrack() const;
 		QList<Jerboa::TrackData> tracks() const;
 	public slots:
-		int appendTrack(const Jerboa::TrackData& data);
-		void insertTrack(int index, const Jerboa::TrackData& data);
-		void removeTrack(int index);
+		int appendTracks(const QList<Jerboa::TrackData>& data);
+		void insertTracks(int index, const QList<Jerboa::TrackData>& data);
+		void removeTracks(int index, int count);
 
 		void setLoopMode(LoopMode);
 		void setShuffleMode(ShuffleMode);

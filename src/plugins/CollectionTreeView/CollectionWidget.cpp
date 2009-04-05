@@ -31,8 +31,5 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 void CollectionWidget::addItemToPlaylist(const QModelIndex& index)
 {
 	const QList<Jerboa::TrackData> tracks = index.data(Qt::UserRole).value<QList<Jerboa::TrackData> >();
-	Q_FOREACH(const Jerboa::TrackData& track, tracks)
-	{
-		m_playlist->appendTrack(track);
-	}
+	m_playlist->appendTracks(tracks);
 }

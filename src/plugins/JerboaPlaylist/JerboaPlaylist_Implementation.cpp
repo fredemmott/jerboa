@@ -1,6 +1,7 @@
 #include "JerboaPlaylist_Implementation.h"
 
 #include <QDateTime>
+#include <QDebug>
 
 JerboaPlaylist::Implementation::Implementation(QObject* parent)
 	:
@@ -50,40 +51,51 @@ QList<Jerboa::TrackData> JerboaPlaylist::Implementation::tracks() const
 	return m_tracks;
 }
 
-int JerboaPlaylist::Implementation::appendTrack(const Jerboa::TrackData& data)
+int JerboaPlaylist::Implementation::appendTracks(const QList<Jerboa::TrackData>& data)
 {
-	Q_ASSERT(data.isValid());
+	Q_FOREACH(const Jerboa::TrackData& track, data)
+	{
+		Q_ASSERT(track.isValid());
+	}
+
 	m_tracks.append(data);
-	const int index = m_tracks.count() - 1;
+	const int index = m_tracks.count() - data.count();
 	adjustNextTrack();
-	emit trackAdded(index, data);
+	emit tracksAdded(index, data);
 	return index;
 }
 
-void JerboaPlaylist::Implementation::insertTrack(int index, const Jerboa::TrackData& data)
+void JerboaPlaylist::Implementation::insertTracks(int index, const QList<Jerboa::TrackData>& data)
 {
-	Q_ASSERT(data.isValid());
-	m_tracks.insert(index, data);
+	for(int i = 0; i < data.count(); ++i)
+	{
+		const Jerboa::TrackData& track = data.at(i);
+		Q_ASSERT(track.isValid());
+		m_tracks.insert(index + i, track);
+	}
 	if(m_currentTrack >= index)
 	{
-		++m_currentTrack;
+		m_currentTrack += data.count();
 	}
-	emit trackAdded(index, data);
+	emit tracksAdded(index, data);
 	adjustNextTrack();
 }
 
-void JerboaPlaylist::Implementation::removeTrack(int index)
+void JerboaPlaylist::Implementation::removeTracks(int index, int count)
 {
-	m_tracks.removeAt(index);
-	if(m_currentTrack == index)
+	for(int i = 0; i < count; ++count)
 	{
-		m_currentTrack = -1;
+		if(m_currentTrack == index && m_currentTrack != -1)
+		{
+			m_currentTrack = -1;
+		}
+		else if(m_currentTrack > index)
+		{
+			--m_currentTrack;
+		}
+		m_tracks.removeAt(index);
 	}
-	else if (m_currentTrack > index)
-	{
-		--m_currentTrack;
-	}
-	emit trackRemoved(index);
+	emit tracksRemoved(index, count);
 	adjustNextTrack();
 }
 

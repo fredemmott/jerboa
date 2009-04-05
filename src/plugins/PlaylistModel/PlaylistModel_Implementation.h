@@ -21,7 +21,7 @@ class PlaylistModel::Implementation : public QAbstractItemModel
 		QModelIndex parent(const QModelIndex& index) const;
 		int rowCount(const QModelIndex& parent) const;
 	private slots:
-		void addTrack(int index, const Jerboa::TrackData& data);
+		void addTracks(int index, const QList<Jerboa::TrackData>& data);
 	private:
 		Jerboa::PlaylistInterface* m_playlist;
 		QList<Jerboa::TrackData> m_tracks;
