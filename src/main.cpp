@@ -68,9 +68,10 @@ int main(int argc, char** argv)
 	const QList<Jerboa::Plugin::ComponentType> wantedComponents = QList<Jerboa::Plugin::ComponentType>()
 		<< Jerboa::Plugin::PlaylistSource
 		<< Jerboa::Plugin::PlaylistModel
-		<< Jerboa::Plugin::PlaylistView
 		<< Jerboa::Plugin::CollectionSource
 		<< Jerboa::Plugin::CollectionModel
+		<< Jerboa::Plugin::Player
+		<< Jerboa::Plugin::PlaylistView
 		<< Jerboa::Plugin::CollectionView
 	;
 	QMultiMap<Jerboa::Plugin::ComponentType, Jerboa::Plugin*> componentProviders;

@@ -1,5 +1,6 @@
 #include "StandardPlaylistView.h"
 
+#include <QDebug>
 #include <QTreeView>
 #include <QtPlugin>
 
@@ -12,6 +13,12 @@ QObject* StandardPlaylistView::component(Jerboa::Plugin::ComponentType type, QOb
 				Q_ASSERT(m_playlistModel);
 				QTreeView* treeView = new QTreeView(qobject_cast<QWidget*>(parent));
 				treeView->setModel(m_playlistModel);
+				connect(
+					treeView,
+					SIGNAL(doubleClicked(QModelIndex)),
+					this,
+					SLOT(skipTo(QModelIndex))
+				);
 				return treeView;
 			}
 		default:
@@ -39,10 +46,19 @@ QSet<Jerboa::Plugin::ComponentType> StandardPlaylistView::components() const
 	return QSet<Jerboa::Plugin::ComponentType>() << Jerboa::Plugin::PlaylistView;
 }
 
+void StandardPlaylistView::skipTo(const QModelIndex& index)
+{
+	m_player->skipTo(index.row());
+}
+
 void StandardPlaylistView::addComponent(ComponentType type, QObject* component)
 {
 	switch(type)
 	{
+		case Jerboa::Plugin::Player:
+			m_player = qobject_cast<Jerboa::PlayerInterface*>(component);
+			Q_ASSERT(m_player);
+			break;
 		case Jerboa::Plugin::PlaylistModel:
 			m_playlistModel = qobject_cast<QAbstractItemModel*>(component);
 			Q_ASSERT(m_playlistModel);
