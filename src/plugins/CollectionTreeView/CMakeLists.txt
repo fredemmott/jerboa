@@ -1,5 +1,6 @@
 SET(
 	CLASSES
+	CollectionFilter
 	CollectionTreeView
 	CollectionWidget
 )

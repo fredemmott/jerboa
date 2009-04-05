@@ -3,9 +3,13 @@
 
 #include "PlaylistInterface.h"
 
+#include <QTimer>
 #include <QWidget>
 
+class CollectionFilter;
+
 class QAbstractItemModel;
+class QLineEdit;
 class QModelIndex;
 class QTreeView;
 
@@ -16,9 +20,14 @@ class CollectionWidget : public QWidget
 		CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstractItemModel* collection, QWidget* parent);
 	private slots:
 		void addItemToPlaylist(const QModelIndex& index);
+		void updateSearch();
+		void acceptSearch();
 	private:
+		QTimer m_timer;
 		Jerboa::PlaylistInterface* m_playlist;
+		QLineEdit* m_searchBox;
 		QTreeView* m_treeView;
+		CollectionFilter* m_filter;
 };
 
 #endif

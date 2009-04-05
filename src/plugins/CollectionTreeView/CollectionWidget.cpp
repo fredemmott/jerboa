@@ -1,6 +1,9 @@
 #include "CollectionWidget.h"
 
+#include "CollectionFilter.h"
+
 #include <QDebug>
+#include <QLineEdit>
 #include <QTreeView>
 #include <QVBoxLayout>
 
@@ -10,11 +13,45 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 		m_playlist(playlist),
 		m_treeView(new QTreeView(this))
 {
-	m_treeView->setModel(collection);
+	connect(
+		&m_timer,
+		SIGNAL(timeout()),
+		this,
+		SLOT(updateSearch())
+	);
+	m_timer.setInterval(300);
+	m_timer.setSingleShot(true);
+	
+	m_filter = new CollectionFilter(this);
+	m_filter->setSourceModel(collection);
+
+	// UI fun
+
+	setLayout(new QVBoxLayout());
+	layout()->setContentsMargins(0, 0, 0, 0);
+
+	m_searchBox = new QLineEdit(this);
+	layout()->addWidget(m_searchBox);
+
+	connect(
+		m_searchBox,
+		SIGNAL(textChanged(QString)),
+		&m_timer,
+		SLOT(start())
+	);
+	connect(
+		m_searchBox,
+		SIGNAL(returnPressed()),
+		this,
+		SLOT(acceptSearch())
+	);
+
+	m_treeView->setModel(m_filter);
 	m_treeView->setHeaderHidden(true);
 	m_treeView->expandToDepth(0);
 	m_treeView->setRootIsDecorated(false);
 	m_treeView->setExpandsOnDoubleClick(false);
+	layout()->addWidget(m_treeView);
 
 	connect(
 		m_treeView,
@@ -22,10 +59,27 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 		this,
 		SLOT(addItemToPlaylist(QModelIndex))
 	);
+}
 
-	setLayout(new QVBoxLayout());
-	layout()->setContentsMargins(0, 0, 0, 0);
-	layout()->addWidget(m_treeView);
+void CollectionWidget::updateSearch()
+{
+	m_filter->setFilterString(m_searchBox->text());
+	m_treeView->expandToDepth(0);
+}
+
+void CollectionWidget::acceptSearch()
+{
+	QList<Jerboa::TrackData> tracks;
+	QAbstractItemModel* model = m_treeView->model();
+	for(int i = 0; i < model->rowCount(); ++i)
+	{
+		tracks.append(model->index(i, 0).data(Qt::UserRole).value<QList<Jerboa::TrackData> >());
+	}
+	if(tracks.isEmpty())
+	{
+		return;
+	}
+	m_playlist->appendTracks(tracks);
 }
 
 void CollectionWidget::addItemToPlaylist(const QModelIndex& index)
