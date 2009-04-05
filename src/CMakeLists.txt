@@ -4,6 +4,7 @@ SET(
 	JerboaCollection
 	JerboaPlaylist
 	NestedCollectionModel
+	PlaylistModel
 	StandardContainer
 )
 

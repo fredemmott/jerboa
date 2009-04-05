@@ -45,7 +45,7 @@ namespace Jerboa
 
 			virtual int currentTrack() const = 0;
 			virtual int nextTrack() const = 0;
-			virtual QList<TrackData> trackList() const = 0;
+			virtual QList<TrackData> tracks() const = 0;
 		public slots:
 			/** Appends a track.
 			 * 

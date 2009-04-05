@@ -14,7 +14,7 @@ class JerboaPlaylist::Implementation : public Jerboa::PlaylistInterface
 		ShuffleMode shuffleMode() const;
 		int currentTrack() const;
 		int nextTrack() const;
-		QList<Jerboa::TrackData> trackList() const;
+		QList<Jerboa::TrackData> tracks() const;
 	public slots:
 		int appendTrack(const Jerboa::TrackData& data);
 		void insertTrack(int index, const Jerboa::TrackData& data);

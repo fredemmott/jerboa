@@ -45,7 +45,7 @@ int JerboaPlaylist::Implementation::nextTrack() const
 	return m_nextTrack;
 }
 
-QList<Jerboa::TrackData> JerboaPlaylist::Implementation::trackList() const
+QList<Jerboa::TrackData> JerboaPlaylist::Implementation::tracks() const
 {
 	return m_tracks;
 }
