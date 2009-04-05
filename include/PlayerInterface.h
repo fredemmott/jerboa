@@ -3,37 +3,64 @@
 
 #include "TrackData.h"
 
+#include <QFlags>
+
 namespace Jerboa
 {
+	class PlaylistInterface;
 	class PlayerInterface : public QObject
 	{
 		Q_OBJECT
 		public:
+			enum State
+			{
+				Loading,
+				Playing,
+				Paused,
+				Stopped
+			};
+			enum Feature
+			{
+				Volume,
+				VolumeDecibel,
+				Position
+			};
+			Q_DECLARE_FLAGS(Features, Feature);
+
 			virtual ~PlayerInterface();
 
-			virtual qreal volume() const = 0;
-			virtual qreal volumeDecibel() const = 0;
-			virtual quint64 position() const = 0;
+			virtual Features features() const;
 
+			virtual qreal volume() const;
+			virtual qreal volumeDecibel() const;
+			virtual quint64 position() const;
+
+			virtual State state() const = 0;
 			virtual TrackData currentTrack() const = 0;
 		public slots:
 			virtual void play() = 0;
 			virtual void pause() = 0;
 			virtual void stop() = 0;
 
-			virtual void previous() = 0;
-			virtual void next() = 0;
+			void next();
+			void skipTo(int playlistIndex);
 
-			virtual void setVolume(qreal) = 0;
-			virtual void setVolumeDecibel(qreal) = 0;
-			virtual void setPosition(quint64) = 0;
+			virtual void setVolume(qreal);
+			virtual void setVolumeDecibel(qreal);
+			virtual void setPosition(quint64);
 		signals:
+			void stateChanged(State);
 			void currentTrackChanged(const TrackData&);
 			void volumeChanged(qreal);
 			void positionChanged(quint64);
 		protected:
-			PlayerInterface(QObject* parent);
+			virtual void setCurrentTrack(const TrackData& track) = 0;
+			PlayerInterface(PlaylistInterface*, QObject* parent);
+		private:
+			PlaylistInterface* m_playlist;
 	};
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Jerboa::PlayerInterface::Features);
 
 #endif
