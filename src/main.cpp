@@ -17,6 +17,7 @@
 
 #include "CollectionInterface.h"
 #include "Container.h"
+#include "core/modeltest.h"
 #include "StaticPlugins.h"
 #include "Plugin.h"
 
@@ -111,6 +112,7 @@ int main(int argc, char** argv)
 	}
 
 	Q_ASSERT(collectionModel);
+	ModelTest test(collectionModel);
 	Q_FOREACH(Jerboa::Plugin* p, plugins)
 	{
 		p->addComponent(Jerboa::Plugin::CollectionModel, collectionModel);

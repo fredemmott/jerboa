@@ -8,6 +8,7 @@ SET(
 )
 SET(
 	PRIVATE_CLASSES
+	modeltest
 )
 
 SET(SOURCES)

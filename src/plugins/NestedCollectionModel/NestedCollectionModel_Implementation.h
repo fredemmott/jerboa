@@ -36,6 +36,11 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 				Jerboa::TrackData data;
 		};
 
+		mutable Item m_rootItem;
+		mutable QHash<int, Item*> m_artistItems;
+		mutable QHash<int, QHash<int, Item*> > m_albumItems;
+		mutable QHash<int, QHash<int, QHash<int, Item*> > > m_trackItems;
+
 		Jerboa::CollectionInterface* m_collection;
 		QVector<Jerboa::TrackData> m_tracks;
 

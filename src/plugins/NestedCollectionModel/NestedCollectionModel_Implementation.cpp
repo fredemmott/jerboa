@@ -1,5 +1,7 @@
 #include "NestedCollectionModel_Implementation.h"
 
+#include <QDebug>
+
 NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterface* collection, QObject* parent)
 	:
 		QAbstractItemModel(parent),
@@ -35,7 +37,7 @@ int NestedCollectionModel::Implementation::columnCount(const QModelIndex& parent
 
 QVariant NestedCollectionModel::Implementation::data(const QModelIndex& index, int role) const
 {
-	if(role != Qt::DisplayRole)
+	if(role != Qt::DisplayRole || !index.isValid())
 	{
 		return QVariant();
 	}
@@ -96,7 +98,7 @@ int NestedCollectionModel::Implementation::rowCount(const QModelIndex& parent) c
 
 QModelIndex NestedCollectionModel::Implementation::index(int row, int column, const QModelIndex& parent) const
 {
-	if(column != 0)
+	if(column != 0 || row < 0)
 	{
 		return QModelIndex();
 	}
@@ -106,7 +108,11 @@ QModelIndex NestedCollectionModel::Implementation::index(int row, int column, co
 		{
 			return QModelIndex();
 		}
-		Item* item = new Item();
+		if(!m_artistItems.contains(row))
+		{
+			m_artistItems.insert(row, new Item());
+		}
+		Item* item = m_artistItems.value(row);
 		item->type = Item::ArtistItem;
 		return createIndex(row, 0, item);
 	}
@@ -131,7 +137,11 @@ QModelIndex NestedCollectionModel::Implementation::index(int row, int column, co
 				{
 					return QModelIndex();
 				}
-				item = new Item();
+				if(!m_trackItems.value(artistId).value(albumId).contains(trackId))
+				{
+					m_trackItems[artistId][albumId].insert(trackId, new Item());
+				}
+				item = m_trackItems.value(artistId).value(albumId).value(trackId);
 				item->type = Item::TrackItem;
 				item->parent = parent;
 				item->data = m_tracksForAlbums.at(artistId).at(albumId).at(trackId);
@@ -149,7 +159,11 @@ QModelIndex NestedCollectionModel::Implementation::index(int row, int column, co
 				{
 					return QModelIndex();
 				}
-				item = new Item();
+				if(!m_albumItems.value(artistId).contains(albumId))
+				{
+					m_albumItems[artistId].insert(albumId, new Item());
+				}
+				item = m_albumItems.value(artistId).value(albumId);
 				item->type = Item::AlbumItem;
 				item->parent = parent;
 				return createIndex(row, 0, item);
