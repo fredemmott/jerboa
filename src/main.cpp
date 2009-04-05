@@ -21,7 +21,24 @@
 #include <QApplication>
 #include <QDebug>
 #include <QPluginLoader>
+#include <QSqlDatabase>
+#include <QSettings>
 #include <QWidget>
+
+void setupDatabase()
+{
+	QSettings settings;
+	settings.beginGroup("database");
+	QSqlDatabase db = QSqlDatabase::addDatabase(settings.value("type").toString());
+	db.setHostName(settings.value("host").toString());
+	db.setDatabaseName(settings.value("name").toString());
+	db.setUserName(settings.value("user").toString());
+	db.setPassword(settings.value("password").toString());
+	if(!db.open())
+	{
+		qFatal("Couldn't connect to database.");
+	}
+}
 
 int main(int argc, char** argv)
 {
@@ -33,14 +50,23 @@ int main(int argc, char** argv)
 	app.setApplicationVersion("ng");
 	app.setQuitOnLastWindowClosed(true);
 
+	setupDatabase();
+
 	QWidget* mainWindow = 0;
+	QObject* collectionSource = 0;
 	Q_FOREACH(QObject* plugin, QPluginLoader::staticInstances())
 	{
 		Jerboa::Plugin* p = qobject_cast<Jerboa::Plugin*>(plugin);
-		if(p && p->components().contains(Jerboa::Plugin::Container))
+		if(p)
 		{
-			mainWindow = qobject_cast<QWidget*>(p->component(Jerboa::Plugin::Container, 0));
-			break;
+			if(p->components().contains(Jerboa::Plugin::Container))
+			{
+				mainWindow = qobject_cast<QWidget*>(p->component(Jerboa::Plugin::Container, 0));
+			}
+			if(p->components().contains(Jerboa::Plugin::CollectionSource))
+			{
+				collectionSource = p->component(Jerboa::Plugin::CollectionSource, &app);
+			}
 		}
 	}
 

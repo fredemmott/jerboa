@@ -13,10 +13,10 @@ JerboaCollection::Implementation::Implementation(QObject* parent)
 {
 	QSqlQuery query;
 	query.setForwardOnly(true);
-	query.exec(
+	const bool success = query.exec(
 		"SELECT FileName, Album, AlbumArtist, AlbumArtistRomanised, Artist, ArtistRomanised, Title, TrackNumber, AlbumRG, TrackRG, MBID FROM TrackData"
 	);
-	if(!query.isValid())
+	if(!success)
 	{
 		qFatal("Couldn't read database: %s", qPrintable(query.lastError().text()));
 	}
@@ -42,7 +42,6 @@ JerboaCollection::Implementation::Implementation(QObject* parent)
 			)
 		);
 	}
-	qDebug() << "SELECTED" << m_tracks.count() << "tracks";
 }
 
 QVector<Jerboa::TrackData> JerboaCollection::Implementation::tracks() const
