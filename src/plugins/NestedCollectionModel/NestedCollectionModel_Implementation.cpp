@@ -30,9 +30,16 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		const QStringList albums(albumOrder.values());
 		m_albumsForArtists.append(albums);
 		m_tracksForAlbums.append(QList<QList<Jerboa::TrackData> >());
-		Q_FOREACH(const QString& album, albums)
+		for(int albumIndex = 0; albumIndex < albums.count(); ++albumIndex)
 		{
-			m_tracksForAlbums[artistIndex].append(artistAlbumTracks.value(albumArtist).value(album));
+			const QString& album(albums.at(albumIndex));
+
+			QMap<int, Jerboa::TrackData> trackOrder;
+			Q_FOREACH(const Jerboa::TrackData& track, artistAlbumTracks.value(albumArtist).value(album))
+			{
+				trackOrder[track.trackNumber()] = track;
+			}
+			m_tracksForAlbums[artistIndex].append(trackOrder.values());
 		}
 	}
 }
