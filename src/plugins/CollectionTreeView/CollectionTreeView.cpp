@@ -45,7 +45,6 @@ void CollectionTreeView::addComponent(ComponentType type, QObject* component)
 	switch(type)
 	{
 		case Jerboa::Plugin::PlaylistSource:
-			qDebug() << "Got a playlist source";
 			m_playlist = qobject_cast<Jerboa::PlaylistInterface*>(component);
 			Q_ASSERT(m_playlist);
 			break;

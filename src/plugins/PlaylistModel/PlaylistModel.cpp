@@ -17,7 +17,6 @@ QObject* PlaylistModel::component(Jerboa::Plugin::ComponentType type, QObject* p
 	{
 		case Jerboa::Plugin::PlaylistModel:
 			Q_ASSERT(m_playlistSource);
-			qDebug() << "Asked to create playlist model";
 			return new Implementation(m_playlistSource, parent);
 		default:
 			return Jerboa::Plugin::component(type, parent);
