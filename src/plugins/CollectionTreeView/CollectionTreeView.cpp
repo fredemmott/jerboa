@@ -12,6 +12,9 @@ QObject* CollectionTreeView::component(Jerboa::Plugin::ComponentType type, QObje
 				Q_ASSERT(m_collectionModel);
 				QTreeView* treeView = new QTreeView(qobject_cast<QWidget*>(parent));
 				treeView->setModel(m_collectionModel);
+				treeView->setHeaderHidden(true);
+				treeView->expandToDepth(0);
+				treeView->setRootIsDecorated(false);
 				return treeView;
 			}
 		default:
