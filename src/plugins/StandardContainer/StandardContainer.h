@@ -2,6 +2,8 @@
 #define _STANDARD_CONTAINER_H
 
 #include "Container.h"
+#include "PlayerInterface.h"
+#include "PlaylistInterface.h"
 #include "Plugin.h"
 
 #include <QObject>
@@ -21,6 +23,10 @@ class StandardContainer : public Jerboa::Container, public Jerboa::Plugin
 		QString uniqueId() const;
 		QSet<Jerboa::Plugin::ComponentType> components() const;
 		QObject* component(ComponentType, QObject* parent) const;
+		void addComponent(ComponentType type, QObject* component);
+	private:
+		Jerboa::PlayerInterface* m_player;
+		Jerboa::PlaylistInterface* m_playlist;
 };
 
 #endif

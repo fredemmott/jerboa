@@ -59,7 +59,6 @@ int main(int argc, char** argv)
 	setupDatabase();
 
 	Jerboa::Container* container = 0;
-	QWidget* mainWindow = 0;
 
 	QList<Jerboa::Plugin*> plugins;
 	// Create plugins with no dependencies, and index everythign else
@@ -90,7 +89,6 @@ int main(int argc, char** argv)
 			{
 				container = qobject_cast<Jerboa::Container*>(p->component(Jerboa::Plugin::Container, 0));
 				Q_ASSERT(container);
-				mainWindow = container->widget();
 			}
 			Q_FOREACH(Jerboa::Plugin::ComponentType component, wantedComponents)
 			{
@@ -102,7 +100,7 @@ int main(int argc, char** argv)
 		}
 	}
 	// Check we got the main window
-	if(!mainWindow)
+	if(!container)
 	{
 		qFatal("Could not find a container to load.");
 	}
@@ -130,6 +128,9 @@ int main(int argc, char** argv)
 			break;
 		}
 	}
+
+	QWidget* mainWindow = container->widget();
+	
 	for(
 		QMap<Jerboa::Plugin::ComponentType, QWidget*>::ConstIterator it = componentWidgets.constBegin();
 		it != componentWidgets.constEnd();

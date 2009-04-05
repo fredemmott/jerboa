@@ -49,7 +49,7 @@ namespace Jerboa
 			virtual void setVolumeDecibel(qreal);
 			virtual void setPosition(quint64);
 		signals:
-			void stateChanged(State);
+			void stateChanged(Jerboa::PlayerInterface::State);
 			void currentTrackChanged(const TrackData&);
 			void volumeChanged(qreal);
 			void positionChanged(quint64);

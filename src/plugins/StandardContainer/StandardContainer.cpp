@@ -2,6 +2,7 @@
 
 #include "MainWindow.h"
 
+#include <QDebug>
 #include <QtPlugin>
 
 QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
@@ -9,7 +10,7 @@ QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObjec
 	switch(type)
 	{
 		case Jerboa::Plugin::Container:
-			return new StandardContainer();
+			return const_cast<StandardContainer*>(this);
 		default:
 			return Jerboa::Plugin::component(type, parent);
 	}
@@ -24,8 +25,7 @@ void StandardContainer::addComponent(Plugin::ComponentType componentType, QWidge
 
 QWidget* StandardContainer::widget() const
 {
-	///@FIXME: needs a player interface passing
-	return new MainWindow(0, 0);
+	return new MainWindow(m_player, m_playlist, 0);
 }
 
 QString StandardContainer::pluginName() const
@@ -46,6 +46,23 @@ QString StandardContainer::uniqueId() const
 QSet<Jerboa::Plugin::ComponentType> StandardContainer::components() const
 {
 	return QSet<Jerboa::Plugin::ComponentType>() << Jerboa::Plugin::Container;
+}
+
+void StandardContainer::addComponent(ComponentType type, QObject* component)
+{
+	switch(type)
+	{
+		case Player:
+			m_player = qobject_cast<Jerboa::PlayerInterface*>(component);
+			Q_ASSERT(m_player);
+			break;
+		case PlaylistSource:
+			m_playlist = qobject_cast<Jerboa::PlaylistInterface*>(component);
+			Q_ASSERT(m_playlist);
+			break;
+		default:
+			break;
+	}
 }
 
 Q_EXPORT_PLUGIN2(Jerboa_StandardContainer, StandardContainer);
