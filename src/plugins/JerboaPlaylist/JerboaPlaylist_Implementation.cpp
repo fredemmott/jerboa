@@ -54,8 +54,10 @@ int JerboaPlaylist::Implementation::appendTrack(const Jerboa::TrackData& data)
 {
 	Q_ASSERT(data.isValid());
 	m_tracks.append(data);
+	const int index = m_tracks.count() - 1;
 	adjustNextTrack();
-	return m_tracks.count() - 1;
+	emit trackAdded(index, data);
+	return index;
 }
 
 void JerboaPlaylist::Implementation::insertTrack(int index, const Jerboa::TrackData& data)
@@ -66,6 +68,7 @@ void JerboaPlaylist::Implementation::insertTrack(int index, const Jerboa::TrackD
 	{
 		++m_currentTrack;
 	}
+	emit trackAdded(index, data);
 	adjustNextTrack();
 }
 
@@ -80,6 +83,7 @@ void JerboaPlaylist::Implementation::removeTrack(int index)
 	{
 		--m_currentTrack;
 	}
+	emit trackRemoved(index);
 	adjustNextTrack();
 }
 

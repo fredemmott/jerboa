@@ -69,6 +69,10 @@ namespace Jerboa
 		signals:
 			void loopModeChanged(LoopMode);
 			void shuffleModeChanged(ShuffleMode);
+
+			void trackAdded(int index, const TrackData& data);
+			void trackRemoved(int index);
+
 			void trackListChanged();
 		protected:
 			PlaylistInterface(QObject* parent);
