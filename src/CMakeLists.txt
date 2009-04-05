@@ -1,6 +1,7 @@
 SET(
 	PLUGINS
 	JerboaCollection
+	NestedCollectionModel
 	StandardContainer
 )
 

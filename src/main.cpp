@@ -15,11 +15,14 @@
 	along with Jerboa.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "CollectionInterface.h"
 #include "StaticPlugins.h"
 #include "Plugin.h"
 
+#include <QAbstractItemModel>
 #include <QApplication>
 #include <QDebug>
+#include <QMultiMap>
 #include <QPluginLoader>
 #include <QSqlDatabase>
 #include <QSettings>
@@ -53,7 +56,9 @@ int main(int argc, char** argv)
 	setupDatabase();
 
 	QWidget* mainWindow = 0;
-	QObject* collectionSource = 0;
+	Jerboa::CollectionInterface* collectionSource = 0;
+	QAbstractItemModel* collectionModel = 0;
+	QMultiMap<Jerboa::Plugin::ComponentType, Jerboa::Plugin*> componentProviders;
 	Q_FOREACH(QObject* plugin, QPluginLoader::staticInstances())
 	{
 		Jerboa::Plugin* p = qobject_cast<Jerboa::Plugin*>(plugin);
@@ -65,9 +70,24 @@ int main(int argc, char** argv)
 			}
 			if(p->components().contains(Jerboa::Plugin::CollectionSource))
 			{
-				collectionSource = p->component(Jerboa::Plugin::CollectionSource, &app);
+				collectionSource = qobject_cast<Jerboa::CollectionInterface*>(
+					p->component(Jerboa::Plugin::CollectionSource, &app)
+				);
+				Q_ASSERT(collectionSource);
+			}
+			if(p->components().contains(Jerboa::Plugin::CollectionModel))
+			{
+				componentProviders.insert(Jerboa::Plugin::CollectionModel, p);
 			}
 		}
+	}
+	Q_FOREACH(Jerboa::Plugin* p, componentProviders.values(Jerboa::Plugin::CollectionModel))
+	{
+		Q_ASSERT(collectionSource);
+		p->addComponent(Jerboa::Plugin::CollectionSource, collectionSource);
+		collectionModel = qobject_cast<QAbstractItemModel*>(
+			p->component(Jerboa::Plugin::CollectionModel, &app)
+		);
 	}
 
 	if(mainWindow)
