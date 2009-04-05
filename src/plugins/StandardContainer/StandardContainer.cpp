@@ -1,6 +1,21 @@
 #include "StandardContainer.h"
 
+#include "MainWindow.h"
+
 #include <QtPlugin>
+
+QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+{
+	switch(type)
+	{
+		case Jerboa::Plugin::Container:
+			Q_ASSERT(qobject_cast<QWidget*>(parent) || !parent);
+			///@FIXME: needs a player interface passing
+			return new MainWindow(0, qobject_cast<QWidget*>(parent));
+		default:
+			return Jerboa::Plugin::component(type, parent);
+	}
+}
 
 QString StandardContainer::pluginName() const
 {

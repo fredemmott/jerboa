@@ -13,8 +13,8 @@ namespace Jerboa
 		public:
 			virtual ~Container();
 
-			virtual void addComponent(Plugin::ComponentType componentType, QWidget* widget) = 0;
-			virtual QWidget* widget() = 0;
+			virtual void addComponent(Plugin::ComponentType componentType, QWidget* component, QWidget* widget) const = 0;
+			virtual QWidget* widget() const = 0;
 		protected:
 			Container(QObject* parent);
 	};
