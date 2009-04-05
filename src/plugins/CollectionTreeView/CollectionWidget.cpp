@@ -1,5 +1,6 @@
 #include "CollectionWidget.h"
 
+#include <QDebug>
 #include <QTreeView>
 #include <QVBoxLayout>
 
@@ -15,7 +16,23 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 	m_treeView->setRootIsDecorated(false);
 	m_treeView->setExpandsOnDoubleClick(false);
 
+	connect(
+		m_treeView,
+		SIGNAL(doubleClicked(QModelIndex)),
+		this,
+		SLOT(addItemToPlaylist(QModelIndex))
+	);
+
 	setLayout(new QVBoxLayout());
 	layout()->setContentsMargins(0, 0, 0, 0);
 	layout()->addWidget(m_treeView);
+}
+
+void CollectionWidget::addItemToPlaylist(const QModelIndex& index)
+{
+	const QList<Jerboa::TrackData> tracks = index.data(Qt::UserRole).value<QList<Jerboa::TrackData> >();
+	Q_FOREACH(const Jerboa::TrackData& track, tracks)
+	{
+		m_playlist->appendTrack(track);
+	}
 }
