@@ -31,5 +31,9 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 void CollectionWidget::addItemToPlaylist(const QModelIndex& index)
 {
 	const QList<Jerboa::TrackData> tracks = index.data(Qt::UserRole).value<QList<Jerboa::TrackData> >();
+	if(tracks.isEmpty())
+	{
+		return;
+	}
 	m_playlist->appendTracks(tracks);
 }

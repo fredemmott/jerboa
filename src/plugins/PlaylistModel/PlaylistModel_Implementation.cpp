@@ -95,6 +95,7 @@ QModelIndex PlaylistModel::Implementation::index(int row, int column, const QMod
 
 void PlaylistModel::Implementation::addTracks(int index, const QList<Jerboa::TrackData>& data)
 {
+	Q_ASSERT(!data.isEmpty());
 	beginInsertRows(QModelIndex(), index, index + data.count() - 1);
 	for(int i = 0; i < data.count(); ++i)
 	{
