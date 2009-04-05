@@ -1,4 +1,5 @@
 #include "NestedCollectionModel.h"
+#include "NestedCollectionModel_Implementation.h"
 
 #include <QDebug>
 #include <QtPlugin>
@@ -17,7 +18,7 @@ QObject* NestedCollectionModel::component(Jerboa::Plugin::ComponentType type, QO
 		case Jerboa::Plugin::CollectionModel:
 			Q_ASSERT(m_collectionSource);
 			qDebug() << "Asked to create collection model";
-			//return new Implementation(parent);
+			return new Implementation(m_collectionSource, parent);
 		default:
 			return Jerboa::Plugin::component(type, parent);
 	}

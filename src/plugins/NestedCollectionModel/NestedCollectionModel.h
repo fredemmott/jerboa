@@ -19,6 +19,7 @@ class NestedCollectionModel: public QObject, public Jerboa::Plugin
 		QObject* component(ComponentType, QObject* parent) const;
 		void addComponent(ComponentType type, QObject* component);
 	private:
+		class Implementation;
 		Jerboa::CollectionInterface* m_collectionSource;
 };
 

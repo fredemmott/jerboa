@@ -31,17 +31,17 @@ namespace Jerboa
 	{
 		public:
 			enum ComponentType {
-				Container,
-				WidgetUsedWithPlaylist,
-				WidgetUsedWithCollection,
-				Player,
-				PlaylistSource,
-				PlaylistView,
-				CollectionSource,
-				CollectionModel,
-				CollectionView,
-				BackEnd,
-				FrontEnd
+				Container, // Container
+				WidgetUsedWithPlaylist, // QWidget
+				WidgetUsedWithCollection, // QWidget
+				Player, // PlayerInterface
+				PlaylistSource, // TBA
+				PlaylistView, // TBA
+				CollectionSource, // CollectionInterface
+				CollectionModel, // QAbstractItemModel
+				CollectionView, // QWidget
+				BackEnd, // TBA
+				FrontEnd // TBA
 			};
 			/** Gets the plugins name.
 			 * This is potentially user-visible, so should be translated

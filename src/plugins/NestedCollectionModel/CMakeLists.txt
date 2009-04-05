@@ -1,6 +1,7 @@
 SET(
     CLASSES
     NestedCollectionModel
+    NestedCollectionModel_Implementation
 )
 
 SET(SOURCES)
