@@ -52,20 +52,33 @@ int NestedCollectionModel::Implementation::columnCount(const QModelIndex& parent
 
 QVariant NestedCollectionModel::Implementation::data(const QModelIndex& index, int role) const
 {
-	if(role != Qt::DisplayRole || !index.isValid())
+	if((role != Qt::DisplayRole && role != Qt::UserRole) || !index.isValid())
 	{
 		return QVariant();
 	}
 
 	Item* item = reinterpret_cast<Item*>(index.internalPointer());
-	switch(item->type)
+	if(role == Qt::DisplayRole)
 	{
-		case Item::ArtistItem:
-			return m_artists.at(index.row());
-		case Item::AlbumItem:
-			return m_albumsForArtists.at(index.parent().row()).at(index.row());
-		case Item::TrackItem:
-			return item->data.title();
+		switch(item->type)
+		{
+			case Item::ArtistItem:
+				return m_artists.at(index.row());
+			case Item::AlbumItem:
+				return m_albumsForArtists.at(index.parent().row()).at(index.row());
+			case Item::TrackItem:
+				return item->data.title();
+		}
+	}
+	else if(role == Qt::UserRole)
+	{
+		switch(item->type)
+		{
+			case Item::TrackItem:
+				return QVariant::fromValue(QList<Jerboa::TrackData>() << item->data);
+			default:
+				qDebug() << "TODO: only tracks supported right now";
+		}
 	}
 
 	return QVariant();

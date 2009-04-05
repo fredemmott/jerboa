@@ -35,11 +35,11 @@ namespace Jerboa
 				WidgetUsedWithPlaylist, // QWidget
 				WidgetUsedWithCollection, // QWidget
 				Player, // PlayerInterface
-				PlaylistSource, // TBA
-				PlaylistModel, // TBA
-				PlaylistView, // TBA
+				PlaylistSource, // PlaylistInterface
+				PlaylistModel, // QAbstractItemModel
+				PlaylistView, // QWidget
 				CollectionSource, // CollectionInterface
-				CollectionModel, // QAbstractItemModel
+				CollectionModel, // QAbstractItemModel - Qt::UserDataRole is a QList<TrackData>
 				CollectionView, // QWidget
 				BackEnd, // TBA
 				FrontEnd // TBA

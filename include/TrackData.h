@@ -22,8 +22,7 @@
 #include <QSharedDataPointer>
 #include <QString>
 #include <QUrl>
-#include <QVariant>
-
+#include <QVariant> 
 namespace Jerboa
 {
 	/// Represents a track and all the information about it.
@@ -99,5 +98,8 @@ namespace Jerboa
 			QSharedDataPointer<TrackDataPrivate> d;
 	};
 };
+
+Q_DECLARE_METATYPE(Jerboa::TrackData);
+Q_DECLARE_METATYPE(QList<Jerboa::TrackData>);
 
 #endif
