@@ -1,6 +1,7 @@
 SET(
 	CLASSES
 	CollectionTreeView
+	CollectionWidget
 )
 
 SET(SOURCES)

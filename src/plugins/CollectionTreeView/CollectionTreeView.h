@@ -1,6 +1,7 @@
 #ifndef _COLLECTION_TREE_VIEW_H
 #define _COLLECTION_TREE_VIEW_H
 
+#include "PlaylistInterface.h"
 #include "Plugin.h"
 
 #include <QAbstractItemModel>
@@ -18,6 +19,7 @@ class CollectionTreeView: public QObject, public Jerboa::Plugin
 		QObject* component(ComponentType, QObject* parent) const;
 		void addComponent(ComponentType, QObject* component);
 	private:
+		Jerboa::PlaylistInterface* m_playlist;
 		QAbstractItemModel* m_collectionModel;
 };
 

@@ -1,6 +1,8 @@
 #include "CollectionTreeView.h"
 
-#include <QTreeView>
+#include "CollectionWidget.h"
+
+#include <QDebug>
 #include <QtPlugin>
 
 QObject* CollectionTreeView::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
@@ -9,14 +11,9 @@ QObject* CollectionTreeView::component(Jerboa::Plugin::ComponentType type, QObje
 	{
 		case Jerboa::Plugin::CollectionView:
 			{
+				Q_ASSERT(m_playlist);
 				Q_ASSERT(m_collectionModel);
-				QTreeView* treeView = new QTreeView(qobject_cast<QWidget*>(parent));
-				treeView->setModel(m_collectionModel);
-				treeView->setHeaderHidden(true);
-				treeView->expandToDepth(0);
-				treeView->setRootIsDecorated(false);
-				treeView->setExpandsOnDoubleClick(false);
-				return treeView;
+				return new CollectionWidget(m_playlist, m_collectionModel, qobject_cast<QWidget*>(parent));
 			}
 		default:
 			return Jerboa::Plugin::component(type, parent);
@@ -47,6 +44,11 @@ void CollectionTreeView::addComponent(ComponentType type, QObject* component)
 {
 	switch(type)
 	{
+		case Jerboa::Plugin::PlaylistSource:
+			qDebug() << "Got a playlist source";
+			m_playlist = qobject_cast<Jerboa::PlaylistInterface*>(component);
+			Q_ASSERT(m_playlist);
+			break;
 		case Jerboa::Plugin::CollectionModel:
 			m_collectionModel = qobject_cast<QAbstractItemModel*>(component);
 			Q_ASSERT(m_collectionModel);
