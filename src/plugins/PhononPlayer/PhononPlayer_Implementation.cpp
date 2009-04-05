@@ -9,6 +9,13 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 	m_output = new Phonon::AudioOutput(Phonon::MusicCategory, this);
 	m_player = new Phonon::MediaObject(this);
 	Phonon::createPath(m_player, m_output);
+
+	connect(
+		m_player,
+		SIGNAL(stateChanged(Phonon::State, Phonon::State)),
+		this,
+		SLOT(handlePhononStateChange(Phonon::State, Phonon::State))
+	);
 }
 
 Jerboa::PlayerInterface::State PhononPlayer::Implementation::state() const
@@ -39,12 +46,35 @@ void PhononPlayer::Implementation::setState(State state)
 
 void PhononPlayer::Implementation::play()
 {
+	m_player->play();
 }
 
 void PhononPlayer::Implementation::pause()
 {
+	m_player->pause();
 }
 
 void PhononPlayer::Implementation::stop()
 {
+	m_player->stop();
+}
+
+void PhononPlayer::Implementation::handlePhononStateChange(Phonon::State newState, Phonon::State oldState)
+{
+	Q_UNUSED(oldState);
+	switch(newState)
+	{
+		case Phonon::LoadingState:
+		case Phonon::BufferingState:
+			setState(Loading);
+			return;
+		case Phonon::PlayingState:
+			setState(Playing);
+			return;
+		case Phonon::PausedState:
+			setState(Paused);
+			return;
+		default:
+			setState(Stopped);
+	}
 }
