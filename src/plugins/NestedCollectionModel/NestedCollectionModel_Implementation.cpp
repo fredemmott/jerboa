@@ -9,14 +9,21 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		m_tracks(collection->tracks())
 {
 	QHash<QString, QHash<QString, QList<Jerboa::TrackData> > > artistAlbumTracks;
-	///@todo SORTING
+	QMap<QString, QString> artistOrder;
 	Q_FOREACH(const Jerboa::TrackData& data, m_tracks)
 	{
+
 		artistAlbumTracks[data.albumArtist()][data.album()].append(data);
+		artistOrder[data.albumArtistRomanised().toLower()] = data.albumArtist();
 	}
 
-	Q_FOREACH(const QString& albumArtist, artistAlbumTracks.keys())
+	for(
+		QMap<QString, QString>::ConstIterator it = artistOrder.constBegin();
+		it != artistOrder.constEnd();
+		++it
+	)
 	{
+		const QString& albumArtist(it.value());
 		m_artists.append(albumArtist);
 		const int artistIndex = m_artists.count() - 1;
 		const QStringList albums = artistAlbumTracks.value(albumArtist).keys();
