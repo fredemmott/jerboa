@@ -15,6 +15,7 @@
 	along with Jerboa.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "StaticPlugins.h"
 #include "Plugin.h"
 
 #include <QApplication>
