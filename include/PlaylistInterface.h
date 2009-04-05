@@ -8,10 +8,11 @@
 
 namespace Jerboa
 {
-	class PlaylistInterface
+	class PlaylistInterface : public QObject
 	{
 		Q_OBJECT;
 		public:
+			virtual ~PlaylistInterface();
 
 			/// List of supported looping modes.
 			enum LoopMode
@@ -43,6 +44,7 @@ namespace Jerboa
 			virtual ShuffleMode shuffleMode() const = 0;
 
 			virtual int currentTrack() const = 0;
+			virtual int nextTrack() const = 0;
 			virtual QList<TrackData> trackList() const = 0;
 		public slots:
 			/** Appends a track.
@@ -57,6 +59,8 @@ namespace Jerboa
 			 * @returns the position in the playlist, or -1 on failure.
 			 */
 			virtual int appendTrack(const TrackData& data) = 0;
+			virtual void insertTrack(int index, const QUrl& url);
+			virtual void insertTrack(int index, const TrackData& data) = 0;
 			virtual void removeTrack(int index) = 0;
 
 			virtual void setLoopMode(LoopMode) = 0;

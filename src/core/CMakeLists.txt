@@ -2,6 +2,7 @@ SET(
 	PUBLIC_CLASSES
 	CollectionInterface
 	Container
+	PlaylistInterface
 	Plugin
 	TrackData
 	TrackData_p

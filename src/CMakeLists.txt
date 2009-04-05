@@ -2,6 +2,7 @@ SET(
 	PLUGINS
 	CollectionTreeView
 	JerboaCollection
+	JerboaPlaylist
 	NestedCollectionModel
 	StandardContainer
 )

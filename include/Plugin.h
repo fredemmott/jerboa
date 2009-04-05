@@ -36,6 +36,7 @@ namespace Jerboa
 				WidgetUsedWithCollection, // QWidget
 				Player, // PlayerInterface
 				PlaylistSource, // TBA
+				PlaylistModel, // TBA
 				PlaylistView, // TBA
 				CollectionSource, // CollectionInterface
 				CollectionModel, // QAbstractItemModel
