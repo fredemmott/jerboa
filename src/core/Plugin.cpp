@@ -9,7 +9,7 @@ namespace Jerboa
 		return QUrl();
 	}
 
-	void Plugin::setPlayerInterface(PlayerInterface*)
+	void Plugin::addComponent(ComponentType, QObject*)
 	{
 	}
 

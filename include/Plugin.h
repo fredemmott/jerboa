@@ -62,12 +62,10 @@ namespace Jerboa
 			 */
 			virtual QString uniqueId() const = 0;
 
-			/** Gives the plugin a PlayerInterface object
-			 * All communication with the player goes through this interface.
-			 *
+			/** Called when a component is chosen.
 			 * Default implementation does nothing.
 			 */
-			virtual void setPlayerInterface(PlayerInterface*);
+			virtual void addComponent(ComponentType, QObject* component);
 
 			/** Return a list of components that this plugin provides.
 			 *
