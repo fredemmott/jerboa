@@ -15,6 +15,7 @@ QObject* CollectionTreeView::component(Jerboa::Plugin::ComponentType type, QObje
 				treeView->setHeaderHidden(true);
 				treeView->expandToDepth(0);
 				treeView->setRootIsDecorated(false);
+				treeView->setExpandsOnDoubleClick(false);
 				return treeView;
 			}
 		default:

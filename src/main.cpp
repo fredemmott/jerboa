@@ -111,6 +111,12 @@ int main(int argc, char** argv)
 		Q_FOREACH(Jerboa::Plugin* p, componentProviders.values(type))
 		{
 			QObject* component = p->component(type, &app);
+			QAbstractItemModel* model = qobject_cast<QAbstractItemModel*>(component);
+			if(model)
+			{
+				ModelTest test(model, 0);
+				Q_UNUSED(test);
+			}
 			Q_FOREACH(Jerboa::Plugin* q, plugins)
 			{
 				q->addComponent(type, component);
