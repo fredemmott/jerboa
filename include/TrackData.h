@@ -17,6 +17,8 @@
 #ifndef _JERBOA_TRACKDATA_H
 #define _JERBOA_TRACKDATA_H
 
+#include "TrackData_p.h"
+
 #include <QSharedDataPointer>
 #include <QString>
 #include <QUrl>
@@ -94,8 +96,7 @@ namespace Jerboa
 			 */
 			QVariantMap mprisData() const;
 		private:
-			class Private;
-			QSharedDataPointer<Private> d;
+			QSharedDataPointer<TrackDataPrivate> d;
 	};
 };
 

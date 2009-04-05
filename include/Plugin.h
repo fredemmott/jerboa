@@ -38,6 +38,7 @@ namespace Jerboa
 				PlaylistSource,
 				PlaylistView,
 				CollectionSource,
+				CollectionModel,
 				CollectionView,
 				BackEnd,
 				FrontEnd

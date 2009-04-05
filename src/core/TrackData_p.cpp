@@ -20,7 +20,7 @@
 
 namespace Jerboa
 {
-	void TrackData::Private::populateMembers()
+	void TrackDataPrivate::populateMembers()
 	{
 		QStringList mimeData = this->mimeData.split("\t");
 		Q_ASSERT(mimeData.size() == 11);

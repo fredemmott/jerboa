@@ -3,10 +3,10 @@ SET(
 	CollectionInterface
 	Plugin
 	TrackData
+	TrackData_p
 )
 SET(
 	PRIVATE_CLASSES
-	TrackData_p
 )
 
 SET(SOURCES)

@@ -1,5 +1,6 @@
 SET(
 	PLUGINS
+	JerboaCollection
 	StandardContainer
 )
 

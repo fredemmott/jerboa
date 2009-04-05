@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 {
 	QApplication app(argc,argv);
 
-	app.setOrganizationName("Jerboa");
+	app.setOrganizationName("Fred Emmott");
 	app.setOrganizationDomain("jerboaplayer.org");
 	app.setApplicationName("Jerboa");
 	app.setApplicationVersion("ng");

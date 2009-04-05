@@ -4,6 +4,7 @@
 #include "TrackData.h"
 
 #include <QObject>
+#include <QVector>
 
 namespace Jerboa
 {
@@ -12,12 +13,12 @@ namespace Jerboa
 		Q_OBJECT;
 		public:
 			virtual ~CollectionInterface();
-			virtual QList<TrackData> tracks() const = 0;
+			virtual QVector<TrackData> tracks() const = 0;
 		protected:
 			CollectionInterface(QObject* parent);
 		signals:
-			void tracksRemoved(const QList<TrackData>& tracks);
-			void tracksAdded(const QList<TrackData>& tracks);
+			void tracksRemoved(const QVector<TrackData>& tracks);
+			void tracksAdded(const QVector<TrackData>& tracks);
 	};
 }
 
