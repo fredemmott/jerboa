@@ -1,5 +1,6 @@
 SET(
 	PUBLIC_CLASSES
+	CollectionInterface
 	Plugin
 	TrackData
 )
