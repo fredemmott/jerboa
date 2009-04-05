@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QSplitter>
+#include <QTabBar>
 #include <QTabWidget>
 #include <QToolBar>
 
@@ -35,6 +36,9 @@ void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidg
 	{
 		case Jerboa::Plugin::CollectionView:
 			m_leftTabs->insertTab(0, component, tr("Collection"));
+			break;
+		case Jerboa::Plugin::PlaylistView:
+			m_rightTabs->insertTab(0, component, tr("Playlist"));
 			break;
 		default:
 			qFatal("MainWindow doesn't handle component type %d", componentType);

@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 	const QList<Jerboa::Plugin::ComponentType> wantedComponents = QList<Jerboa::Plugin::ComponentType>()
 		<< Jerboa::Plugin::PlaylistSource
 		<< Jerboa::Plugin::PlaylistModel
-//		<< Jerboa::Plugin::PlaylistView
+		<< Jerboa::Plugin::PlaylistView
 		<< Jerboa::Plugin::CollectionSource
 		<< Jerboa::Plugin::CollectionModel
 		<< Jerboa::Plugin::CollectionView

@@ -6,6 +6,7 @@ SET(
 	NestedCollectionModel
 	PlaylistModel
 	StandardContainer
+	StandardPlaylistView
 )
 
 ##### DON'T EDIT BELOW HERE (probably) #####
