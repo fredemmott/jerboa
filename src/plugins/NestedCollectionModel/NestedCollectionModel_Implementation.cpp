@@ -1,6 +1,7 @@
 #include "NestedCollectionModel_Implementation.h"
 
 #include <QDebug>
+#include <QRegExp>
 
 NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterface* collection, QObject* parent)
 	:
@@ -17,16 +18,16 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		artistOrder[data.albumArtistRomanised().toLower()] = data.albumArtist();
 	}
 
-	for(
-		QMap<QString, QString>::ConstIterator it = artistOrder.constBegin();
-		it != artistOrder.constEnd();
-		++it
-	)
+	Q_FOREACH(const QString& albumArtist, artistOrder)
 	{
-		const QString& albumArtist(it.value());
 		m_artists.append(albumArtist);
 		const int artistIndex = m_artists.count() - 1;
-		const QStringList albums = artistAlbumTracks.value(albumArtist).keys();
+		QMap<QString, QString> albumOrder;
+		Q_FOREACH(const QString& album, artistAlbumTracks.value(albumArtist).keys())
+		{
+			albumOrder[albumSortKey(album)] = album;
+		}
+		const QStringList albums(albumOrder.values());
 		m_albumsForArtists.append(albums);
 		m_tracksForAlbums.append(QList<QList<Jerboa::TrackData> >());
 		Q_FOREACH(const QString& album, albums)
@@ -101,6 +102,19 @@ int NestedCollectionModel::Implementation::rowCount(const QModelIndex& parent) c
 
 	// Parent is a track
 	return 0;
+}
+
+QString NestedCollectionModel::Implementation::albumSortKey(const QString& albumName)
+{
+	// Need to make a new Album record - this needs a sortKey
+	// Eat spaces
+	QString albumSort = QString(albumName.toLower()).replace(" ", "");
+	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
+	albumSort.replace(QRegExp("\\W"), "!");
+	// Pad numbers to six figures
+	albumSort.replace(QRegExp("(\\d+)"), "00000\\1");
+	albumSort.replace(QRegExp("\\d+(\\d{6})"), "\\1");
+	return albumSort;
 }
 
 QModelIndex NestedCollectionModel::Implementation::index(int row, int column, const QModelIndex& parent) const
