@@ -16,6 +16,7 @@
 */
 
 #include "CollectionInterface.h"
+#include "Container.h"
 #include "StaticPlugins.h"
 #include "Plugin.h"
 
@@ -55,49 +56,76 @@ int main(int argc, char** argv)
 
 	setupDatabase();
 
+	Jerboa::Container* container = 0;
 	QWidget* mainWindow = 0;
 	Jerboa::CollectionInterface* collectionSource = 0;
 	QAbstractItemModel* collectionModel = 0;
+	QWidget* collectionView = 0;
 	QMultiMap<Jerboa::Plugin::ComponentType, Jerboa::Plugin*> componentProviders;
+
+	QList<Jerboa::Plugin*> plugins;
 	Q_FOREACH(QObject* plugin, QPluginLoader::staticInstances())
 	{
 		Jerboa::Plugin* p = qobject_cast<Jerboa::Plugin*>(plugin);
 		if(p)
 		{
+			plugins.append(p);
 			if(p->components().contains(Jerboa::Plugin::Container))
 			{
-				mainWindow = qobject_cast<QWidget*>(p->component(Jerboa::Plugin::Container, 0));
+				container = qobject_cast<Jerboa::Container*>(p->component(Jerboa::Plugin::Container, 0));
+				Q_ASSERT(container);
+				mainWindow = container->widget();
 			}
 			if(p->components().contains(Jerboa::Plugin::CollectionSource))
 			{
 				collectionSource = qobject_cast<Jerboa::CollectionInterface*>(
 					p->component(Jerboa::Plugin::CollectionSource, &app)
 				);
-				Q_ASSERT(collectionSource);
 			}
 			if(p->components().contains(Jerboa::Plugin::CollectionModel))
 			{
 				componentProviders.insert(Jerboa::Plugin::CollectionModel, p);
 			}
+			if(p->components().contains(Jerboa::Plugin::CollectionView))
+			{
+				componentProviders.insert(Jerboa::Plugin::CollectionView, p);
+			}
 		}
 	}
-	Q_FOREACH(Jerboa::Plugin* p, componentProviders.values(Jerboa::Plugin::CollectionModel))
-	{
-		Q_ASSERT(collectionSource);
-		p->addComponent(Jerboa::Plugin::CollectionSource, collectionSource);
-		collectionModel = qobject_cast<QAbstractItemModel*>(
-			p->component(Jerboa::Plugin::CollectionModel, &app)
-		);
-	}
-
-	if(mainWindow)
-	{
-		mainWindow->show();
-	}
-	else
+	if(!mainWindow)
 	{
 		qFatal("Could not find a container to load.");
 	}
+
+	Q_ASSERT(collectionSource);
+	Q_FOREACH(Jerboa::Plugin* p, plugins)
+	{
+		p->addComponent(Jerboa::Plugin::CollectionSource, collectionSource);
+	}
+	Q_FOREACH(Jerboa::Plugin* p, componentProviders.values(Jerboa::Plugin::CollectionModel))
+	{
+		collectionModel = qobject_cast<QAbstractItemModel*>(
+			p->component(Jerboa::Plugin::CollectionModel, &app)
+		);
+		break;
+	}
+
+	Q_ASSERT(collectionModel);
+	Q_FOREACH(Jerboa::Plugin* p, plugins)
+	{
+		p->addComponent(Jerboa::Plugin::CollectionModel, collectionModel);
+	}
+	Q_FOREACH(Jerboa::Plugin* p, componentProviders.values(Jerboa::Plugin::CollectionView))
+	{
+		collectionView= qobject_cast<QWidget*>(
+			p->component(Jerboa::Plugin::CollectionView, mainWindow)
+		);
+		break;
+	}
+	Q_ASSERT(collectionView);
+	container->addComponent(Jerboa::Plugin::CollectionView, collectionView, mainWindow);
+
+	mainWindow->show();
 
 	return app.exec();
 }

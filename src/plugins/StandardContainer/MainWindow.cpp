@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 
+#include <QDebug>
 #include <QSplitter>
 #include <QTabWidget>
 #include <QToolBar>
@@ -26,4 +27,16 @@ MainWindow::MainWindow(
 	m_rightTabs = new QTabWidget(m_splitter);
 	m_rightTabs->setTabPosition(QTabWidget::East);
 	m_splitter->addWidget(m_rightTabs);
+}
+
+void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidget* component)
+{
+	switch(componentType)
+	{
+		case Jerboa::Plugin::CollectionView:
+			m_leftTabs->insertTab(0, component, tr("Collection"));
+			break;
+		default:
+			qFatal("MainWindow doesn't handle component type %d", componentType);
+	}
 }

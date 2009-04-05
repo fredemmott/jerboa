@@ -16,7 +16,7 @@ namespace Jerboa
 			virtual void addComponent(Plugin::ComponentType componentType, QWidget* component, QWidget* widget) const = 0;
 			virtual QWidget* widget() const = 0;
 		protected:
-			Container(QObject* parent);
+			Container(QObject* parent = 0);
 	};
 };
 

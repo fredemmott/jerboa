@@ -9,12 +9,23 @@ QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObjec
 	switch(type)
 	{
 		case Jerboa::Plugin::Container:
-			Q_ASSERT(qobject_cast<QWidget*>(parent) || !parent);
-			///@FIXME: needs a player interface passing
-			return new MainWindow(0, qobject_cast<QWidget*>(parent));
+			return new StandardContainer();
 		default:
 			return Jerboa::Plugin::component(type, parent);
 	}
+}
+
+void StandardContainer::addComponent(Plugin::ComponentType componentType, QWidget* component, QWidget* widget) const
+{
+	MainWindow* mainWindow = qobject_cast<MainWindow*>(widget);
+	Q_ASSERT(mainWindow);
+	mainWindow->addComponent(componentType, component);
+}
+
+QWidget* StandardContainer::widget() const
+{
+	///@FIXME: needs a player interface passing
+	return new MainWindow(0, 0);
 }
 
 QString StandardContainer::pluginName() const

@@ -1,6 +1,7 @@
 SET(
 	PUBLIC_CLASSES
 	CollectionInterface
+	Container
 	Plugin
 	TrackData
 	TrackData_p
