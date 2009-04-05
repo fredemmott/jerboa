@@ -114,8 +114,7 @@ int main(int argc, char** argv)
 			QAbstractItemModel* model = qobject_cast<QAbstractItemModel*>(component);
 			if(model)
 			{
-				ModelTest test(model, 0);
-				Q_UNUSED(test);
+				new ModelTest(model, &app);
 			}
 			Q_FOREACH(Jerboa::Plugin* q, plugins)
 			{

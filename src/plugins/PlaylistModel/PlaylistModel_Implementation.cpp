@@ -9,6 +9,12 @@ PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlis
 		m_playlist(playlist),
 		m_tracks(playlist->tracks())
 {
+	connect(
+		playlist,
+		SIGNAL(trackAdded(int, Jerboa::TrackData)),
+		this,
+		SLOT(addTrack(int, Jerboa::TrackData))
+	);
 }
 
 int PlaylistModel::Implementation::columnCount(const QModelIndex& parent) const
@@ -85,4 +91,11 @@ QModelIndex PlaylistModel::Implementation::index(int row, int column, const QMod
 		return QModelIndex();
 	}
 	return createIndex(row, column);
+}
+
+void PlaylistModel::Implementation::addTrack(int index, const Jerboa::TrackData& data)
+{
+	beginInsertRows(QModelIndex(), index, index);
+	m_tracks.insert(index, data);
+	endInsertRows();
 }

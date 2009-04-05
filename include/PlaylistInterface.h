@@ -70,7 +70,7 @@ namespace Jerboa
 			void loopModeChanged(LoopMode);
 			void shuffleModeChanged(ShuffleMode);
 
-			void trackAdded(int index, const TrackData& data);
+			void trackAdded(int index, const Jerboa::TrackData& data);
 			void trackRemoved(int index);
 
 			void trackListChanged();
