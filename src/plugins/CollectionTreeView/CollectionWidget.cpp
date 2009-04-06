@@ -70,6 +70,12 @@ void CollectionWidget::updateSearch()
 	m_treeView->collapseAll();
 	// Expand artists
 	m_treeView->expandToDepth(0);
+	if(m_searchBox->text().simplified().isEmpty())
+	{
+		// That's all, folks
+		return;
+	}
+
 	// Only expand albums if only some tracks in them are selected
 	QAbstractProxyModel* filterModel = qobject_cast<QAbstractProxyModel*>(m_treeView->model());
 	Q_ASSERT(filterModel);
