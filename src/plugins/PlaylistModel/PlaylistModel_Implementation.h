@@ -17,12 +17,14 @@ class PlaylistModel::Implementation : public QAbstractItemModel
 		int columnCount(const QModelIndex& parent) const;
 		QVariant data(const QModelIndex& index, int role) const;
 		QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-		QModelIndex index(int row, int column, const QModelIndex& parent) const;
+		QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent(const QModelIndex& index) const;
 		int rowCount(const QModelIndex& parent) const;
 	private slots:
 		void addTracks(int index, const QList<Jerboa::TrackData>& data);
+		void highlightCurrentTrack(int newCurrentTrack);
 	private:
+		int m_currentTrack;
 		Jerboa::PlaylistInterface* m_playlist;
 		QList<Jerboa::TrackData> m_tracks;
 };

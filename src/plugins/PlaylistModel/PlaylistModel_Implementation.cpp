@@ -8,13 +8,20 @@ PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlis
 	:
 		QAbstractItemModel(parent),
 		m_playlist(playlist),
-		m_tracks(playlist->tracks())
+		m_tracks(playlist->tracks()),
+		m_currentTrack(-1)
 {
 	connect(
 		playlist,
 		SIGNAL(tracksAdded(int, QList<Jerboa::TrackData>)),
 		this,
 		SLOT(addTracks(int, QList<Jerboa::TrackData>))
+	);
+	connect(
+		playlist,
+		SIGNAL(positionChanged(int)),
+		this,
+		SLOT(highlightCurrentTrack(int))
 	);
 }
 
@@ -41,6 +48,21 @@ QVariant PlaylistModel::Implementation::headerData(int section, Qt::Orientation 
 			return tr("Album");
 		default:
 			return QVariant();
+	}
+}
+
+void PlaylistModel::Implementation::highlightCurrentTrack(int newCurrentTrack)
+{
+	if(m_currentTrack != -1)
+	{
+		emit dataChanged(index(m_currentTrack, 0), index(m_currentTrack, 2));
+	}
+
+	m_currentTrack = newCurrentTrack;
+
+	if(m_currentTrack != -1)
+	{
+		emit dataChanged(index(m_currentTrack, 0), index(m_currentTrack, 2));
 	}
 }
 
