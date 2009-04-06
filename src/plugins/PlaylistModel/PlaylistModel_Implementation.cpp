@@ -1,6 +1,7 @@
 #include "PlaylistModel_Implementation.h"
 
 #include <QDebug>
+#include <QFont>
 #include <QRegExp>
 
 PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlist, QObject* parent)
@@ -45,7 +46,7 @@ QVariant PlaylistModel::Implementation::headerData(int section, Qt::Orientation 
 
 QVariant PlaylistModel::Implementation::data(const QModelIndex& index, int role) const
 {
-	if(role != Qt::DisplayRole || !index.isValid())
+	if(!index.isValid())
 	{
 		return QVariant();
 	}
@@ -53,18 +54,32 @@ QVariant PlaylistModel::Implementation::data(const QModelIndex& index, int role)
 	{
 		return QVariant();
 	}
-	Jerboa::TrackData track = m_tracks.at(index.row());
-	switch(index.column())
+	if(role == Qt::DisplayRole)
 	{
-		case 0:
-			return track.title();
-		case 1:
-			return track.artist();
-		case 2:
-			return track.album();
-		default:
-			return QVariant();
+		Jerboa::TrackData track = m_tracks.at(index.row());
+		switch(index.column())
+		{
+			case 0:
+				return track.title();
+			case 1:
+				return track.artist();
+			case 2:
+				return track.album();
+			default:
+				return QVariant();
+		}
 	}
+	if(role == Qt::FontRole)
+	{
+		if(index.row() == m_playlist->currentTrack())
+		{
+			QFont font;
+			font.setBold(true);
+			font.setItalic(true);
+			return font;
+		}
+	}
+	return QVariant();
 }
 
 QModelIndex  PlaylistModel::Implementation::parent(const QModelIndex& index) const
