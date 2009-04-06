@@ -5,10 +5,10 @@
 #include "PlaylistInterface.h"
 #include "Plugin.h"
 
+#include <QList>
 #include <QMainWindow>
 
 class QSplitter;
-class QTabWidget;
 class QToolBar;
 
 class MainWindow : public QMainWindow
@@ -23,15 +23,17 @@ class MainWindow : public QMainWindow
 		void pause();
 		void stop();
 	private:
+		void setupTabs();
 		void setupToolBar();
 
 		Jerboa::PlayerInterface* m_player;
 		Jerboa::PlaylistInterface* m_playlist;
 
+		QList<QWidget*> m_leftWidgets;
+		QList<QWidget*> m_rightWidgets;
+
 		QToolBar* m_toolBar;
 		QSplitter* m_splitter;
-		QTabWidget* m_leftTabs;
-		QTabWidget* m_rightTabs;
 
 		QAction* m_playAction;
 		QAction* m_pauseAction;

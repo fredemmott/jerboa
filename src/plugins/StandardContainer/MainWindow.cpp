@@ -28,17 +28,8 @@ MainWindow::MainWindow(
 	addToolBar(m_toolBar);
 	setUnifiedTitleAndToolBarOnMac(true);
 
-	m_splitter = new QSplitter(Qt::Horizontal, this);
-	setCentralWidget(m_splitter);
+	m_splitter = 0;
 
-	m_leftTabs = new QTabWidget(m_splitter);
-	m_leftTabs->setTabPosition(QTabWidget::West);
-	m_splitter->addWidget(m_leftTabs);
-
-	m_rightTabs = new QTabWidget(m_splitter);
-	m_rightTabs->setTabPosition(QTabWidget::East);
-	m_splitter->addWidget(m_rightTabs);
-	
 	setupToolBar();
 }
 
@@ -79,12 +70,60 @@ void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidg
 	switch(componentType)
 	{
 		case Jerboa::Plugin::CollectionView:
-			m_leftTabs->insertTab(0, component, tr("Collection"));
+			component->setWindowTitle(tr("Collection"));
+			m_leftWidgets.prepend(component);
 			break;
 		case Jerboa::Plugin::PlaylistView:
-			m_rightTabs->insertTab(0, component, tr("Playlist"));
+			component->setWindowTitle(tr("Playlist"));
+			m_rightWidgets.prepend(component);
 			break;
 		default:
 			qFatal("MainWindow doesn't handle component type %d", componentType);
+	}
+	setupTabs();
+}
+
+void MainWindow::setupTabs()
+{
+	Q_FOREACH(QWidget* widget, m_leftWidgets + m_rightWidgets)
+	{
+		widget->setParent(this);
+	}
+	delete m_splitter;
+	m_splitter = new QSplitter(this);
+	setCentralWidget(m_splitter);
+
+	if(m_leftWidgets.count() > 1)
+	{
+		QTabWidget* leftTabs = new QTabWidget(m_splitter);
+		leftTabs->setTabPosition(QTabWidget::West);
+
+		Q_FOREACH(QWidget* widget, m_leftWidgets)
+		{
+			leftTabs->addTab(widget, widget->windowTitle());
+		}
+
+		m_splitter->addWidget(leftTabs);
+	}
+	else if(m_leftWidgets.count() == 1)
+	{
+		m_splitter->addWidget(m_leftWidgets.first());
+	}
+
+	if(m_rightWidgets.count() > 1)
+	{
+		QTabWidget* rightTabs = new QTabWidget(m_splitter);
+		rightTabs->setTabPosition(QTabWidget::West);
+
+		Q_FOREACH(QWidget* widget, m_rightWidgets)
+		{
+			rightTabs->addTab(widget, widget->windowTitle());
+		}
+
+		m_splitter->addWidget(rightTabs);
+	}
+	else if(m_rightWidgets.count() == 1)
+	{
+		m_splitter->addWidget(m_rightWidgets.first());
 	}
 }
