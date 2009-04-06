@@ -10,6 +10,7 @@ SET(
 )
 SET(
 	PRIVATE_CLASSES
+	PlayerInterface_p
 	modeltest
 )
 

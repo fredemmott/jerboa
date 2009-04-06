@@ -1,4 +1,5 @@
 #include "PlayerInterface.h"
+#include "PlayerInterface_p.h"
 
 #include "PlaylistInterface.h"
 
@@ -7,7 +8,7 @@ namespace Jerboa
 	PlayerInterface::PlayerInterface(PlaylistInterface* playlist, QObject* parent)
 		:
 			QObject(parent),
-			m_playlist(playlist)
+			d(new PlayerInterface::Private(playlist, this))
 	{
 		Q_ASSERT(playlist);
 	}
@@ -53,7 +54,7 @@ namespace Jerboa
 
 	void PlayerInterface::next()
 	{
-		const int nextTrackIndex = m_playlist->nextTrack();
+		const int nextTrackIndex = d->m_playlist->nextTrack();
 		skipTo(nextTrackIndex);
 	}
 
@@ -61,14 +62,14 @@ namespace Jerboa
 	{
 		if(playlistIndex != -1)
 		{
-			const TrackData track = m_playlist->tracks().at(playlistIndex);
+			const TrackData track = d->m_playlist->tracks().at(playlistIndex);
 			setCurrentTrack(track);
-			m_playlist->setCurrentTrack(playlistIndex);
+			d->m_playlist->setCurrentTrack(playlistIndex);
 		}
 		else
 		{
 			stop();
-			m_playlist->setCurrentTrack(-1);
+			d->m_playlist->setCurrentTrack(-1);
 		}
 	}
 }

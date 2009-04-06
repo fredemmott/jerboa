@@ -58,6 +58,7 @@ namespace Jerboa
 			PlayerInterface(PlaylistInterface*, QObject* parent);
 		private:
 			class Private;
+			Private* d;
 	};
 };
 
