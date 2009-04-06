@@ -57,7 +57,7 @@ namespace Jerboa
 			virtual void setCurrentTrack(const TrackData& track) = 0;
 			PlayerInterface(PlaylistInterface*, QObject* parent);
 		private:
-			PlaylistInterface* m_playlist;
+			class Private;
 	};
 };
 
