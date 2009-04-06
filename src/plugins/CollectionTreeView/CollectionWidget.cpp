@@ -65,7 +65,28 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 void CollectionWidget::updateSearch()
 {
 	m_filter->setFilterString(m_searchBox->text());
+
+	// Reset expansion
+	m_treeView->collapseAll();
+	// Expand artists
 	m_treeView->expandToDepth(0);
+	// Only expand albums if only some tracks in them are selected
+	QAbstractProxyModel* filterModel = qobject_cast<QAbstractProxyModel*>(m_treeView->model());
+	Q_ASSERT(filterModel);
+	QAbstractItemModel* sourceModel = filterModel->sourceModel();
+	for(int artistRow = 0; artistRow < filterModel->rowCount(); ++artistRow)
+	{
+		const QModelIndex artistIndex = filterModel->index(artistRow, 0);
+		for(int albumRow = 0; albumRow < filterModel->rowCount(artistIndex); ++albumRow)
+		{
+			const QModelIndex filteredIndex = filterModel->index(albumRow, 0, artistIndex);
+			const QModelIndex sourceIndex = filterModel->mapToSource(filteredIndex);
+			if(filterModel->rowCount(filteredIndex) != sourceModel->rowCount(sourceIndex))
+			{
+				m_treeView->expand(filteredIndex);
+			}
+		}
+	}
 }
 
 void CollectionWidget::acceptSearch()
