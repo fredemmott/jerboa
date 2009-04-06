@@ -67,6 +67,8 @@ namespace Jerboa
 			 */
 			bool operator==(const TrackData& other) const;
 
+			bool operator!=(const TrackData& other) const;
+
 			/// If the TrackData object is valid.
 			bool isValid() const;
 			QUrl url() const;

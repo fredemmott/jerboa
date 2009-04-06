@@ -61,6 +61,22 @@ void PhononPlayer::Implementation::setCurrentTrack(const Jerboa::TrackData& trac
 void PhononPlayer::Implementation::setState(State state)
 {
 	m_state = state;
+	if(state == Playing)
+	{
+		const Jerboa::TrackData& playlistTrack = m_playlist->tracks().at(m_playlist->currentTrack());
+		if(playlistTrack != m_currentTrack)
+		{
+			const int nextTrackId = m_playlist->nextTrack();
+			if(nextTrackId != -1)
+			{
+				const Jerboa::TrackData& nextTrack = m_playlist->tracks().at(nextTrackId);
+				if(m_currentTrack == nextTrack)
+				{
+					m_playlist->setCurrentTrack(nextTrackId);
+				}
+			}
+		}
+	}
 	emit stateChanged(state);
 }
 

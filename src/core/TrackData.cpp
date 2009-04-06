@@ -59,6 +59,11 @@ namespace Jerboa
 		return d->mimeData == other.d->mimeData;
 	}
 
+	bool TrackData::operator!=(const TrackData& other) const
+	{
+		return ! (other == *this);
+	}
+
 	TrackData::TrackData(const TrackData& other)
 		: d(other.d)
 	{
