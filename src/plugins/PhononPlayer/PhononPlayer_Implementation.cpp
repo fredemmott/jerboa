@@ -2,12 +2,22 @@
 
 PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist, QObject* parent)
 	:
-		Jerboa::PlayerInterface(playlist, parent)
+		Jerboa::PlayerInterface(playlist, parent),
+		m_playlist(playlist)
 {
 	m_state = Stopped;
 
 	m_output = new Phonon::AudioOutput(Phonon::MusicCategory, this);
 	m_player = new Phonon::MediaObject(this);
+	m_player->setTransitionTime(0);
+	
+	connect(
+		m_player,
+		SIGNAL(aboutToFinish()),
+		this,
+		SLOT(queueNextTrack())
+	);
+
 	Phonon::createPath(m_player, m_output);
 
 	connect(
@@ -16,6 +26,17 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 		this,
 		SLOT(handlePhononStateChange(Phonon::State, Phonon::State))
 	);
+}
+
+void PhononPlayer::Implementation::queueNextTrack()
+{
+	const int nextTrackIndex = m_playlist->nextTrack();
+	if(nextTrackIndex != -1)
+	{
+		const Jerboa::TrackData& track = m_playlist->tracks().at(nextTrackIndex);
+		m_currentTrack = track;
+		m_player->enqueue(Phonon::MediaSource(track.url()));
+	}
 }
 
 Jerboa::PlayerInterface::State PhononPlayer::Implementation::state() const
@@ -33,7 +54,6 @@ void PhononPlayer::Implementation::setCurrentTrack(const Jerboa::TrackData& trac
 	m_player->stop();
 	m_currentTrack = track;
 	m_player->setCurrentSource(Phonon::MediaSource(track.url()));
-	emit currentTrackChanged(track);
 	setState(Loading);
 	m_player->play();
 }
@@ -66,6 +86,7 @@ void PhononPlayer::Implementation::handlePhononStateChange(Phonon::State newStat
 	{
 		case Phonon::LoadingState:
 		case Phonon::BufferingState:
+			emit currentTrackChanged(m_currentTrack);
 			setState(Loading);
 			return;
 		case Phonon::PlayingState:

@@ -24,6 +24,7 @@ class PhononPlayer::Implementation : public Jerboa::PlayerInterface
 		void setCurrentTrack(const Jerboa::TrackData& track);
 	private slots:
 		void handlePhononStateChange(Phonon::State newState, Phonon::State oldState);
+		void queueNextTrack();
 	private:
 		void setState(State);
 		State m_state;
@@ -31,6 +32,7 @@ class PhononPlayer::Implementation : public Jerboa::PlayerInterface
 
 		Phonon::AudioOutput* m_output;
 		Phonon::MediaObject* m_player;
+		Jerboa::PlaylistInterface* m_playlist;
 };
 
 #endif
