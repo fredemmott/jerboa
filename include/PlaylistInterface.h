@@ -64,6 +64,8 @@ namespace Jerboa
 			void tracksAdded(int index, const QList<Jerboa::TrackData>& data);
 			void tracksRemoved(int index, int count);
 
+			void positionChanged(int index);
+
 			void trackListChanged();
 		protected:
 			PlaylistInterface(QObject* parent);

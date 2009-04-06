@@ -103,6 +103,9 @@ void JerboaPlaylist::Implementation::setCurrentTrack(int index)
 {
 	Q_ASSERT(index < m_tracks.count());
 	m_currentTrack = index;
+
+	emit positionChanged(index);
+
 	adjustNextTrack();
 }
 
