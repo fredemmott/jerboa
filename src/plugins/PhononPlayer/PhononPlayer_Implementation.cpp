@@ -28,6 +28,26 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 	);
 }
 
+qreal PhononPlayer::Implementation::volume() const
+{
+	return m_output->volume();
+}
+
+qreal PhononPlayer::Implementation::volumeDecibel() const
+{
+	return m_output->volumeDecibel();
+}
+
+void PhononPlayer::Implementation::setVolume(qreal value)
+{
+	m_output->setVolume(value);
+}
+
+void PhononPlayer::Implementation::setVolumeDecibel(qreal value)
+{
+	m_output->setVolumeDecibel(value);
+}
+
 void PhononPlayer::Implementation::queueNextTrack()
 {
 	const int nextTrackIndex = m_playlist->nextTrack();

@@ -16,10 +16,16 @@ class PhononPlayer::Implementation : public Jerboa::PlayerInterface
 
 		State state() const;
 		Jerboa::TrackData currentTrack() const;
+
+		qreal volume() const;
+		qreal volumeDecibel() const;
 	public slots:
 		void play();
 		void pause();
 		void stop();
+
+		void setVolume(qreal);
+		void setVolumeDecibel(qreal);
 	protected:
 		void setCurrentTrack(const Jerboa::TrackData& track);
 	private slots:
