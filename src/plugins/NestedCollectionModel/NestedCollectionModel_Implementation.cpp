@@ -1,6 +1,9 @@
 #include "NestedCollectionModel_Implementation.h"
 
+#include <QApplication>
 #include <QDebug>
+#include <QFont>
+#include <QPalette>
 #include <QRegExp>
 
 NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterface* collection, QObject* parent)
@@ -52,42 +55,57 @@ int NestedCollectionModel::Implementation::columnCount(const QModelIndex& parent
 
 QVariant NestedCollectionModel::Implementation::data(const QModelIndex& index, int role) const
 {
-	if((role != Qt::DisplayRole && role != Qt::UserRole) || !index.isValid())
+	if(!index.isValid())
 	{
 		return QVariant();
 	}
 
 	Item* item = reinterpret_cast<Item*>(index.internalPointer());
-	if(role == Qt::DisplayRole)
+	switch(role)
 	{
-		switch(item->type)
-		{
-			case Item::ArtistItem:
-				return m_artists.at(index.row());
-			case Item::AlbumItem:
-				return m_albumsForArtists.at(index.parent().row()).at(index.row());
-			case Item::TrackItem:
-				return item->data.title();
-		}
-	}
-	else if(role == Qt::UserRole)
-	{
-		QList<Jerboa::TrackData> tracks;
-		if(item->type == Item::TrackItem)
-		{
-			tracks.append(item->data);
-		}
-		else
-		{
-			for(int i = 0; i < rowCount(index); ++i)
+		case Qt::BackgroundRole:
+			if(item->type == Item::ArtistItem)
 			{
-				tracks.append(index.child(i, 0).data(Qt::UserRole).value<QList<Jerboa::TrackData> >());
+				return QApplication::palette().dark();
 			}
-		}
-		return QVariant::fromValue(tracks);
+			return QVariant();
+		case Qt::DisplayRole:
+			switch(item->type)
+			{
+				case Item::ArtistItem:
+					return m_artists.at(index.row());
+				case Item::AlbumItem:
+					return m_albumsForArtists.at(index.parent().row()).at(index.row());
+				case Item::TrackItem:
+					return item->data.title();
+			}
+		case Qt::FontRole:
+			if(item->type == Item::ArtistItem)
+			{
+				QFont font;
+				font.setBold(true);
+				return font;
+			}
+			return QVariant();
+		case Qt::UserRole:
+			{
+				QList<Jerboa::TrackData> tracks;
+				if(item->type == Item::TrackItem)
+				{
+					tracks.append(item->data);
+				}
+				else
+				{
+					for(int i = 0; i < rowCount(index); ++i)
+					{
+						tracks.append(index.child(i, 0).data(Qt::UserRole).value<QList<Jerboa::TrackData> >());
+					}
+				}
+				return QVariant::fromValue(tracks);
+			}
+		default:
+			return QVariant();
 	}
-
-	return QVariant();
 }
 
 QModelIndex  NestedCollectionModel::Implementation::parent(const QModelIndex& index) const
