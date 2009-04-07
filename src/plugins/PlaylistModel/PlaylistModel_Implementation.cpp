@@ -1,8 +1,13 @@
 #include "PlaylistModel_Implementation.h"
 
+#include <QApplication>
 #include <QDebug>
+#include <QDir>
 #include <QFont>
+#include <QPalette>
 #include <QRegExp>
+
+#define HTML_ESCAPE(x) QString(x).replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
 
 PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlist, QObject* parent)
 	:
@@ -76,9 +81,9 @@ QVariant PlaylistModel::Implementation::data(const QModelIndex& index, int role)
 	{
 		return QVariant();
 	}
+	const Jerboa::TrackData& track = m_tracks.at(index.row());
 	if(role == Qt::DisplayRole)
 	{
-		Jerboa::TrackData track = m_tracks.at(index.row());
 		switch(index.column())
 		{
 			case 0:
@@ -91,14 +96,38 @@ QVariant PlaylistModel::Implementation::data(const QModelIndex& index, int role)
 				return QVariant();
 		}
 	}
-	if(role == Qt::FontRole)
+	else if(role == Qt::ToolTipRole)
 	{
-		if(index.row() == m_playlist->currentTrack())
+		return QString(
+			"<b>%1</b><br/><i>%2 &mdash; %3</i><br/>"
+			"<font size='90%'>%4</font>"
+		).arg(
+			HTML_ESCAPE(track.title())
+		).arg(
+			HTML_ESCAPE(track.artist())
+		).arg(
+			HTML_ESCAPE(track.album())
+		).arg(
+			HTML_ESCAPE(
+				track.url().scheme() == "file"
+					? QDir::toNativeSeparators(track.url().toLocalFile())
+					: track.url().toString()
+			)
+		);
+	}
+
+	if(index.row() == m_playlist->currentTrack())
+	{
+		if(role == Qt::FontRole)
 		{
 			QFont font;
 			font.setBold(true);
 			font.setItalic(true);
 			return font;
+		}
+		else if(role == Qt::BackgroundRole)
+		{
+			return QApplication::palette().alternateBase();
 		}
 	}
 	return QVariant();
