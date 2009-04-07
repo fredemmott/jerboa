@@ -2,7 +2,6 @@
 
 #include <QApplication>
 #include <QDebug>
-#include <QDir>
 #include <QFont>
 #include <QPalette>
 #include <QRegExp>
@@ -23,8 +22,6 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		artistAlbumTracks[data.albumArtist()][data.album()].append(data);
 		artistOrder[data.albumArtistRomanised().toLower()] = data.albumArtist();
 	}
-	QDir dir(":/");
-	qDebug() << dir.entryList();
 
 	Q_FOREACH(const QString& albumArtist, artistOrder)
 	{
