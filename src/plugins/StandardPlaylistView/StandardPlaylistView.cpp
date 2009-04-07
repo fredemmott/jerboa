@@ -1,6 +1,7 @@
 #include "StandardPlaylistView.h"
 
 #include <QDebug>
+#include <QHeaderView>
 #include <QTreeView>
 #include <QtPlugin>
 
@@ -13,6 +14,7 @@ QObject* StandardPlaylistView::component(Jerboa::Plugin::ComponentType type, QOb
 				Q_ASSERT(m_playlistModel);
 				QTreeView* treeView = new QTreeView(qobject_cast<QWidget*>(parent));
 				treeView->setModel(m_playlistModel);
+				treeView->header()->setResizeMode(0, QHeaderView::Stretch);
 				treeView->setRootIsDecorated(false);
 				connect(
 					treeView,
