@@ -53,6 +53,7 @@ void PhononPlayer::Implementation::setCurrentTrack(const Jerboa::TrackData& trac
 {
 	m_player->stop();
 	m_currentTrack = track;
+	emit currentTrackChanged(m_currentTrack);
 	m_player->setCurrentSource(Phonon::MediaSource(track.url()));
 	setState(Loading);
 	m_player->play();

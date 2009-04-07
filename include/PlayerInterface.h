@@ -50,7 +50,7 @@ namespace Jerboa
 			virtual void setPosition(quint64);
 		signals:
 			void stateChanged(Jerboa::PlayerInterface::State);
-			void currentTrackChanged(const TrackData&);
+			void currentTrackChanged(const Jerboa::TrackData&);
 			void volumeChanged(qreal);
 			void positionChanged(quint64);
 		protected:

@@ -3,6 +3,8 @@
 
 #include "PlaylistInterface.h"
 
+#include <QDebug>
+
 namespace Jerboa
 {
 	PlayerInterface::PlayerInterface(PlaylistInterface* playlist, QObject* parent)
@@ -44,6 +46,7 @@ namespace Jerboa
 
 	void PlayerInterface::setVolumeDecibel(qreal value)
 	{
+		qDebug() << "Asked to set volume decibel to" << value << ", but not implemented.";
 		Q_UNUSED(value);
 	}
 

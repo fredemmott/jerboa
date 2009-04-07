@@ -6,6 +6,7 @@ SET(
 	NestedCollectionModel
 	PhononPlayer
 	PlaylistModel
+	ReplayGain
 	StandardContainer
 	StandardPlaylistView
 )
