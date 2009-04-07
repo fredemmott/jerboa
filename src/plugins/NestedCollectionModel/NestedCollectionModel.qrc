@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/NestedCollectionModel">
+	<file alias="track.png">icons/mimetypes/audio-basic.png</file>
+	<file alias="album.png">icons/devices/media-optical-audio.png</file>
+</qresource>
+</RCC>

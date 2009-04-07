@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QDir>
 #include <QFont>
 #include <QPalette>
 #include <QRegExp>
@@ -10,7 +11,9 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 	:
 		QAbstractItemModel(parent),
 		m_collection(collection),
-		m_tracks(collection->tracks())
+		m_tracks(collection->tracks()),
+		m_albumImage(QImage(":/NestedCollectionModel/album.png")),
+		m_trackImage(QImage(":/NestedCollectionModel/track.png"))
 {
 	QHash<QString, QHash<QString, QList<Jerboa::TrackData> > > artistAlbumTracks;
 	QMap<QString, QString> artistOrder;
@@ -20,6 +23,8 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		artistAlbumTracks[data.albumArtist()][data.album()].append(data);
 		artistOrder[data.albumArtistRomanised().toLower()] = data.albumArtist();
 	}
+	QDir dir(":/");
+	qDebug() << dir.entryList();
 
 	Q_FOREACH(const QString& albumArtist, artistOrder)
 	{
@@ -69,6 +74,16 @@ QVariant NestedCollectionModel::Implementation::data(const QModelIndex& index, i
 				return QApplication::palette().dark();
 			}
 			return QVariant();
+		case Qt::DecorationRole:
+			switch(item->type)
+			{
+				case Item::ArtistItem:
+					return QVariant();
+				case Item::AlbumItem:
+					return m_albumImage;
+				case Item::TrackItem:
+					return m_trackImage;
+			}
 		case Qt::DisplayRole:
 			switch(item->type)
 			{
