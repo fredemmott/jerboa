@@ -1,0 +1,20 @@
+This is still under development, and probably not what you want to use.
+
+Has a much more flexible plugin system, more consistent coding standards,
+and is just generally cleaner.
+
+Working:
+- Collection
+- Playback
+- Non-persistent playlist
+- Reading collection from database
+- Replaygain
+- InfoWidget
+
+Not yet implemented:
+- Last.fm scrobbling
+- Tray icon
+- MPRIS
+- Various UI things (including icons for buttons)
+- Anything which involves tag reading (collection scanning, playing from file)
+- Drag and drop from collection (enter in search box works, as do double clicks)
