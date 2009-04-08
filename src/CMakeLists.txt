@@ -1,6 +1,7 @@
 SET(
 	PLUGINS
 	CollectionTreeView
+	InfoWidget
 	JerboaCollection
 	JerboaPlaylist
 	NestedCollectionModel

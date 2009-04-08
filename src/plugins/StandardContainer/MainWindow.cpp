@@ -71,11 +71,13 @@ void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidg
 	{
 		case Jerboa::Plugin::CollectionView:
 			component->setWindowTitle(tr("Collection"));
-			m_leftWidgets.prepend(component);
+		case Jerboa::Plugin::WidgetUsedWithPlaylist:
+			m_leftWidgets.append(component);
 			break;
 		case Jerboa::Plugin::PlaylistView:
 			component->setWindowTitle(tr("Playlist"));
-			m_rightWidgets.prepend(component);
+		case Jerboa::Plugin::WidgetUsedWithCollection:
+			m_rightWidgets.append(component);
 			break;
 		default:
 			qFatal("MainWindow doesn't handle component type %d", componentType);
@@ -100,6 +102,7 @@ void MainWindow::setupTabs()
 
 		Q_FOREACH(QWidget* widget, m_leftWidgets)
 		{
+			qDebug() << "Adding tab" << widget->windowTitle();
 			leftTabs->addTab(widget, widget->windowTitle());
 		}
 

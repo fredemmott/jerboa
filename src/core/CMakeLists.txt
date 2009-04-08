@@ -7,6 +7,7 @@ SET(
 	Plugin
 	TrackData
 	TrackData_p
+	Utilities
 )
 SET(
 	PRIVATE_CLASSES

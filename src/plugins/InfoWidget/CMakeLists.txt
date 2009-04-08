@@ -1,0 +1,27 @@
+SET(
+    CLASSES
+    InfoWidget
+    InfoWidget_Implementation
+)
+
+SET(
+    UI_SOURCES
+    InfoWidget.ui
+)
+
+SET(SOURCES)
+SET(HEADERS)
+FOREACH(class ${CLASSES})
+	LIST(APPEND SOURCES ${class}.cpp)
+	LIST(APPEND HEADERS ${class}.h)
+ENDFOREACH()
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+QT4_WRAP_CPP(MOC_SOURCES ${HEADERS})
+QT4_WRAP_UI(UI_HEADERS ${UI_SOURCES})
+ADD_LIBRARY(
+    InfoWidget
+    ${SOURCES}
+    ${MOC_SOURCES}
+    ${UI_HEADERS}
+)

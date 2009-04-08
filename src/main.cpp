@@ -72,11 +72,15 @@ int main(int argc, char** argv)
 		<< Jerboa::Plugin::Player
 		<< Jerboa::Plugin::PlaylistView
 		<< Jerboa::Plugin::CollectionView
+		<< Jerboa::Plugin::WidgetUsedWithPlaylist
+		<< Jerboa::Plugin::WidgetUsedWithCollection
 	;
 	QMultiMap<Jerboa::Plugin::ComponentType, Jerboa::Plugin*> componentProviders;
 	const QList<Jerboa::Plugin::ComponentType> widgetComponents = QList<Jerboa::Plugin::ComponentType>()
 		<< Jerboa::Plugin::PlaylistView
 		<< Jerboa::Plugin::CollectionView
+		<< Jerboa::Plugin::WidgetUsedWithPlaylist
+		<< Jerboa::Plugin::WidgetUsedWithCollection
 	;
 	QMap<Jerboa::Plugin::ComponentType, QWidget*> componentWidgets;
 	Q_FOREACH(QObject* plugin, QPluginLoader::staticInstances())
@@ -130,14 +134,13 @@ int main(int argc, char** argv)
 	}
 
 	QWidget* mainWindow = container->widget();
-	
-	for(
-		QMap<Jerboa::Plugin::ComponentType, QWidget*>::ConstIterator it = componentWidgets.constBegin();
-		it != componentWidgets.constEnd();
-		++it
-	)
+
+	Q_FOREACH(Jerboa::Plugin::ComponentType type, widgetComponents)
 	{
-		container->addComponent(it.key(), it.value(), mainWindow);
+		Q_FOREACH(QWidget* widget, componentWidgets.values(type))
+		{
+			container->addComponent(type, widget, mainWindow);
+		}
 	}
 
 	// Show the main window
