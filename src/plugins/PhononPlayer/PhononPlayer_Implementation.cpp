@@ -33,6 +33,18 @@ qreal PhononPlayer::Implementation::volume() const
 	return m_output->volume();
 }
 
+qint64 PhononPlayer::Implementation::trackLength() const
+{
+	if(m_currentTrack.isValid())
+	{
+		return m_player->totalTime();
+	}
+	else
+	{
+		return -1;
+	}
+}
+
 qreal PhononPlayer::Implementation::volumeDecibel() const
 {
 	return m_output->volumeDecibel();

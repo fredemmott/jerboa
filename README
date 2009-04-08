@@ -12,12 +12,13 @@ Working:
 - Reading collection from database
 - Replaygain
 - InfoWidget
+- Last.fm scrobbling
 
 Not yet implemented:
-- Last.fm scrobbling
 - Tray icon
 - MPRIS
 - Various UI things (including icons for buttons)
 - Anything which involves tag reading (collection scanning, playing from file)
 - Drag and drop from collection (enter in search box works, as do double clicks)
 - playlist persistence
+- Inital settings

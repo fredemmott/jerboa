@@ -15,6 +15,11 @@ namespace Jerboa
 		Q_ASSERT(playlist);
 	}
 
+	qint64 PlayerInterface::trackLength() const
+	{
+		return -1;
+	}
+
 	PlayerInterface::~PlayerInterface()
 	{
 	}

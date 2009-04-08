@@ -1,0 +1,16 @@
+SET(
+    SOURCES
+    Scrobbler.cpp
+)
+SET(
+    HEADERS
+    Scrobbler.h
+)
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+QT4_WRAP_CPP(MOC_SOURCES ${HEADERS})
+ADD_LIBRARY(
+    Scrobbler 
+    ${SOURCES}
+    ${MOC_SOURCES}
+)

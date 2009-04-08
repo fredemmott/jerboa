@@ -8,6 +8,7 @@ SET(
 	PhononPlayer
 	PlaylistModel
 	ReplayGain
+	Scrobbler
 	StandardContainer
 	StandardPlaylistView
 )

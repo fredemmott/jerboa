@@ -23,13 +23,16 @@ namespace Jerboa
 			{
 				Volume,
 				VolumeDecibel,
-				Position
+				Position,
+				TrackLength
 			};
 			Q_DECLARE_FLAGS(Features, Feature);
 
 			virtual ~PlayerInterface();
 
 			virtual Features features() const;
+
+			virtual qint64 trackLength() const;
 
 			virtual qreal volume() const;
 			virtual qreal volumeDecibel() const;
