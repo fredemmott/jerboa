@@ -3,6 +3,8 @@ This is still under development, and probably not what you want to use.
 Has a much more flexible plugin system, more consistent coding standards,
 and is just generally cleaner.
 
+Also has many performance issues fixed.
+
 Working:
 - Collection
 - Playback
@@ -18,3 +20,4 @@ Not yet implemented:
 - Various UI things (including icons for buttons)
 - Anything which involves tag reading (collection scanning, playing from file)
 - Drag and drop from collection (enter in search box works, as do double clicks)
+- playlist persistence
