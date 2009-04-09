@@ -20,6 +20,8 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		QModelIndex index(int row, int column, const QModelIndex& parent) const;
 		QModelIndex parent(const QModelIndex& index) const;
 		int rowCount(const QModelIndex& parent) const;
+		QStringList mimeTypes() const;
+		QMimeData* mimeData(const QModelIndexList& indexes) const;
 	private:
 		class Item
 		{

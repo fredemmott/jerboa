@@ -23,6 +23,7 @@
 #include <QString>
 #include <QUrl>
 #include <QVariant> 
+
 namespace Jerboa
 {
 	/// Represents a track and all the information about it.

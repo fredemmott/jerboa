@@ -1,10 +1,13 @@
 #include "NestedCollectionModel_Implementation.h"
 
+#include "MimeData.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QFont>
 #include <QPalette>
 #include <QRegExp>
+#include <QSet>
 
 NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterface* collection, QObject* parent)
 	:
@@ -47,6 +50,42 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 			m_tracksForAlbums[artistIndex].append(trackOrder.values());
 		}
 	}
+}
+
+QMimeData* NestedCollectionModel::Implementation::mimeData(const QModelIndexList& indexes) const
+{
+	QList<Jerboa::TrackData> tracks;
+	Q_FOREACH(const QModelIndex& index, indexes)
+	{
+		QList<Jerboa::TrackData> indexTracks = index.data(Qt::UserRole).value<QList<Jerboa::TrackData> >();
+		Q_FOREACH(const Jerboa::TrackData& track, indexTracks)
+		{
+			if(!tracks.contains(track))
+			{
+				tracks.append(track);
+			}
+		}
+	}
+	QList<QUrl> urls;
+	Q_FOREACH(const Jerboa::TrackData& track, tracks)
+	{
+		urls.append(track.url());
+	}
+
+	Jerboa::MimeData* mimeData = new Jerboa::MimeData();
+	mimeData->setText(tr("%1 Tracks").arg(tracks.count()));
+	mimeData->setUrls(urls);
+	mimeData->setTracks(tracks);
+	return mimeData;
+}
+
+QStringList NestedCollectionModel::Implementation::mimeTypes() const
+{
+	return QStringList()
+		<< "text/plain"
+		<< "text/uri-list"
+		<< "application/x-jerboa-tracks"
+	;
 }
 
 int NestedCollectionModel::Implementation::columnCount(const QModelIndex& parent) const

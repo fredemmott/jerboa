@@ -56,7 +56,7 @@ namespace Jerboa
 
 	bool TrackData::operator==(const TrackData& other) const {
 		if ( ! isValid() ) return ! other.isValid();
-		return d->mimeData == other.d->mimeData;
+		return d->url == other.d->url;
 	}
 
 	bool TrackData::operator!=(const TrackData& other) const
