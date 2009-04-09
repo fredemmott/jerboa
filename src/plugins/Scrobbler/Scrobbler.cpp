@@ -76,8 +76,6 @@ void Scrobbler::login()
 	m_failTime = 0;
 	m_online = false;
 
-	qDebug() << "Starting Login";
-
 	QString timestamp = QString::number(QDateTime::currentDateTime().toTime_t());
 
 	QUrl initURL("http://post.audioscrobbler.com/");
@@ -255,6 +253,10 @@ void Scrobbler::playbackStarted(const Jerboa::TrackData& track, qint64 length)
 		m_pauseTime = 0;
 		return;
 	}
+	else
+	{
+		queueTrack();
+	}
 
 	m_currentTrack.data = track;
 	m_currentTrack.length = length;
@@ -287,6 +289,7 @@ void Scrobbler::queueTrack()
 {
 	if(! m_currentTrack.data.isValid())
 	{
+		qDebug() << "Invalid track";
 		return;
 	}
 	const quint64 total = m_currentTrack.length;
@@ -307,6 +310,7 @@ void Scrobbler::queueTrack()
 		query.exec();
 		qDebug() << "Added to LastFM cache.";
 	}
+	m_currentTrack.data = Jerboa::TrackData();
 }
 
 void Scrobbler::playerStateChanged(Jerboa::PlayerInterface::State state)
