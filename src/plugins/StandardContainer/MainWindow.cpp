@@ -2,6 +2,7 @@
 
 #include <QAction>
 #include <QDebug>
+#include <QIcon>
 #include <QSplitter>
 #include <QTabBar>
 #include <QTabWidget>
@@ -35,9 +36,9 @@ MainWindow::MainWindow(
 
 void MainWindow::setupToolBar()
 {
-	m_playAction = m_toolBar->addAction(tr("Play"), this, SLOT(play()));
-	m_pauseAction = m_toolBar->addAction(tr("Pause"), this, SLOT(pause()));
-	m_stopAction = m_toolBar->addAction(tr("Stop"), this, SLOT(stop()));
+	m_playAction = m_toolBar->addAction(QIcon(":/StandardContainer/play.svgz"), tr("Play"), this, SLOT(play()));
+	m_pauseAction = m_toolBar->addAction(QIcon(":/StandardContainer/pause.svgz"), tr("Pause"), this, SLOT(pause()));
+	m_stopAction = m_toolBar->addAction(QIcon(":/StandardContainer/stop.svgz"), tr("Stop"), this, SLOT(stop()));
 
 	m_pauseAction->setEnabled(false);
 	m_stopAction->setEnabled(false);

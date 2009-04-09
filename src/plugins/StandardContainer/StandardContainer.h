@@ -13,6 +13,7 @@ class StandardContainer : public Jerboa::Container, public Jerboa::Plugin
 	Q_OBJECT;
 	Q_INTERFACES(Jerboa::Plugin);
 	public:
+		StandardContainer();
 		// Container
 		virtual void addComponent(Plugin::ComponentType componentType, QWidget* component, QWidget* widget) const;
 		virtual QWidget* widget() const;

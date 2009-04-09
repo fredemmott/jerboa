@@ -16,6 +16,11 @@ QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObjec
 	}
 }
 
+StandardContainer::StandardContainer()
+{
+	Q_INIT_RESOURCE(StandardContainer);
+}
+
 void StandardContainer::addComponent(Plugin::ComponentType componentType, QWidget* component, QWidget* widget) const
 {
 	MainWindow* mainWindow = qobject_cast<MainWindow*>(widget);
