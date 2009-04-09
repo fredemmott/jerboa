@@ -2,6 +2,7 @@ SET(
 	PUBLIC_CLASSES
 	CollectionInterface
 	Container
+	MimeData
 	PlayerInterface
 	PlaylistInterface
 	Plugin
