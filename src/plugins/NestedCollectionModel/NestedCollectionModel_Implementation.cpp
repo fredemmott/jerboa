@@ -52,6 +52,19 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 	}
 }
 
+Qt::ItemFlags NestedCollectionModel::Implementation::flags(const QModelIndex& index) const
+{
+	const Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+	if(index.isValid())
+	{
+		return defaultFlags | Qt::ItemIsDragEnabled;
+	}
+	else
+	{
+		return defaultFlags;
+	}
+}
+
 QMimeData* NestedCollectionModel::Implementation::mimeData(const QModelIndexList& indexes) const
 {
 	QList<Jerboa::TrackData> tracks;

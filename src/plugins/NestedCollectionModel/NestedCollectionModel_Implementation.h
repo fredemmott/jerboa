@@ -22,6 +22,7 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		int rowCount(const QModelIndex& parent) const;
 		QStringList mimeTypes() const;
 		QMimeData* mimeData(const QModelIndexList& indexes) const;
+		Qt::ItemFlags flags(const QModelIndex& index) const;
 	private:
 		class Item
 		{

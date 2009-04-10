@@ -52,6 +52,7 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 	m_treeView->expandToDepth(0);
 	m_treeView->setRootIsDecorated(false);
 	m_treeView->setExpandsOnDoubleClick(false);
+	m_treeView->setDragEnabled(true);
 	layout()->addWidget(m_treeView);
 
 	connect(
