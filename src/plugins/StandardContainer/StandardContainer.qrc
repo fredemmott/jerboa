@@ -3,5 +3,7 @@
 	<file alias="play.svgz">icons/actions/media-playback-start.svgz</file>
 	<file alias="pause.svgz">icons/actions/media-playback-pause.svgz</file>
 	<file alias="stop.svgz">icons/actions/media-playback-stop.svgz</file>
+	<file alias="previous.svgz">icons/actions/media-skip-backward.svgz</file>
+	<file alias="next.svgz">icons/actions/media-skip-forward.svgz</file>
 </qresource>
 </RCC>

@@ -19,9 +19,6 @@ class MainWindow : public QMainWindow
 		void addComponent(Jerboa::Plugin::ComponentType componentType, QWidget* component);
 	private slots:
 		void handlePlayerState(Jerboa::PlayerInterface::State);
-		void play();
-		void pause();
-		void stop();
 	private:
 		void setupTabs();
 		void setupToolBar();
