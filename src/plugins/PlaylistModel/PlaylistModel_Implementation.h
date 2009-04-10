@@ -26,6 +26,7 @@ class PlaylistModel::Implementation : public QAbstractItemModel
 		bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 	private slots:
 		void addTracks(int index, const QList<Jerboa::TrackData>& data);
+		void removeTracks(int index, int count);
 		void highlightCurrentTrack(int newCurrentTrack);
 	private:
 		int m_currentTrack;

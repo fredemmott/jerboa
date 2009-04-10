@@ -26,6 +26,12 @@ PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlis
 	);
 	connect(
 		playlist,
+		SIGNAL(tracksRemoved(int, int)),
+		this,
+		SLOT(removeTracks(int, int))
+	);
+	connect(
+		playlist,
 		SIGNAL(positionChanged(int)),
 		this,
 		SLOT(highlightCurrentTrack(int))
@@ -215,4 +221,16 @@ void PlaylistModel::Implementation::addTracks(int index, const QList<Jerboa::Tra
 		m_tracks.insert(index + i, track);
 	}
 	endInsertRows();
+}
+
+void PlaylistModel::Implementation::removeTracks(int index, int count)
+{
+	Q_ASSERT(index >= 0);
+	Q_ASSERT(count > 0);
+	beginRemoveRows(QModelIndex(), index, index + count - 1);
+	for(int i = 0; i < count; ++i)
+	{
+		m_tracks.removeAt(index);
+	}
+	endRemoveRows();
 }
