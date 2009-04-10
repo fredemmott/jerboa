@@ -139,6 +139,7 @@ void PhononPlayer::Implementation::handlePhononStateChange(Phonon::State newStat
 			setState(Loading);
 			return;
 		case Phonon::PlayingState:
+			emit currentTrackChanged(m_currentTrack);
 			setState(Playing);
 			return;
 		case Phonon::PausedState:
