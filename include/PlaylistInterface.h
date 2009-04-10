@@ -65,8 +65,8 @@ namespace Jerboa
 			virtual void setShuffleMode(ShuffleMode) = 0;
 			virtual void setCurrentTrack(int index) = 0;
 		signals:
-			void loopModeChanged(LoopMode);
-			void shuffleModeChanged(ShuffleMode);
+			void loopModeChanged(Jerboa::PlaylistInterface::LoopMode);
+			void shuffleModeChanged(Jerboa::PlaylistInterface::ShuffleMode);
 
 			void tracksAdded(int index, const QList<Jerboa::TrackData>& data);
 			void tracksRemoved(int index, int count);

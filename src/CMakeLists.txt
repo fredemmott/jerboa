@@ -12,6 +12,9 @@ SET(
 	StandardContainer
 	StandardPlaylistView
 )
+IF(UNIX AND NOT APPLE)
+	LIST(APPEND PLUGINS Mpris)
+ENDIF()
 
 ##### DON'T EDIT BELOW HERE (probably) #####
 

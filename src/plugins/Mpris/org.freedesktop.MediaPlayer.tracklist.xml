@@ -1,0 +1,33 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.freedesktop.MediaPlayer">
+    <signal name="TrackListChange">
+      <arg name="length" type="i" direction="out"/>
+    </signal>
+    <method name="GetMetadata">
+      <arg type="a{sv}" direction="out"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
+      <arg name="position" type="i" direction="in"/>
+    </method>
+    <method name="GetCurrentTrack">
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="GetLength">
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="AddTrack">
+      <arg type="i" direction="out"/>
+      <arg name="url" type="s" direction="in"/>
+      <arg name="skipTo" type="b" direction="in"/>
+    </method>
+    <method name="DelTrack">
+      <arg name="position" type="i" direction="in"/>
+    </method>
+    <method name="SetLoop">
+      <arg name="looping" type="b" direction="in"/>
+    </method>
+    <method name="SetRandom">
+      <arg name="shuffleTracks" type="b" direction="in"/>
+    </method>
+  </interface>
+</node>
