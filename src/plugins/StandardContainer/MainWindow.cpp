@@ -22,7 +22,13 @@ MainWindow::MainWindow(
 		m_player,
 		SIGNAL(stateChanged(Jerboa::PlayerInterface::State)),
 		this,
-		SLOT(handlePlayerState(Jerboa::PlayerInterface::State))
+		SLOT(updateActionStates())
+	);
+	connect(
+		m_playlist,
+		SIGNAL(dataChanged()),
+		this,
+		SLOT(updateActionStates())
 	);
 
 	m_toolBar = new QToolBar(this);
@@ -38,21 +44,49 @@ void MainWindow::setupToolBar()
 {
 	m_previousAction = m_toolBar->addAction(QIcon(":/StandardContainer/previous.svgz"), tr("Previous"), m_player, SLOT(previous()));
 
-	m_playAction = m_toolBar->addAction(QIcon(":/StandardContainer/play.svgz"), tr("Play"), m_player, SLOT(play()));
+	m_playAction = m_toolBar->addAction(QIcon(":/StandardContainer/play.svgz"), tr("Play"), this, SLOT(play()));
 	m_pauseAction = m_toolBar->addAction(QIcon(":/StandardContainer/pause.svgz"), tr("Pause"), m_player, SLOT(pause()));
 	m_stopAction = m_toolBar->addAction(QIcon(":/StandardContainer/stop.svgz"), tr("Stop"), m_player, SLOT(stop()));
 
 	m_nextAction = m_toolBar->addAction(QIcon(":/StandardContainer/next.svgz"), tr("Next"), m_player, SLOT(next()));
 
-	m_pauseAction->setEnabled(false);
-	m_stopAction->setEnabled(false);
+	updateActionStates();
 }
 
-void MainWindow::handlePlayerState(Jerboa::PlayerInterface::State state)
+void MainWindow::play()
 {
-	m_playAction->setEnabled(state == Jerboa::PlayerInterface::Paused || state == Jerboa::PlayerInterface::Stopped);
+	if(
+		(!m_player->currentTrack().isValid())
+		&&
+		(m_playlist->nextTrack() != -1)
+	)
+	{
+		m_player->skipTo(m_playlist->nextTrack());
+	}
+	m_player->play();
+}
+
+void MainWindow::updateActionStates()
+{
+	const Jerboa::PlayerInterface::State state = m_player->state();
+	const bool havePrevious = m_playlist->currentTrack() > 0;
+	const bool haveCurrent = m_playlist->currentTrack() != -1;
+	const bool haveNext = m_playlist->nextTrack() != -1;
+
+	m_previousAction->setEnabled(havePrevious);
+
+	m_playAction->setEnabled(
+		(state == Jerboa::PlayerInterface::Paused)
+		||
+		(
+			(state == Jerboa::PlayerInterface::Stopped)
+			&&
+			(haveCurrent || haveNext)
+		)
+	);
 	m_pauseAction->setEnabled(state == Jerboa::PlayerInterface::Playing);
 	m_stopAction->setEnabled(state != Jerboa::PlayerInterface::Stopped);
+	m_nextAction->setEnabled(haveNext);
 }
 
 void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidget* component)

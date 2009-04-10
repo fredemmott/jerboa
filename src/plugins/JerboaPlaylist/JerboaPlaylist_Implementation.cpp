@@ -83,8 +83,8 @@ void JerboaPlaylist::Implementation::insertTracks(int index, const QList<Jerboa:
 	{
 		m_currentTrack += data.count();
 	}
-	emit tracksAdded(index, data);
 	adjustNextTrack();
+	emit tracksAdded(index, data);
 }
 
 void JerboaPlaylist::Implementation::removeTracks(int index, int count)
@@ -120,11 +120,13 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 	if(m_tracks.isEmpty())
 	{
 		m_nextTrack = -1;
+		emit dataChanged();
 		return;
 	}
 	if(m_loopMode == LoopTrack && m_currentTrack < m_tracks.count())
 	{
 		m_nextTrack == m_currentTrack;
+		emit dataChanged();
 		return;
 	}
 
@@ -143,10 +145,12 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 			{
 				m_nextTrack = -1;
 			}
+			emit dataChanged();
 			return;
 		case ShuffleTracks:
 			// not perfect, but good enough
 			m_nextTrack = qrand() % m_tracks.count();
+			emit dataChanged();
 			return;
 		case ShuffleAlbums:
 			{
@@ -159,12 +163,14 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 					if(currentTrack == 0 || m_tracks.at(currentTrack).album() != m_tracks.at(currentTrack - 1).album())
 					{
 						m_nextTrack = currentTrack;
+						emit dataChanged();
 						return;
 					}
 					--currentTrack;
 				}
 			}
+			emit dataChanged();
 			return;
 	}
-	emit trackListChanged();
+	emit dataChanged();
 }

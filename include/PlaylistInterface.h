@@ -67,7 +67,7 @@ namespace Jerboa
 
 			void positionChanged(int index);
 
-			void trackListChanged();
+			void dataChanged();
 		protected:
 			PlaylistInterface(QObject* parent);
 	};
