@@ -256,6 +256,7 @@ void Scrobbler::playbackStarted(const Jerboa::TrackData& track, qint64 length)
 	else
 	{
 		queueTrack();
+		submit();
 	}
 
 	m_currentTrack.data = track;
