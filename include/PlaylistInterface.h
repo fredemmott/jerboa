@@ -21,6 +21,8 @@ namespace Jerboa
 				LoopNone,
 				/// Loop the current track.
 				LoopTrack,
+				/// Loop the current album.
+				LoopAlbum,
 				/// Loop the entire playlist.
 				LoopPlaylist
 			};

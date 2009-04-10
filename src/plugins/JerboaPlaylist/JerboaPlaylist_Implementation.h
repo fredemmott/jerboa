@@ -24,6 +24,7 @@ class JerboaPlaylist::Implementation : public Jerboa::PlaylistInterface
 		void setShuffleMode(ShuffleMode);
 		void setCurrentTrack(int index);
 	private:
+		int startOfAlbum(int index) const;
 		void adjustNextTrack();
 
 		LoopMode m_loopMode;

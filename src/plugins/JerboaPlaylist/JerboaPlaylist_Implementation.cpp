@@ -115,6 +115,19 @@ void JerboaPlaylist::Implementation::setCurrentTrack(int index)
 	adjustNextTrack();
 }
 
+int JerboaPlaylist::Implementation::startOfAlbum(int index) const
+{
+	while(index >= 1)
+	{
+		if(m_tracks.at(index - 1).album() != m_tracks.at(index).album())
+		{
+			break;
+		}
+		--index;
+	}
+	return index;
+}
+
 void JerboaPlaylist::Implementation::adjustNextTrack()
 {
 	if(m_tracks.isEmpty())
@@ -135,7 +148,20 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 		case ShuffleNone:
 			if(m_currentTrack + 1 < m_tracks.count())
 			{
-				m_nextTrack = m_currentTrack + 1;
+				if(
+					m_currentTrack >= 0
+					&&
+					m_loopMode == LoopAlbum
+					&&
+					m_tracks.at(m_currentTrack).album() != m_tracks.at(m_currentTrack + 1).album()
+				)
+				{
+					m_nextTrack = startOfAlbum(m_currentTrack);
+				}
+				else
+				{
+					m_nextTrack = m_currentTrack + 1;
+				}
 			}
 			else if(m_loopMode == LoopPlaylist)
 			{
