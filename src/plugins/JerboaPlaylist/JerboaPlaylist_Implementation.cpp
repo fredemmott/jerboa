@@ -27,12 +27,14 @@ Jerboa::PlaylistInterface::ShuffleMode JerboaPlaylist::Implementation::shuffleMo
 void JerboaPlaylist::Implementation::setLoopMode(LoopMode mode)
 {
 	m_loopMode = mode;
+	emit loopModeChanged(mode);
 	adjustNextTrack();
 }
 
 void JerboaPlaylist::Implementation::setShuffleMode(ShuffleMode mode)
 {
 	m_shuffleMode = mode;
+	emit shuffleModeChanged(mode);
 	adjustNextTrack();
 }
 
