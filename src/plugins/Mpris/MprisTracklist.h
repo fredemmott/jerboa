@@ -39,6 +39,8 @@ class MprisTracklist : public QObject
                 void SetRandom(bool shuffleTracks);
         signals:
                 void TrackListChange(int length);
+	private slots:
+		void updateTrackList();
         private:
                 Jerboa::PlayerInterface* m_player;
                 Jerboa::PlaylistInterface* m_playlist;

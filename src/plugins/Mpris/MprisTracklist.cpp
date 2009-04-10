@@ -30,7 +30,14 @@ MprisTracklist::MprisTracklist(Jerboa::PlayerInterface* player, Jerboa::Playlist
                 m_playlist(playlist)
 {
         new MprisTracklistAdaptor(this);
+	connect(m_playlist, SIGNAL(tracksAdded(int, QList<Jerboa::TrackData>)), this, SLOT(updateTrackList()));
+	connect(m_playlist, SIGNAL(tracksRemoved(int, int)), this, SLOT(updateTrackList()));
         QDBusConnection::sessionBus().registerObject("/TrackList", this);
+}
+
+void MprisTracklist::updateTrackList()
+{
+	emit TrackListChange(m_playlist->tracks().count());
 }
 
 QVariantMap MprisTracklist::GetMetadata(int position)
