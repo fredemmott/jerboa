@@ -151,11 +151,11 @@ MprisState MprisPlayer::GetStatus() const
 	}
 	if(m_playlist->loopMode() == Jerboa::PlaylistInterface::LoopNone && m_playlist->shuffleMode() == Jerboa::PlaylistInterface::ShuffleNone)
 	{
-		state.isFinite = 1;
+		state.isInfinite = 0;
 	}
 	else
 	{
-		state.isFinite = 0;
+		state.isInfinite = 1;
 	}
 	return state;
 }
@@ -188,7 +188,7 @@ void MprisPlayer::updateTrack()
 QDBusArgument &operator<<(QDBusArgument& a, const MprisState& s)
 {
 	a.beginStructure();
-	a << s.playState << s.randomState << s.repeatState << s.isFinite;
+	a << s.playState << s.randomState << s.repeatState << s.isInfinite;
 	a.endStructure();
 	return a;
 }
@@ -196,7 +196,7 @@ QDBusArgument &operator<<(QDBusArgument& a, const MprisState& s)
 const QDBusArgument &operator>>(const QDBusArgument& a, MprisState& s)
 {
 	a.beginStructure();
-	a >> s.playState >> s.randomState >> s.repeatState >> s.isFinite;
+	a >> s.playState >> s.randomState >> s.repeatState >> s.isInfinite;
 	a.endStructure();
 	return a;
 }

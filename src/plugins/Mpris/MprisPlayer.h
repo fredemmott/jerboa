@@ -30,7 +30,7 @@ struct MprisState
 	int playState; // 0->playing, 1->paused, 2->stopped
 	int randomState; // 0->linear, 1->shuffle
 	int repeatState; // 0->linear, 1->loop track
-	int isFinite; // 0->end at end of playlist, 1->loop playlist (or some kind of shuffle)
+	int isInfinite; // 0->end at end of playlist, 1->loop playlist (or some kind of shuffle)
 };
 
 QDBusArgument &operator<<(QDBusArgument&, const MprisState&);
