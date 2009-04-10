@@ -289,7 +289,6 @@ void Scrobbler::queueTrack()
 {
 	if(! m_currentTrack.data.isValid())
 	{
-		qDebug() << "Invalid track";
 		return;
 	}
 	const quint64 total = m_currentTrack.length;
