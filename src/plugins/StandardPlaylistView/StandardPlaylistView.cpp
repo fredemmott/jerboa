@@ -16,6 +16,8 @@ QObject* StandardPlaylistView::component(Jerboa::Plugin::ComponentType type, QOb
 				treeView->setModel(m_playlistModel);
 				treeView->header()->setResizeMode(0, QHeaderView::Stretch);
 				treeView->setRootIsDecorated(false);
+				treeView->setDragDropMode(QAbstractItemView::DropOnly);
+				treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
 				connect(
 					treeView,
 					SIGNAL(doubleClicked(QModelIndex)),

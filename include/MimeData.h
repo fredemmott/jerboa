@@ -14,6 +14,7 @@ namespace Jerboa
 		public:
 			void setTracks(const QList<TrackData>& tracks);
 			QList<TrackData> tracks() const;
+			bool hasFormat(const QString& mimeType) const;
 		private:
 			QList<TrackData> m_tracks;
 	};

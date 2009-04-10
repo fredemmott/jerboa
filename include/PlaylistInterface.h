@@ -51,6 +51,7 @@ namespace Jerboa
 			 * @returns the position in the playlist, or -1 on failure.
 			 */
 			virtual int appendTracks(const QList<Jerboa::TrackData>& data) = 0;
+			/// An index of -1 should be taken as "append"
 			virtual void insertTracks(int index, const QList<Jerboa::TrackData>& data) = 0;
 			virtual void removeTracks(int index, int count) = 0;
 

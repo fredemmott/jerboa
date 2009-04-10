@@ -11,4 +11,13 @@ namespace Jerboa
 	{
 		return m_tracks;
 	}
+
+	bool MimeData::hasFormat(const QString& mimeType) const
+	{
+		if(mimeType == "application/x-jerboa-tracks")
+		{
+			return true;
+		}
+		return QMimeData::hasFormat(mimeType);
+	}
 }

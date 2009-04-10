@@ -67,6 +67,12 @@ int JerboaPlaylist::Implementation::appendTracks(const QList<Jerboa::TrackData>&
 
 void JerboaPlaylist::Implementation::insertTracks(int index, const QList<Jerboa::TrackData>& data)
 {
+	if(index == -1)
+	{
+		appendTracks(data);
+		return;
+	}
+
 	for(int i = 0; i < data.count(); ++i)
 	{
 		const Jerboa::TrackData& track = data.at(i);

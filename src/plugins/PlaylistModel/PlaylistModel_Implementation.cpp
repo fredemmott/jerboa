@@ -1,5 +1,7 @@
 #include "PlaylistModel_Implementation.h"
 
+#include "MimeData.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -28,6 +30,49 @@ PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlis
 		this,
 		SLOT(highlightCurrentTrack(int))
 	);
+}
+
+bool PlaylistModel::Implementation::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+{
+	Q_UNUSED(parent);
+	Q_ASSERT(!parent.isValid());
+	Q_UNUSED(column);
+	if(action == Qt::IgnoreAction)
+	{
+		return true;
+	}
+	Q_ASSERT(action == Qt::CopyAction);
+
+	if(action != Qt::CopyAction)
+	{
+		return false;
+	}
+
+	const Jerboa::MimeData* jerboaData = qobject_cast<const Jerboa::MimeData*>(data);
+	Q_ASSERT(jerboaData);
+	if(jerboaData)
+	{
+		m_playlist->insertTracks(row, jerboaData->tracks());
+		return true;
+	}
+	return false;
+}
+
+QStringList PlaylistModel::Implementation::mimeTypes() const
+{
+	return QStringList()
+		<< "application/x-jerboa-tracks"
+	;
+}
+
+Qt::ItemFlags PlaylistModel::Implementation::flags(const QModelIndex& index) const
+{
+	const Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+	if(!index.isValid())
+	{
+		return defaultFlags | Qt::ItemIsDropEnabled;
+	}
+	return defaultFlags;
 }
 
 int PlaylistModel::Implementation::columnCount(const QModelIndex& parent) const

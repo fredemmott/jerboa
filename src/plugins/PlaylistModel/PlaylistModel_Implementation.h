@@ -20,6 +20,10 @@ class PlaylistModel::Implementation : public QAbstractItemModel
 		QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent(const QModelIndex& index) const;
 		int rowCount(const QModelIndex& parent) const;
+
+		Qt::ItemFlags flags(const QModelIndex& index) const;
+		QStringList mimeTypes() const;
+		bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 	private slots:
 		void addTracks(int index, const QList<Jerboa::TrackData>& data);
 		void highlightCurrentTrack(int newCurrentTrack);
