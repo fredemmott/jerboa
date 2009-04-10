@@ -179,6 +179,23 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 			emit dataChanged();
 			return;
 		case ShuffleAlbums:
+			if(
+				m_tracks.count() >= m_currentTrack
+				&&
+				m_tracks.at(m_currentTrack).album() == m_tracks.at(m_currentTrack + 1).album()
+			)
+			{
+				m_nextTrack = m_currentTrack + 1;
+			}
+			else if(
+				m_currentTrack != -1
+				&&
+				m_loopMode == LoopAlbum
+			)
+			{
+				m_nextTrack = startOfAlbum(m_currentTrack);
+			}
+			else
 			{
 				// Pick a random track
 				int currentTrack = qrand() % m_tracks.count();
