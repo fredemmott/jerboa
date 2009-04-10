@@ -1,8 +1,11 @@
 #include "MainWindow.h"
 
 #include <QAction>
+#include <QActionGroup>
 #include <QDebug>
 #include <QIcon>
+#include <QMenu>
+#include <QSignalMapper>
 #include <QSplitter>
 #include <QTabBar>
 #include <QTabWidget>
@@ -40,8 +43,25 @@ MainWindow::MainWindow(
 	setupToolBar();
 }
 
+QIcon MainWindow::amarokIcon(const QString& name)
+{
+	QIcon icon;
+	const QStringList sizes(
+		QStringList()
+			<< "16x16"
+			<< "22x22"
+	);
+
+	Q_FOREACH(const QString& size, sizes)
+	{
+		icon.addFile(QString(":/StandardContainer/%1/%2.png").arg(size).arg(name));
+	}
+	return icon;
+}
+
 void MainWindow::setupToolBar()
 {
+	// Playback controls
 	m_previousAction = m_toolBar->addAction(QIcon(":/StandardContainer/previous.svgz"), tr("Previous"), m_player, SLOT(previous()));
 
 	m_playAction = m_toolBar->addAction(QIcon(":/StandardContainer/play.svgz"), tr("Play"), this, SLOT(play()));
@@ -50,7 +70,77 @@ void MainWindow::setupToolBar()
 
 	m_nextAction = m_toolBar->addAction(QIcon(":/StandardContainer/next.svgz"), tr("Next"), m_player, SLOT(next()));
 
+	// Shuffle controls
+	QSignalMapper* shuffleMapper = new QSignalMapper(this);
+	m_shuffleActions = new QActionGroup(this);
+	QMenu* shuffleMenu = new QMenu(this);
+
+	connect(
+		shuffleMapper,
+		SIGNAL(mapped(int)),
+		this,
+		SLOT(setShuffleMode(int))
+	);
+
+	const QIcon shuffleIcon(amarokIcon("shuffle"));
+
+	m_shuffleNoneAction = m_shuffleActions->addAction(amarokIcon("no-shuffle"), tr("No Shuffle"));
+	m_shuffleTracksAction = m_shuffleActions->addAction(shuffleIcon, tr("Shuffle Tracks"));
+	m_shuffleAlbumsAction = m_shuffleActions->addAction(shuffleIcon, tr("Shuffle Albums"));
+
+	shuffleMapper->setMapping(m_shuffleNoneAction, Jerboa::PlaylistInterface::ShuffleNone);
+	shuffleMapper->setMapping(m_shuffleTracksAction, Jerboa::PlaylistInterface::ShuffleTracks);
+	shuffleMapper->setMapping(m_shuffleAlbumsAction, Jerboa::PlaylistInterface::ShuffleAlbums);
+
+	Q_FOREACH(QAction* action, m_shuffleActions->actions())
+	{
+		action->setCheckable(true);
+		shuffleMenu->addAction(action);
+		connect(
+			action,
+			SIGNAL(triggered()),
+			shuffleMapper,
+			SLOT(map())
+		);
+	}
+
+	m_shuffleNoneAction->setChecked(true);
+
+	m_shuffleMenuAction = m_toolBar->addAction(m_shuffleNoneAction->icon(), m_shuffleTracksAction->text(), this, SLOT(popupSenderMenu()));
+	m_shuffleMenuAction->setMenu(shuffleMenu);
+
+	// Enable/disable controls as appropriate
 	updateActionStates();
+}
+
+void MainWindow::setShuffleMode(int mode)
+{
+	const Jerboa::PlaylistInterface::ShuffleMode shuffleMode(static_cast<Jerboa::PlaylistInterface::ShuffleMode>(mode));
+	m_playlist->setShuffleMode(shuffleMode);
+
+	QAction* action = m_shuffleActions->checkedAction();
+	Q_ASSERT(action);
+	m_shuffleMenuAction->setIcon(action->icon());
+	m_shuffleMenuAction->setText(action->text());
+}
+
+void MainWindow::popupSenderMenu()
+{
+	QAction* action = qobject_cast<QAction*>(sender());
+	if(!action)
+	{
+		qFatal("Asked to popup a menu by an object which isn't a QAction.");
+	}
+	Q_ASSERT(action->menu());
+	if(action->menu())
+	{
+		const QWidget* widget = m_toolBar->widgetForAction(action);
+		Q_ASSERT(widget);
+		if(widget)
+		{
+			action->menu()->popup(m_toolBar->mapToGlobal(widget->geometry().bottomLeft()));
+		}
+	}
 }
 
 void MainWindow::play()

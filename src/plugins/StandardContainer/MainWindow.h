@@ -8,6 +8,7 @@
 #include <QList>
 #include <QMainWindow>
 
+class QActionGroup;
 class QSplitter;
 class QToolBar;
 
@@ -19,8 +20,11 @@ class MainWindow : public QMainWindow
 		void addComponent(Jerboa::Plugin::ComponentType componentType, QWidget* component);
 	private slots:
 		void updateActionStates();
+		void popupSenderMenu();
 		void play();
+		void setShuffleMode(int mode);
 	private:
+		static QIcon amarokIcon(const QString& name);
 		void setupTabs();
 		void setupToolBar();
 
@@ -39,6 +43,12 @@ class MainWindow : public QMainWindow
 		
 		QAction* m_previousAction;
 		QAction* m_nextAction;
+
+		QActionGroup* m_shuffleActions;
+		QAction* m_shuffleMenuAction;
+		QAction* m_shuffleNoneAction;
+		QAction* m_shuffleTracksAction;
+		QAction* m_shuffleAlbumsAction;
 };
 
 #endif

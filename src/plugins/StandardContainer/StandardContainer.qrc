@@ -5,5 +5,17 @@
 	<file alias="stop.svgz">icons/actions/media-playback-stop.svgz</file>
 	<file alias="previous.svgz">icons/actions/media-skip-backward.svgz</file>
 	<file alias="next.svgz">icons/actions/media-skip-forward.svgz</file>
+	<file alias="16x16/shuffle.png">icons/16x16/media-album-shuffle-amarok.png</file>
+	<file alias="16x16/no-shuffle.png">icons/16x16/media-playlist-shuffle-off-amarok.png</file>
+	<file alias="16x16/no-repeat.png">icons/16x16/media-playlist-repeat-off-amarok.png</file>
+	<file alias="16x16/repeat-track.png">icons/16x16/media-track-repeat-amarok.png</file>
+	<file alias="16x16/repeat-album.png">icons/16x16/media-album-repeat-amarok.png</file>
+	<file alias="16x16/repeat-playlist.png">icons/16x16/media-playlist-repeat-amarok.png</file>
+	<file alias="22x22/shuffle.png">icons/22x22/media-album-shuffle-amarok.png</file>
+	<file alias="22x22/no-shuffle.png">icons/22x22/media-playlist-shuffle-off-amarok.png</file>
+	<file alias="22x22/no-repeat.png">icons/22x22/media-playlist-repeat-off-amarok.png</file>
+	<file alias="22x22/repeat-track.png">icons/22x22/media-track-repeat-amarok.png</file>
+	<file alias="22x22/repeat-album.png">icons/22x22/media-album-repeat-amarok.png</file>
+	<file alias="22x22/repeat-playlist.png">icons/22x22/media-playlist-repeat-amarok.png</file>
 </qresource>
 </RCC>
