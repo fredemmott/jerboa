@@ -106,8 +106,47 @@ void MainWindow::setupToolBar()
 
 	m_shuffleNoneAction->setChecked(true);
 
-	m_shuffleMenuAction = m_toolBar->addAction(m_shuffleNoneAction->icon(), m_shuffleTracksAction->text(), this, SLOT(popupSenderMenu()));
+	m_shuffleMenuAction = m_toolBar->addAction(m_shuffleNoneAction->icon(), m_shuffleNoneAction->text(), this, SLOT(popupSenderMenu()));
 	m_shuffleMenuAction->setMenu(shuffleMenu);
+
+	// Loop controls
+	QSignalMapper* loopMapper = new QSignalMapper(this);
+	m_loopActions = new QActionGroup(this);
+	QMenu* loopMenu = new QMenu(this);
+
+	connect(
+		loopMapper,
+		SIGNAL(mapped(int)),
+		this,
+		SLOT(setLoopMode(int))
+	);
+
+	m_loopNoneAction = m_loopActions->addAction(amarokIcon("no-repeat"), tr("No Loop"));
+	m_loopTrackAction = m_loopActions->addAction(amarokIcon("repeat-track"), tr("Loop Track"));
+	m_loopAlbumAction = m_loopActions->addAction(amarokIcon("repeat-album"), tr("Loop Album"));
+	m_loopPlaylistAction = m_loopActions->addAction(amarokIcon("repeat-playlist"), tr("Loop Playlist"));
+	
+	loopMapper->setMapping(m_loopNoneAction, Jerboa::PlaylistInterface::LoopNone);
+	loopMapper->setMapping(m_loopTrackAction, Jerboa::PlaylistInterface::LoopTrack);
+	loopMapper->setMapping(m_loopAlbumAction, Jerboa::PlaylistInterface::LoopAlbum);
+	loopMapper->setMapping(m_loopPlaylistAction, Jerboa::PlaylistInterface::LoopPlaylist);
+
+	Q_FOREACH(QAction* action, m_loopActions->actions())
+	{
+		action->setCheckable(true);
+		loopMenu->addAction(action);
+		connect(
+			action,
+			SIGNAL(triggered()),
+			loopMapper,
+			SLOT(map())
+		);
+	}
+
+	m_loopNoneAction->setChecked(true);
+
+	m_loopMenuAction = m_toolBar->addAction(m_loopNoneAction->icon(), m_loopNoneAction->text(), this, SLOT(popupSenderMenu()));
+	m_loopMenuAction->setMenu(loopMenu);
 
 	// Enable/disable controls as appropriate
 	updateActionStates();
@@ -122,6 +161,17 @@ void MainWindow::setShuffleMode(int mode)
 	Q_ASSERT(action);
 	m_shuffleMenuAction->setIcon(action->icon());
 	m_shuffleMenuAction->setText(action->text());
+}
+
+void MainWindow::setLoopMode(int mode)
+{
+	const Jerboa::PlaylistInterface::LoopMode loopMode(static_cast<Jerboa::PlaylistInterface::LoopMode>(mode));
+	m_playlist->setLoopMode(loopMode);
+
+	QAction* action = m_loopActions->checkedAction();
+	Q_ASSERT(action);
+	m_loopMenuAction->setIcon(action->icon());
+	m_loopMenuAction->setText(action->text());
 }
 
 void MainWindow::popupSenderMenu()

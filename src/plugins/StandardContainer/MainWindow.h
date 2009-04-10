@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
 		void popupSenderMenu();
 		void play();
 		void setShuffleMode(int mode);
+		void setLoopMode(int mode);
 	private:
 		static QIcon amarokIcon(const QString& name);
 		void setupTabs();
@@ -49,6 +50,13 @@ class MainWindow : public QMainWindow
 		QAction* m_shuffleNoneAction;
 		QAction* m_shuffleTracksAction;
 		QAction* m_shuffleAlbumsAction;
+
+		QActionGroup* m_loopActions;
+		QAction* m_loopMenuAction;
+		QAction* m_loopNoneAction;
+		QAction* m_loopTrackAction;
+		QAction* m_loopAlbumAction;
+		QAction* m_loopPlaylistAction;
 };
 
 #endif
