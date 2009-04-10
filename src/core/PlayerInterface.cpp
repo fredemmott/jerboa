@@ -60,6 +60,14 @@ namespace Jerboa
 		Q_UNUSED(position);
 	}
 
+	void PlayerInterface::previous()
+	{
+		if(d->m_playlist->currentTrack() >= 0)
+		{
+			skipTo(d->m_playlist->currentTrack() - 1);
+		}
+	}
+
 	void PlayerInterface::next()
 	{
 		const int nextTrackIndex = d->m_playlist->nextTrack();

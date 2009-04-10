@@ -45,12 +45,14 @@ namespace Jerboa
 			virtual void pause() = 0;
 			virtual void stop() = 0;
 
-			void next();
-			void skipTo(int playlistIndex);
-
 			virtual void setVolume(qreal);
 			virtual void setVolumeDecibel(qreal);
 			virtual void setPosition(quint64);
+
+			// These are really playlist commands
+			void previous();
+			void next();
+			void skipTo(int playlistIndex);
 		signals:
 			void stateChanged(Jerboa::PlayerInterface::State);
 			void currentTrackChanged(const Jerboa::TrackData&);
