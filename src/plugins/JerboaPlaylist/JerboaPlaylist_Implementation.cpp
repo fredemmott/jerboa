@@ -138,7 +138,7 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 	}
 	if(m_loopMode == LoopTrack && m_currentTrack < m_tracks.count())
 	{
-		m_nextTrack == m_currentTrack;
+		m_nextTrack = m_currentTrack;
 		emit dataChanged();
 		return;
 	}
