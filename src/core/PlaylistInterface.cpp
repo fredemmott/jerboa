@@ -11,4 +11,12 @@ namespace Jerboa
 	PlaylistInterface::~PlaylistInterface()
 	{
 	}
+
+	void PlaylistInterface::clear()
+	{
+		if(!tracks().isEmpty())
+		{
+			removeTracks(0, tracks().count());
+		}
+	}
 }

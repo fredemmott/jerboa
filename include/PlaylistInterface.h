@@ -56,6 +56,10 @@ namespace Jerboa
 			/// An index of -1 should be taken as "append"
 			virtual void insertTracks(int index, const QList<Jerboa::TrackData>& data) = 0;
 			virtual void removeTracks(int index, int count) = 0;
+			/** Remove all items from the playlist.
+			 * Default implementation calls removeTracks(0, tracks().count())
+			 */
+			virtual void clear();
 
 			virtual void setLoopMode(LoopMode) = 0;
 			virtual void setShuffleMode(ShuffleMode) = 0;

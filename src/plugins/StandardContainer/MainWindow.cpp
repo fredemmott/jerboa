@@ -148,6 +148,9 @@ void MainWindow::setupToolBar()
 	m_loopMenuAction = m_toolBar->addAction(m_loopNoneAction->icon(), m_loopNoneAction->text(), this, SLOT(popupSenderMenu()));
 	m_loopMenuAction->setMenu(loopMenu);
 
+	// Clear playlist
+	m_clearPlaylistAction = m_toolBar->addAction(QIcon(":/StandardContainer/clear-playlist.svgz"), tr("Clear Playlist"), m_playlist, SLOT(clear()));
+
 	// Enable/disable controls as appropriate
 	updateActionStates();
 }
@@ -227,6 +230,8 @@ void MainWindow::updateActionStates()
 	m_pauseAction->setEnabled(state == Jerboa::PlayerInterface::Playing);
 	m_stopAction->setEnabled(state != Jerboa::PlayerInterface::Stopped);
 	m_nextAction->setEnabled(haveNext);
+
+	m_clearPlaylistAction->setEnabled(!m_playlist->tracks().isEmpty());
 }
 
 void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidget* component)

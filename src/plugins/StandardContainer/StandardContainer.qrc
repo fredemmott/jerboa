@@ -5,6 +5,7 @@
 	<file alias="stop.svgz">icons/actions/media-playback-stop.svgz</file>
 	<file alias="previous.svgz">icons/actions/media-skip-backward.svgz</file>
 	<file alias="next.svgz">icons/actions/media-skip-forward.svgz</file>
+	<file alias="clear-playlist.svgz">icons/actions/edit-clear-list.svgz</file>
 	<file alias="16x16/shuffle.png">icons/16x16/media-album-shuffle-amarok.png</file>
 	<file alias="16x16/no-shuffle.png">icons/16x16/media-playlist-shuffle-off-amarok.png</file>
 	<file alias="16x16/no-repeat.png">icons/16x16/media-playlist-repeat-off-amarok.png</file>

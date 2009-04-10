@@ -57,6 +57,8 @@ class MainWindow : public QMainWindow
 		QAction* m_loopTrackAction;
 		QAction* m_loopAlbumAction;
 		QAction* m_loopPlaylistAction;
+
+		QAction* m_clearPlaylistAction;
 };
 
 #endif

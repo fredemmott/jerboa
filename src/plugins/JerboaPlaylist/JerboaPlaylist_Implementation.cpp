@@ -89,7 +89,7 @@ void JerboaPlaylist::Implementation::insertTracks(int index, const QList<Jerboa:
 
 void JerboaPlaylist::Implementation::removeTracks(int index, int count)
 {
-	for(int i = 0; i < count; ++count)
+	for(int i = 0; i < count; ++i)
 	{
 		if(m_currentTrack == index && m_currentTrack != -1)
 		{
