@@ -11,6 +11,7 @@ SET(
 	Scrobbler
 	StandardContainer
 	StandardPlaylistView
+	TrayIcon
 )
 IF(UNIX AND NOT APPLE)
 	LIST(APPEND PLUGINS Mpris)
