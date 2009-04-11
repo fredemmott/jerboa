@@ -9,6 +9,7 @@
 #include <QMainWindow>
 
 class QActionGroup;
+class QSignalMapper;
 class QSplitter;
 class QToolBar;
 
@@ -24,6 +25,10 @@ class MainWindow : public QMainWindow
 		void play();
 		void setShuffleMode(int mode);
 		void setLoopMode(int mode);
+
+		// update UI if changed by another plugin, eg MPRIS
+		void updateShuffleMode(Jerboa::PlaylistInterface::ShuffleMode mode);
+		void updateLoopMode(Jerboa::PlaylistInterface::LoopMode mode);
 	private:
 		static QIcon amarokIcon(const QString& name);
 		void setupTabs();
@@ -46,12 +51,14 @@ class MainWindow : public QMainWindow
 		QAction* m_nextAction;
 
 		QActionGroup* m_shuffleActions;
+		QSignalMapper* m_shuffleMapper;
 		QAction* m_shuffleMenuAction;
 		QAction* m_shuffleNoneAction;
 		QAction* m_shuffleTracksAction;
 		QAction* m_shuffleAlbumsAction;
 
 		QActionGroup* m_loopActions;
+		QSignalMapper* m_loopMapper;
 		QAction* m_loopMenuAction;
 		QAction* m_loopNoneAction;
 		QAction* m_loopTrackAction;

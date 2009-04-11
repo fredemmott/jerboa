@@ -33,6 +33,18 @@ MainWindow::MainWindow(
 		this,
 		SLOT(updateActionStates())
 	);
+	connect(
+		m_playlist,
+		SIGNAL(loopModeChanged(Jerboa::PlaylistInterface::LoopMode)),
+		this,
+		SLOT(updateLoopMode(Jerboa::PlaylistInterface::LoopMode))
+	);
+	connect(
+		m_playlist,
+		SIGNAL(shuffleModeChanged(Jerboa::PlaylistInterface::ShuffleMode)),
+		this,
+		SLOT(updateShuffleMode(Jerboa::PlaylistInterface::ShuffleMode))
+	);
 
 	m_toolBar = new QToolBar(this);
 	addToolBar(m_toolBar);
@@ -71,12 +83,12 @@ void MainWindow::setupToolBar()
 	m_nextAction = m_toolBar->addAction(QIcon(":/StandardContainer/next.svgz"), tr("Next"), m_player, SLOT(next()));
 
 	// Shuffle controls
-	QSignalMapper* shuffleMapper = new QSignalMapper(this);
+	m_shuffleMapper = new QSignalMapper(this);
 	m_shuffleActions = new QActionGroup(this);
 	QMenu* shuffleMenu = new QMenu(this);
 
 	connect(
-		shuffleMapper,
+		m_shuffleMapper,
 		SIGNAL(mapped(int)),
 		this,
 		SLOT(setShuffleMode(int))
@@ -88,9 +100,9 @@ void MainWindow::setupToolBar()
 	m_shuffleTracksAction = m_shuffleActions->addAction(shuffleIcon, tr("Shuffle Tracks"));
 	m_shuffleAlbumsAction = m_shuffleActions->addAction(shuffleIcon, tr("Shuffle Albums"));
 
-	shuffleMapper->setMapping(m_shuffleNoneAction, Jerboa::PlaylistInterface::ShuffleNone);
-	shuffleMapper->setMapping(m_shuffleTracksAction, Jerboa::PlaylistInterface::ShuffleTracks);
-	shuffleMapper->setMapping(m_shuffleAlbumsAction, Jerboa::PlaylistInterface::ShuffleAlbums);
+	m_shuffleMapper->setMapping(m_shuffleNoneAction, Jerboa::PlaylistInterface::ShuffleNone);
+	m_shuffleMapper->setMapping(m_shuffleTracksAction, Jerboa::PlaylistInterface::ShuffleTracks);
+	m_shuffleMapper->setMapping(m_shuffleAlbumsAction, Jerboa::PlaylistInterface::ShuffleAlbums);
 
 	Q_FOREACH(QAction* action, m_shuffleActions->actions())
 	{
@@ -99,7 +111,7 @@ void MainWindow::setupToolBar()
 		connect(
 			action,
 			SIGNAL(triggered()),
-			shuffleMapper,
+			m_shuffleMapper,
 			SLOT(map())
 		);
 	}
@@ -110,12 +122,12 @@ void MainWindow::setupToolBar()
 	m_shuffleMenuAction->setMenu(shuffleMenu);
 
 	// Loop controls
-	QSignalMapper* loopMapper = new QSignalMapper(this);
+	m_loopMapper = new QSignalMapper(this);
 	m_loopActions = new QActionGroup(this);
 	QMenu* loopMenu = new QMenu(this);
 
 	connect(
-		loopMapper,
+		m_loopMapper,
 		SIGNAL(mapped(int)),
 		this,
 		SLOT(setLoopMode(int))
@@ -126,10 +138,10 @@ void MainWindow::setupToolBar()
 	m_loopAlbumAction = m_loopActions->addAction(amarokIcon("repeat-album"), tr("Loop Album"));
 	m_loopPlaylistAction = m_loopActions->addAction(amarokIcon("repeat-playlist"), tr("Loop Playlist"));
 	
-	loopMapper->setMapping(m_loopNoneAction, Jerboa::PlaylistInterface::LoopNone);
-	loopMapper->setMapping(m_loopTrackAction, Jerboa::PlaylistInterface::LoopTrack);
-	loopMapper->setMapping(m_loopAlbumAction, Jerboa::PlaylistInterface::LoopAlbum);
-	loopMapper->setMapping(m_loopPlaylistAction, Jerboa::PlaylistInterface::LoopPlaylist);
+	m_loopMapper->setMapping(m_loopNoneAction, Jerboa::PlaylistInterface::LoopNone);
+	m_loopMapper->setMapping(m_loopTrackAction, Jerboa::PlaylistInterface::LoopTrack);
+	m_loopMapper->setMapping(m_loopAlbumAction, Jerboa::PlaylistInterface::LoopAlbum);
+	m_loopMapper->setMapping(m_loopPlaylistAction, Jerboa::PlaylistInterface::LoopPlaylist);
 
 	Q_FOREACH(QAction* action, m_loopActions->actions())
 	{
@@ -138,7 +150,7 @@ void MainWindow::setupToolBar()
 		connect(
 			action,
 			SIGNAL(triggered()),
-			loopMapper,
+			m_loopMapper,
 			SLOT(map())
 		);
 	}
@@ -159,9 +171,14 @@ void MainWindow::setShuffleMode(int mode)
 {
 	const Jerboa::PlaylistInterface::ShuffleMode shuffleMode(static_cast<Jerboa::PlaylistInterface::ShuffleMode>(mode));
 	m_playlist->setShuffleMode(shuffleMode);
+	updateShuffleMode(shuffleMode);
+}
 
-	QAction* action = m_shuffleActions->checkedAction();
+void MainWindow::updateShuffleMode(Jerboa::PlaylistInterface::ShuffleMode mode)
+{
+	QAction* action = qobject_cast<QAction*>(m_shuffleMapper->mapping(mode));
 	Q_ASSERT(action);
+	action->setChecked(true);
 	m_shuffleMenuAction->setIcon(action->icon());
 	m_shuffleMenuAction->setText(action->text());
 }
@@ -170,9 +187,14 @@ void MainWindow::setLoopMode(int mode)
 {
 	const Jerboa::PlaylistInterface::LoopMode loopMode(static_cast<Jerboa::PlaylistInterface::LoopMode>(mode));
 	m_playlist->setLoopMode(loopMode);
+	updateLoopMode(loopMode);
+}
 
-	QAction* action = m_loopActions->checkedAction();
+void MainWindow::updateLoopMode(Jerboa::PlaylistInterface::LoopMode mode)
+{
+	QAction* action = qobject_cast<QAction*>(m_loopMapper->mapping(mode));
 	Q_ASSERT(action);
+	action->setChecked(true);
 	m_loopMenuAction->setIcon(action->icon());
 	m_loopMenuAction->setText(action->text());
 }
