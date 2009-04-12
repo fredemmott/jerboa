@@ -12,8 +12,6 @@ namespace Jerboa
 		public:
 			Private(PlaylistInterface* playlist, PlayerInterface* parent);
 			PlaylistInterface* m_playlist;
-		public slots:
-			void hitPlayOnPlaylistChange();
 		private:
 			PlayerInterface* m_player;
 	};

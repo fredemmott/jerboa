@@ -9,8 +9,4 @@ namespace Jerboa
 			m_player(parent)
 	{
 	}
-
-	void PlayerInterface::Private::hitPlayOnPlaylistChange()
-	{
-	}
 }
