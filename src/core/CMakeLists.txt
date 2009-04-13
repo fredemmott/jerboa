@@ -6,6 +6,7 @@ SET(
 	PlayerInterface
 	PlaylistInterface
 	Plugin
+	TagReader
 	TrackData
 	TrackData_p
 	Utilities

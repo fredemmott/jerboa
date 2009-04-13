@@ -41,6 +41,7 @@ namespace Jerboa
 				CollectionSource, // CollectionInterface
 				CollectionModel, // QAbstractItemModel - Qt::UserDataRole is a QList<TrackData>
 				CollectionView, // QWidget
+				TagReader,
 				ToolBar, // QToolBar
 				BackEnd, // TBA
 				FrontEnd // TBA
