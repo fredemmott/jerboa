@@ -1,7 +1,7 @@
 SET(
     CLASSES
-    MainWindow
-    StandardContainer
+    StandardToolBar
+    StandardToolBar_Implementation
 )
 
 SET(SOURCES)
@@ -12,9 +12,11 @@ FOREACH(class ${CLASSES})
 ENDFOREACH()
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+QT4_ADD_RESOURCES(RESOURCE_SOURCES StandardToolBar.qrc)
 QT4_WRAP_CPP(MOC_SOURCES ${HEADERS})
 ADD_LIBRARY(
-	StandardContainer
+	StandardToolBar
 	${SOURCES}
+	${RESOURCE_SOURCES}
 	${MOC_SOURCES}
 )

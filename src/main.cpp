@@ -74,6 +74,7 @@ int main(int argc, char** argv)
 		<< Jerboa::Plugin::CollectionView
 		<< Jerboa::Plugin::WidgetUsedWithPlaylist
 		<< Jerboa::Plugin::WidgetUsedWithCollection
+		<< Jerboa::Plugin::ToolBar
 	;
 	QMultiMap<Jerboa::Plugin::ComponentType, Jerboa::Plugin*> componentProviders;
 	const QList<Jerboa::Plugin::ComponentType> widgetComponents = QList<Jerboa::Plugin::ComponentType>()
@@ -81,6 +82,7 @@ int main(int argc, char** argv)
 		<< Jerboa::Plugin::CollectionView
 		<< Jerboa::Plugin::WidgetUsedWithPlaylist
 		<< Jerboa::Plugin::WidgetUsedWithCollection
+		<< Jerboa::Plugin::ToolBar
 	;
 	QMap<Jerboa::Plugin::ComponentType, QWidget*> componentWidgets;
 	Q_FOREACH(QObject* plugin, QPluginLoader::staticInstances())

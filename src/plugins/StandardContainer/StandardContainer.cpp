@@ -18,7 +18,6 @@ QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObjec
 
 StandardContainer::StandardContainer()
 {
-	Q_INIT_RESOURCE(StandardContainer);
 }
 
 void StandardContainer::addComponent(Plugin::ComponentType componentType, QWidget* component, QWidget* widget) const
@@ -30,7 +29,7 @@ void StandardContainer::addComponent(Plugin::ComponentType componentType, QWidge
 
 QWidget* StandardContainer::widget() const
 {
-	return new MainWindow(m_player, m_playlist, 0);
+	return new MainWindow(0);
 }
 
 QString StandardContainer::pluginName() const
@@ -51,23 +50,6 @@ QString StandardContainer::uniqueId() const
 QSet<Jerboa::Plugin::ComponentType> StandardContainer::components() const
 {
 	return QSet<Jerboa::Plugin::ComponentType>() << Jerboa::Plugin::Container;
-}
-
-void StandardContainer::addComponent(ComponentType type, QObject* component)
-{
-	switch(type)
-	{
-		case Player:
-			m_player = qobject_cast<Jerboa::PlayerInterface*>(component);
-			Q_ASSERT(m_player);
-			break;
-		case PlaylistSource:
-			m_playlist = qobject_cast<Jerboa::PlaylistInterface*>(component);
-			Q_ASSERT(m_playlist);
-			break;
-		default:
-			break;
-	}
 }
 
 Q_EXPORT_PLUGIN2(Jerboa_StandardContainer, StandardContainer);

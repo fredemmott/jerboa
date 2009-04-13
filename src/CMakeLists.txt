@@ -11,6 +11,7 @@ SET(
 	Scrobbler
 	StandardContainer
 	StandardPlaylistView
+	StandardToolBar
 	TrayIcon
 )
 IF(UNIX AND NOT APPLE)

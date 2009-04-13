@@ -1,5 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/StandardContainer">
+<qresource prefix="/StandardToolBar">
 	<file alias="play.svgz">icons/actions/media-playback-start.svgz</file>
 	<file alias="pause.svgz">icons/actions/media-playback-pause.svgz</file>
 	<file alias="stop.svgz">icons/actions/media-playback-stop.svgz</file>
