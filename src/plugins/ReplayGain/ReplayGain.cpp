@@ -19,6 +19,7 @@
 #include "PlayerInterface.h"
 
 #include <QtPlugin>
+#include <QDebug>
 #include <QSettings>
 
 ReplayGain::ReplayGain()
@@ -50,7 +51,7 @@ void ReplayGain::addComponent(ComponentType type, QObject* component)
 	if(type == Player)
 	{
 		QSettings settings;
-		m_gain = settings.value("replaygain/gain", "8").toString().toFloat();
+		m_gain = settings.value("replaygain/gain", "-4").toString().toFloat();
 		m_defaultGain = settings.value("replaygain/defaultReplayGain", "-3").toString().toFloat();
 		m_mode = static_cast<ReplayGainMode>(settings.value("replaygain/mode", AlbumMode).toInt());
 		m_enabled = settings.value("replaygain/enabled", true).toBool();
@@ -77,6 +78,7 @@ void ReplayGain::adjustReplayGain(const Jerboa::TrackData& track)
 	Q_ASSERT(m_player);
 	if(!(track.isValid() && m_enabled))
 	{
+		qDebug() << "SKIPPING REPLAY GAIN" << track.isValid() << m_enabled;
 		return;
 	}
 
@@ -84,11 +86,11 @@ void ReplayGain::adjustReplayGain(const Jerboa::TrackData& track)
 
 	if(m_mode == AlbumMode)
 	{
-		volume = m_gain - track.albumReplayGain();
+		volume = m_gain + track.albumReplayGain();
 	}
 	else
 	{
-		volume = m_gain - track.trackReplayGain();
+		volume = m_gain + track.trackReplayGain();
 	}
 
 	if(volume > 9000)
@@ -99,11 +101,15 @@ void ReplayGain::adjustReplayGain(const Jerboa::TrackData& track)
 		}
 		m_usingReplayGain = false;
 		volume = m_gain - m_defaultGain;
+		qDebug() << "Using default gain";
 		m_player->setVolumeDecibel(volume);
 		return;
 	}
 	m_usingReplayGain = true;
+	qDebug() << m_gain << track.albumReplayGain();
+	qDebug() << "Set volume to" << volume;
 	m_player->setVolumeDecibel(volume);
+	qDebug() << "Volume is" << m_player->volumeDecibel();
 }
 
 Q_EXPORT_PLUGIN2(Jerboa_ReplayGain, ReplayGain);
