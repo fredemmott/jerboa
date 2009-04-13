@@ -96,7 +96,11 @@ void PhononPlayer::Implementation::setState(State state)
 	m_state = state;
 	if(state == Playing)
 	{
-		const Jerboa::TrackData& playlistTrack = m_playlist->tracks().at(m_playlist->currentTrack());
+		const Jerboa::TrackData& playlistTrack(
+			m_playlist->currentTrack() == -1
+			? Jerboa::TrackData()
+			: m_playlist->tracks().at(m_playlist->currentTrack())
+		);
 		if(playlistTrack != m_currentTrack)
 		{
 			const int nextTrackId = m_playlist->nextTrack();
