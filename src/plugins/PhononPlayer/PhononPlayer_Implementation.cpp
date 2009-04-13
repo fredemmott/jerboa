@@ -1,5 +1,7 @@
 #include "PhononPlayer_Implementation.h"
 
+#include <QDebug>
+
 PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist, QObject* parent)
 	:
 		Jerboa::PlayerInterface(playlist, parent),
@@ -86,7 +88,15 @@ void PhononPlayer::Implementation::setCurrentTrack(const Jerboa::TrackData& trac
 	m_player->stop();
 	m_currentTrack = track;
 	emit currentTrackChanged(m_currentTrack);
-	m_player->setCurrentSource(Phonon::MediaSource(track.url()));
+	// Oh, oh, oh, FAIL
+	if(track.url().scheme() == "file")
+	{
+		m_player->setCurrentSource(Phonon::MediaSource(track.url().toLocalFile()));
+	}
+	else
+	{
+		m_player->setCurrentSource(Phonon::MediaSource(track.url()));
+	}
 	setState(Loading);
 	m_player->play();
 }
@@ -149,6 +159,8 @@ void PhononPlayer::Implementation::handlePhononStateChange(Phonon::State newStat
 		case Phonon::PausedState:
 			setState(Paused);
 			return;
+		case Phonon::ErrorState:
+			qDebug() << "Error string:" << m_player->errorString() << m_player->errorType() << m_currentTrack.isValid() << newState << m_output->name() << m_output->isMuted() << m_output->volume() << m_output->volumeDecibel() << m_output->isValid() << m_output->outputDevice().name();
 		default:
 			setState(Stopped);
 	}
