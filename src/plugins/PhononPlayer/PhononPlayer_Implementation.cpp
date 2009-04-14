@@ -69,7 +69,14 @@ void PhononPlayer::Implementation::queueNextTrack()
 	{
 		const Jerboa::TrackData& track = m_playlist->tracks().at(nextTrackIndex);
 		m_currentTrack = track;
-		m_player->enqueue(Phonon::MediaSource(track.url()));
+		if(track.url().scheme() == "file")
+		{
+			m_player->enqueue(Phonon::MediaSource(track.url().toLocalFile()));
+		}
+		else
+		{
+			m_player->enqueue(Phonon::MediaSource(track.url()));
+		}
 	}
 }
 
