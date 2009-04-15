@@ -103,6 +103,7 @@ void JerboaPlaylist::Implementation::removeTracks(int index, int count)
 		}
 		m_tracks.removeAt(index);
 	}
+	setCurrentTrack(m_currentTrack);
 	emit tracksRemoved(index, count);
 	adjustNextTrack();
 }

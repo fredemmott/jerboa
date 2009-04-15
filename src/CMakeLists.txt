@@ -12,6 +12,7 @@ SET(
 	StandardContainer
 	StandardPlaylistView
 	StandardToolBar
+	StartPlaybackOnTrackAppend
 	TrayIcon
 )
 IF(UNIX AND NOT APPLE)
