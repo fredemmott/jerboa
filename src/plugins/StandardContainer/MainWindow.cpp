@@ -58,7 +58,6 @@ void MainWindow::setupTabs()
 
 		Q_FOREACH(QWidget* widget, m_leftWidgets)
 		{
-			qDebug() << "Adding tab" << widget->windowTitle();
 			leftTabs->addTab(widget, widget->windowTitle());
 		}
 
