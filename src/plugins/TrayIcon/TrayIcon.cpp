@@ -39,6 +39,7 @@ TrayIcon::TrayIcon()
 		m_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
 		this, SLOT(activated(QSystemTrayIcon::ActivationReason))
 	);
+	connect(QApplication::instance(), SIGNAL(aboutToQuit()), m_trayIcon, SLOT(deleteLater()));
 	m_trayIcon->installEventFilter(this);
 }
 
