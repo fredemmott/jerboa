@@ -13,21 +13,31 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 	m_player = new Phonon::MediaObject(this);
 	m_player->setTransitionTime(0);
 	
+	Phonon::createPath(m_player, m_output);
+
 	connect(
 		m_player,
 		SIGNAL(aboutToFinish()),
 		this,
 		SLOT(queueNextTrack())
 	);
-
-	Phonon::createPath(m_player, m_output);
-
 	connect(
 		m_player,
 		SIGNAL(stateChanged(Phonon::State, Phonon::State)),
 		this,
 		SLOT(handlePhononStateChange(Phonon::State, Phonon::State))
 	);
+	connect(
+		m_player,
+		SIGNAL(finished()),
+		this,
+		SLOT(stopAndClear())
+	);
+}
+
+void PhononPlayer::Implementation::stopAndClear()
+{
+	setCurrentTrack(Jerboa::TrackData());
 }
 
 qreal PhononPlayer::Implementation::volume() const
@@ -95,17 +105,26 @@ void PhononPlayer::Implementation::setCurrentTrack(const Jerboa::TrackData& trac
 	m_player->stop();
 	m_currentTrack = track;
 	emit currentTrackChanged(m_currentTrack);
-	// Oh, oh, oh, FAIL
-	if(track.url().scheme() == "file")
+	if(track.isValid())
 	{
-		m_player->setCurrentSource(Phonon::MediaSource(track.url().toLocalFile()));
+		// Oh, oh, oh, FAIL
+		if(track.url().scheme() == "file")
+		{
+			m_player->setCurrentSource(Phonon::MediaSource(track.url().toLocalFile()));
+		}
+		else
+		{
+			m_player->setCurrentSource(Phonon::MediaSource(track.url()));
+		}
+		setState(Loading);
+		m_player->play();
 	}
 	else
 	{
-		m_player->setCurrentSource(Phonon::MediaSource(track.url()));
+		m_player->setCurrentSource(Phonon::MediaSource());
+		m_player->stop();
+		setState(Stopped);
 	}
-	setState(Loading);
-	m_player->play();
 }
 
 void PhononPlayer::Implementation::setState(State state)
