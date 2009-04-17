@@ -10,6 +10,7 @@ class CollectionFilter : public QSortFilterProxyModel
 	public:
 		CollectionFilter(QObject* parent);
 		QVariant data(const QModelIndex& index, int role) const;
+		QMimeData* mimeData(const QModelIndexList& indexes) const;
 	public slots:
 		void setFilterString(const QString& filter);
 	protected:

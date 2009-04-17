@@ -10,6 +10,11 @@ CollectionFilter::CollectionFilter(QObject* parent)
 {
 }
 
+QMimeData* CollectionFilter::mimeData(const QModelIndexList& indexes) const
+{
+	return sourceModel()->mimeData(indexes); // note lack of mapToSource
+}
+
 QVariant CollectionFilter::data(const QModelIndex& index, int role) const
 {
 	if(index.isValid() && role == Qt::UserRole && index.column() == 0)
