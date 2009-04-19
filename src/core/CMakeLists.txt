@@ -14,6 +14,7 @@ SET(
 SET(
 	PRIVATE_CLASSES
 	PlayerInterface_p
+	PlaylistInterface_p
 	modeltest
 )
 

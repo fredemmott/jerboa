@@ -8,7 +8,7 @@ class JerboaPlaylist::Implementation : public Jerboa::PlaylistInterface
 {
 	Q_OBJECT;
 	public:
-		Implementation(QObject* parent = 0);
+		Implementation(Jerboa::TagReader* tagReader, QObject* parent);
 
 		LoopMode loopMode() const;
 		ShuffleMode shuffleMode() const;

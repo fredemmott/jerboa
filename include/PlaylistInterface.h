@@ -1,6 +1,7 @@
 #ifndef _PLAYLIST_INTERFACE_H
 #define _PLAYLIST_INTERFACE_H
 
+#include "TagReader.h"
 #include "TrackData.h"
 
 #include <QList>
@@ -53,8 +54,16 @@ namespace Jerboa
 			 * @returns the position in the playlist, or -1 on failure.
 			 */
 			virtual int appendTracks(const QList<Jerboa::TrackData>& data) = 0;
-			/// An index of -1 should be taken as "append"
+			/** Insert tracks into the playlist.
+			 * An index of -1 should be taken as "append".
+			 */
 			virtual void insertTracks(int index, const QList<Jerboa::TrackData>& data) = 0;
+			/** Insert tracks into the playlist.
+			 * The default implementation will recurse directories,
+			 * and use the active TagReader plugin to resolve tags.
+			 */
+			virtual void insertTracks(int index, const QList<QUrl>& urls);
+			/// Remove tracks from the playlist.
 			virtual void removeTracks(int index, int count) = 0;
 			/** Remove all items from the playlist.
 			 * Default implementation calls removeTracks(0, tracks().count())
@@ -75,7 +84,10 @@ namespace Jerboa
 
 			void dataChanged();
 		protected:
-			PlaylistInterface(QObject* parent);
+			PlaylistInterface(Jerboa::TagReader* tagReader, QObject* parent);
+		private:
+			class Private;
+			Private* d;
 	};
 };
 

@@ -7,8 +7,7 @@
 PlaylistModel::PlaylistModel()
 	:
 		QObject(0),
-		m_playlistSource(0),
-		m_tagReader(0)
+		m_playlistSource(0)
 {
 }
 
@@ -18,8 +17,7 @@ QObject* PlaylistModel::component(Jerboa::Plugin::ComponentType type, QObject* p
 	{
 		case Jerboa::Plugin::PlaylistModel:
 			Q_ASSERT(m_playlistSource);
-			Q_ASSERT(m_tagReader);
-			return new Implementation(m_playlistSource, m_tagReader, parent);
+			return new Implementation(m_playlistSource, parent);
 		default:
 			return Jerboa::Plugin::component(type, parent);
 	}
@@ -52,10 +50,6 @@ void PlaylistModel::addComponent(ComponentType type, QObject* component)
 		case Jerboa::Plugin::PlaylistSource:
 			m_playlistSource = qobject_cast<Jerboa::PlaylistInterface*>(component);
 			Q_ASSERT(m_playlistSource);
-			return;
-		case Jerboa::Plugin::TagReader:
-			m_tagReader = qobject_cast<Jerboa::TagReader*>(component);
-			Q_ASSERT(m_tagReader);
 			return;
 		default:
 			Plugin::addComponent(type, component);

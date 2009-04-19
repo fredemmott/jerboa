@@ -3,9 +3,9 @@
 #include <QDateTime>
 #include <QDebug>
 
-JerboaPlaylist::Implementation::Implementation(QObject* parent)
+JerboaPlaylist::Implementation::Implementation(Jerboa::TagReader* tagReader, QObject* parent)
 	:
-		Jerboa::PlaylistInterface(parent),
+		Jerboa::PlaylistInterface(tagReader, parent),
 		m_loopMode(LoopNone),
 		m_shuffleMode(ShuffleNone),
 		m_currentTrack(-1),

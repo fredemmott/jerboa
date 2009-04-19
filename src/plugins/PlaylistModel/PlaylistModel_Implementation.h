@@ -3,18 +3,16 @@
 
 #include "PlaylistInterface.h"
 #include "PlaylistModel.h"
-#include "TagReader.h"
 
 #include <QAbstractItemModel>
 #include <QHash>
-#include <QQueue>
 #include <QStringList>
 
 class PlaylistModel::Implementation : public QAbstractItemModel
 {
 	Q_OBJECT;
 	public:
-		Implementation(Jerboa::PlaylistInterface* playlist, Jerboa::TagReader* tagReader, QObject* parent);
+		Implementation(Jerboa::PlaylistInterface* playlist, QObject* parent);
 
 		int columnCount(const QModelIndex& parent) const;
 		QVariant data(const QModelIndex& index, int role) const;
@@ -31,23 +29,9 @@ class PlaylistModel::Implementation : public QAbstractItemModel
 		void addTracks(int index, const QList<Jerboa::TrackData>& data);
 		void removeTracks(int index, int count);
 		void highlightCurrentTrack(int newCurrentTrack);
-		void addTrackFromUrlDrop(const Jerboa::TrackData& track);
-		void tagReaderError();
 	private:
-		struct UrlDrop
-		{
-			UrlDrop(int position, const QList<QUrl>& urls);
-			int position;
-			QQueue<QUrl> urls;
-		};
-
-		void incrementUrlPositions();
-		void loadNextUrl();
-
-		QQueue<UrlDrop> m_droppedUrls;
 		int m_currentTrack;
 		Jerboa::PlaylistInterface* m_playlist;
-		Jerboa::TagReader* m_tagReader;
 		QList<Jerboa::TrackData> m_tracks;
 };
 

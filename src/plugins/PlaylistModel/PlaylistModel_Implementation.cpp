@@ -13,11 +13,10 @@
 
 #define HTML_ESCAPE(x) QString(x).replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
 
-PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlist, Jerboa::TagReader* tagReader, QObject* parent)
+PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlist, QObject* parent)
 	:
 		QAbstractItemModel(parent),
 		m_playlist(playlist),
-		m_tagReader(tagReader),
 		m_tracks(playlist->tracks()),
 		m_currentTrack(-1)
 {
@@ -39,24 +38,6 @@ PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlis
 		this,
 		SLOT(highlightCurrentTrack(int))
 	);
-	connect(
-		tagReader,
-		SIGNAL(notFound(QUrl)),
-		this,
-		SLOT(tagReaderError())
-	);
-	connect(
-		tagReader,
-		SIGNAL(schemeNotSupported(QUrl)),
-		this,
-		SLOT(tagReaderError())
-	);
-	connect(
-		tagReader,
-		SIGNAL(finished(Jerboa::TrackData)),
-		this,
-		SLOT(addTrackFromUrlDrop(Jerboa::TrackData))
-	);
 }
 
 bool PlaylistModel::Implementation::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
@@ -77,90 +58,10 @@ bool PlaylistModel::Implementation::dropMimeData(const QMimeData* data, Qt::Drop
 	}
 	if(data->hasUrls())
 	{
-		m_droppedUrls.enqueue(UrlDrop(qMax(0, row), data->urls()));
-		if(m_droppedUrls.count() == 1)
-		{
-			loadNextUrl();
-		}
+		m_playlist->insertTracks(qMax(0, row), data->urls());
 		return true;
 	}
 	return false;
-}
-
-void PlaylistModel::Implementation::tagReaderError()
-{
-	incrementUrlPositions();
-	loadNextUrl();
-}
-
-void PlaylistModel::Implementation::addTrackFromUrlDrop(const Jerboa::TrackData& track)
-{
-	UrlDrop* drop = &m_droppedUrls[0];
-	Q_ASSERT(drop->urls.head() == track.url());
-	drop->urls.dequeue();
-	m_playlist->insertTracks(qBound(0, drop->position, m_playlist->tracks().count()), QList<Jerboa::TrackData>() << track);
-	incrementUrlPositions();
-	loadNextUrl();
-}
-
-void PlaylistModel::Implementation::incrementUrlPositions()
-{
-	QMutableListIterator<UrlDrop> iterator(m_droppedUrls);
-	while(iterator.hasNext())
-	{
-		UrlDrop* drop = &iterator.next();
-		if(drop->urls.isEmpty())
-		{
-			iterator.remove();
-		}
-		else
-		{
-			drop->position++;
-		}
-	}
-}
-
-void PlaylistModel::Implementation::loadNextUrl()
-{
-	if(m_droppedUrls.isEmpty())
-	{
-		return;
-	}
-	Q_ASSERT(!m_droppedUrls.first().urls.isEmpty());
-	UrlDrop* drop = &m_droppedUrls.head();
-	const QUrl url(drop->urls.head());
-	if(url.scheme() == "file")
-	{
-		drop->urls.dequeue();
-		QStringList fileNames;
-		fileNames.append(url.toLocalFile());
-		while(!fileNames.isEmpty())
-		{
-			const QString fileName(fileNames.takeFirst());
-			QList<QUrl> urls;
-			if(QFileInfo(fileName).isDir())
-			{
-				Q_FOREACH(const QString& entry, QDir(fileName).entryList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name))
-				{
-					fileNames.append(fileName + '/' + entry);
-				}
-			}
-			else
-			{
-				urls.prepend(QUrl::fromLocalFile(fileName));
-			}
-			Q_FOREACH(const QUrl& url, urls)
-			{
-				drop->urls.prepend(url);
-			}
-			QApplication::processEvents();
-		}
-		m_tagReader->readUrl(drop->urls.head());
-	}
-	else
-	{
-		m_tagReader->readUrl(url);
-	}
 }
 
 QStringList PlaylistModel::Implementation::mimeTypes() const
@@ -315,15 +216,6 @@ QModelIndex PlaylistModel::Implementation::index(int row, int column, const QMod
 		return QModelIndex();
 	}
 	return createIndex(row, column);
-}
-
-PlaylistModel::Implementation::UrlDrop::UrlDrop(int _position, const QList<QUrl>& _urls)
-{
-	position = _position;
-	Q_FOREACH(const QUrl& url, _urls)
-	{
-		urls.enqueue(url);
-	}
 }
 
 void PlaylistModel::Implementation::addTracks(int index, const QList<Jerboa::TrackData>& data)
