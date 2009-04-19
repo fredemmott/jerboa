@@ -13,7 +13,7 @@ StandardToolBar::StandardToolBar()
 	Q_INIT_RESOURCE(StandardToolBar);
 }
 
-QObject* StandardToolBar::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* StandardToolBar::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

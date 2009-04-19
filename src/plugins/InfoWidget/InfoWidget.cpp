@@ -48,7 +48,7 @@ QSet<Jerboa::Plugin::ComponentType> InfoWidget::components() const
 	return QSet<Jerboa::Plugin::ComponentType>() << Jerboa::Plugin::WidgetUsedWithPlaylist;
 }
 
-QObject* InfoWidget::component(ComponentType type, QObject* parent) const
+QObject* InfoWidget::component(ComponentType type, QObject* parent)
 {
 	if(type == Jerboa::Plugin::WidgetUsedWithPlaylist)
 	{

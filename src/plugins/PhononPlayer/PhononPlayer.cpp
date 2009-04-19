@@ -4,7 +4,7 @@
 
 #include <QtPlugin>
 
-QObject* PhononPlayer::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* PhononPlayer::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

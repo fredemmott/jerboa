@@ -5,12 +5,12 @@
 #include <QDebug>
 #include <QtPlugin>
 
-QObject* TagLibTagReader::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* TagLibTagReader::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{
 		case Jerboa::Plugin::TagReader:
-			return const_cast<TagLibTagReader*>(this);
+			return this;
 		default:
 			return Jerboa::Plugin::component(type, parent);
 	}

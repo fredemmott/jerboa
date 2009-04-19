@@ -9,7 +9,7 @@
 #include <QTreeView>
 #include <QtPlugin>
 
-QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{
@@ -63,7 +63,7 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 				view->setDragDropMode(QAbstractItemView::DragOnly);
 				view->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
 
-				QTimer* timer = new QTimer(const_cast<FileSystemTab*>(this));
+				QTimer* timer = new QTimer(this);
 				connect(
 					timer,
 					SIGNAL(timeout()),
@@ -74,7 +74,7 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 				view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 				timer->start(1000);
 
-				const_cast<FileSystemTab*>(this)->m_view = view;
+				m_view = view;
 				return view;
 			}
 		default:

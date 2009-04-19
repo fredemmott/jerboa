@@ -12,7 +12,7 @@ NestedCollectionModel::NestedCollectionModel()
 	Q_INIT_RESOURCE(NestedCollectionModel);
 }
 
-QObject* NestedCollectionModel::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* NestedCollectionModel::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

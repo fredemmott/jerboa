@@ -18,7 +18,7 @@ namespace Jerboa
 		return QSet<ComponentType>();
 	}
 
-	QObject* Plugin::component(ComponentType componentType, QObject*) const
+	QObject* Plugin::component(ComponentType componentType, QObject*)
 	{
 		qFatal("Plugin '%s' was asked to create a component of type %d", qPrintable(uniqueId()), componentType);
 	}

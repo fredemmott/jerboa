@@ -4,7 +4,7 @@
 
 #include <QtPlugin>
 
-QObject* JerboaPlaylist::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* JerboaPlaylist::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

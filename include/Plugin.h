@@ -79,7 +79,7 @@ namespace Jerboa
 			 *
 			 * Default implementation calls qFatal.
 			 */
-			virtual QObject* component(ComponentType, QObject* parent) const;
+			virtual QObject* component(ComponentType, QObject* parent);
 	};
 }
 

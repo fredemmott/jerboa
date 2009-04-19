@@ -5,7 +5,7 @@
 #include <QTreeView>
 #include <QtPlugin>
 
-QObject* StandardPlaylistView::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* StandardPlaylistView::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

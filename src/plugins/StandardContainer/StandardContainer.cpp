@@ -5,12 +5,12 @@
 #include <QDebug>
 #include <QtPlugin>
 
-QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* StandardContainer::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{
 		case Jerboa::Plugin::Container:
-			return const_cast<StandardContainer*>(this);
+			return this;
 		default:
 			return Jerboa::Plugin::component(type, parent);
 	}

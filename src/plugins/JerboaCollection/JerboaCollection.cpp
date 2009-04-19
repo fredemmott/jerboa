@@ -4,7 +4,7 @@
 
 #include <QtPlugin>
 
-QObject* JerboaCollection::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* JerboaCollection::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

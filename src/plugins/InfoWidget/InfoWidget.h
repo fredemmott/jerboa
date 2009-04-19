@@ -34,7 +34,7 @@ class InfoWidget : public QObject, public Jerboa::Plugin
 		QString uniqueId() const;
 
 		QSet<Jerboa::Plugin::ComponentType> components() const;
-		QObject* component(ComponentType, QObject* parent) const;
+		QObject* component(ComponentType, QObject* parent);
 		void addComponent(ComponentType type, QObject* component);
 	private:
 		class Implementation;

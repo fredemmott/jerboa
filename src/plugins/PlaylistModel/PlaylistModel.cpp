@@ -12,7 +12,7 @@ PlaylistModel::PlaylistModel()
 {
 }
 
-QObject* PlaylistModel::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* PlaylistModel::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

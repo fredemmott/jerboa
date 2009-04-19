@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QtPlugin>
 
-QObject* CollectionTreeView::component(Jerboa::Plugin::ComponentType type, QObject* parent) const
+QObject* CollectionTreeView::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{

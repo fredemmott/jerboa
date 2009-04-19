@@ -22,7 +22,7 @@ class TagLibTagReader: public Jerboa::TagReader, public Jerboa::Plugin
 		QString uniqueId() const;
 
 		QSet<Jerboa::Plugin::ComponentType> components() const;
-		QObject* component(ComponentType, QObject* parent) const;
+		QObject* component(ComponentType, QObject* parent);
 	private slots:
 		void metaDataChanged();
 	private:

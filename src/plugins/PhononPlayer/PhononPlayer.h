@@ -15,7 +15,7 @@ class PhononPlayer: public QObject, public Jerboa::Plugin
 		QString pluginAuthor() const;
 		QString uniqueId() const;
 		QSet<Jerboa::Plugin::ComponentType> components() const;
-		QObject* component(ComponentType, QObject* parent) const;
+		QObject* component(ComponentType, QObject* parent);
 		void addComponent(ComponentType, QObject* component);
 	private:
 		class Implementation;
