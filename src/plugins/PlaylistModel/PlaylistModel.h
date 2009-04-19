@@ -3,6 +3,7 @@
 
 #include "PlaylistInterface.h"
 #include "Plugin.h"
+#include "TagReader.h"
 
 #include <QObject>
 
@@ -21,6 +22,7 @@ class PlaylistModel: public QObject, public Jerboa::Plugin
 	private:
 		class Implementation;
 		Jerboa::PlaylistInterface* m_playlistSource;
+		Jerboa::TagReader* m_tagReader;
 };
 
 #endif
