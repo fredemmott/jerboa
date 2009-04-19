@@ -9,6 +9,22 @@
 #include <QTreeView>
 #include <QtPlugin>
 
+FileSystemTab::FileSystemTab(QObject* parent)
+	:
+		QObject(parent),
+		m_playlist(0)
+{
+}
+
+void FileSystemTab::addComponent(ComponentType type, QObject* component)
+{
+	if(type == PlaylistSource)
+	{
+		m_playlist = qobject_cast<Jerboa::PlaylistInterface*>(component);
+		Q_ASSERT(m_playlist);
+	}
+}
+
 QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
@@ -62,6 +78,14 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 
 				view->setDragDropMode(QAbstractItemView::DragOnly);
 				view->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+				view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+				connect(
+					view,
+					SIGNAL(doubleClicked(QModelIndex)),
+					this,
+					SLOT(addPathToPlaylist(QModelIndex))
+				);
 
 				QTimer* timer = new QTimer(this);
 				connect(
@@ -71,7 +95,6 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 					SLOT(scrollToSelection())
 				);
 				timer->setSingleShot(true);
-				view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 				timer->start(1000);
 
 				m_view = view;
@@ -79,6 +102,16 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 			}
 		default:
 			return Jerboa::Plugin::component(type, parent);
+	}
+}
+
+void FileSystemTab::addPathToPlaylist(const QModelIndex& index)
+{
+	Q_ASSERT(m_playlist);
+	const QString path = index.data(QFileSystemModel::FilePathRole).toString();
+	if(!path.isEmpty())
+	{
+		m_playlist->insertTracks(-1, QList<QUrl>() << QUrl::fromLocalFile(path));
 	}
 }
 
@@ -93,7 +126,7 @@ void FileSystemTab::scrollToSelection()
 
 QString FileSystemTab::pluginName() const
 {
-	return tr("Collection Tree");
+	return tr("File-system Tab");
 }
 
 QString FileSystemTab::pluginAuthor() const
