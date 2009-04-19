@@ -58,7 +58,7 @@ bool PlaylistModel::Implementation::dropMimeData(const QMimeData* data, Qt::Drop
 	}
 	if(data->hasUrls())
 	{
-		m_playlist->insertTracks(qMax(0, row), data->urls());
+		m_playlist->insertTracks(row, data->urls());
 		return true;
 	}
 	return false;

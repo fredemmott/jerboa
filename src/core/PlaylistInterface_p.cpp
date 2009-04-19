@@ -51,7 +51,7 @@ namespace Jerboa
 
 	void PlaylistInterface::Private::insertTracks(int position, const QList<QUrl>& urls)
 	{
-		m_droppedUrls.enqueue(UrlDrop(position, urls));
+		m_droppedUrls.enqueue(UrlDrop(position >= 0 ? position : m_playlist->tracks().count(), urls));
 		if(m_droppedUrls.count() == 1)
 		{
 			loadNextUrl();
