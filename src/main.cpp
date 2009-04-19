@@ -65,6 +65,7 @@ int main(int argc, char** argv)
 	// - MainWindow
 	// - CollectionSource
 	const QList<Jerboa::Plugin::ComponentType> wantedComponents = QList<Jerboa::Plugin::ComponentType>()
+		<< Jerboa::Plugin::TagReader
 		<< Jerboa::Plugin::PlaylistSource
 		<< Jerboa::Plugin::PlaylistModel
 		<< Jerboa::Plugin::CollectionSource
@@ -90,6 +91,7 @@ int main(int argc, char** argv)
 		Jerboa::Plugin* p = qobject_cast<Jerboa::Plugin*>(plugin);
 		if(p)
 		{
+			qDebug() << qPrintable(QObject::tr("Found plugin %1 (%2)").arg(p->uniqueId()).arg(p->pluginName()));
 			plugins.append(p);
 			if(p->components().contains(Jerboa::Plugin::Container))
 			{
@@ -100,6 +102,7 @@ int main(int argc, char** argv)
 			{
 				if(p->components().contains(component))
 				{
+					qDebug() << qPrintable(QObject::tr("\t- Provides component %1").arg(component));
 					componentProviders.insert(component, p);
 				}
 			}
