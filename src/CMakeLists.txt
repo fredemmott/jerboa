@@ -1,6 +1,7 @@
 SET(
 	PLUGINS
 	CollectionTreeView
+	FileSystemTab
 	InfoWidget
 	JerboaCollection
 	JerboaPlaylist

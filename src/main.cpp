@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 		<< Jerboa::Plugin::WidgetUsedWithCollection
 		<< Jerboa::Plugin::ToolBar
 	;
-	QMap<Jerboa::Plugin::ComponentType, QWidget*> componentWidgets;
+	QMultiMap<Jerboa::Plugin::ComponentType, QWidget*> componentWidgets;
 	Q_FOREACH(QObject* plugin, QPluginLoader::staticInstances())
 	{
 		Jerboa::Plugin* p = qobject_cast<Jerboa::Plugin*>(plugin);
@@ -134,7 +134,6 @@ int main(int argc, char** argv)
 				Q_ASSERT(widget);
 				componentWidgets.insert(type, widget);
 			}
-			break;
 		}
 	}
 
