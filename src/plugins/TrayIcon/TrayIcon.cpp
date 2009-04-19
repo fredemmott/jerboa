@@ -18,9 +18,11 @@
 
 #include "config.h"
 
+#include <QtDebug>
 #include <QtPlugin>
 #include <QAction>
 #include <QApplication>
+#include <QMainWindow>
 #include <QWheelEvent>
 #include <QIcon>
 #include <QMenu>
@@ -186,17 +188,34 @@ void TrayIcon::activated(QSystemTrayIcon::ActivationReason a)
 		mTrayIcon->contextMenu()->popup(mTrayIcon->geometry().bottomLeft());
 		return;
 #endif
-/*
-		QWidget* w = mPlayer->mainWindow();
-		if ( w->isVisible() )
-			w->hide();
+		QMainWindow* mainWindow = 0;
+		Q_FOREACH(QWidget* widget, QApplication::topLevelWidgets())
+		{
+			mainWindow = qobject_cast<QMainWindow*>(widget);
+			if(mainWindow)
+			{
+				break;
+			}
+		}
+		Q_ASSERT(mainWindow);
+		if(!mainWindow)
+		{
+			return;
+		}
+
+		const QRect geometry(QPoint(0, 0), mainWindow->size());
+		if(
+			mainWindow->isActiveWindow()
+		)
+		{
+			mainWindow->hide();
+		}
 		else
 		{
-			w->show();
-			w->activateWindow();
-			w->raise();
+			mainWindow->show();
+			mainWindow->activateWindow();
+			mainWindow->raise();
 		}
-		*/
 	}
 }
 
