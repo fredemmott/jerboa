@@ -101,15 +101,11 @@ void ReplayGain::adjustReplayGain(const Jerboa::TrackData& track)
 		}
 		m_usingReplayGain = false;
 		volume = m_gain - m_defaultGain;
-		qDebug() << "Using default gain";
 		m_player->setVolumeDecibel(volume);
 		return;
 	}
 	m_usingReplayGain = true;
-	qDebug() << m_gain << track.albumReplayGain();
-	qDebug() << "Set volume to" << volume;
 	m_player->setVolumeDecibel(volume);
-	qDebug() << "Volume is" << m_player->volumeDecibel();
 }
 
 Q_EXPORT_PLUGIN2(Jerboa_ReplayGain, ReplayGain);
