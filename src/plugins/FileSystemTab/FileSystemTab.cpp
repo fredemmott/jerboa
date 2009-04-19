@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QFileSystemModel>
 #include <QSettings>
+#include <QTimer>
 #include <QTreeView>
 #include <QtPlugin>
 
@@ -61,11 +62,31 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 
 				view->setDragDropMode(QAbstractItemView::DragOnly);
 				view->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
-				view->scrollTo(index, QAbstractItemView::PositionAtTop);
+
+				QTimer* timer = new QTimer(const_cast<FileSystemTab*>(this));
+				connect(
+					timer,
+					SIGNAL(timeout()),
+					this,
+					SLOT(scrollToSelection())
+				);
+				timer->setSingleShot(true);
+				timer->start(100);
+
+				const_cast<FileSystemTab*>(this)->m_view = view;
 				return view;
 			}
 		default:
 			return Jerboa::Plugin::component(type, parent);
+	}
+}
+
+void FileSystemTab::scrollToSelection()
+{
+	const QModelIndexList selectedIndexes(m_view->selectionModel()->selectedIndexes());
+	if(!selectedIndexes.isEmpty())
+	{
+		m_view->scrollTo(selectedIndexes.first(), QAbstractItemView::PositionAtTop);
 	}
 }
 

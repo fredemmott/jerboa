@@ -3,8 +3,9 @@
 
 #include "Plugin.h"
 
-#include <QAbstractItemModel>
 #include <QObject>
+
+class QTreeView;
 
 class FileSystemTab: public QObject, public Jerboa::Plugin
 {
@@ -16,6 +17,10 @@ class FileSystemTab: public QObject, public Jerboa::Plugin
 		QString uniqueId() const;
 		QSet<Jerboa::Plugin::ComponentType> components() const;
 		QObject* component(ComponentType, QObject* parent) const;
+	private slots:
+		void scrollToSelection();
+	private:
+		QTreeView* m_view;
 };
 
 #endif
