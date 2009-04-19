@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
+#include <QFileInfo>
 #include <QFont>
 #include <QMutableListIterator>
 #include <QPalette>
@@ -126,7 +127,40 @@ void PlaylistModel::Implementation::loadNextUrl()
 		return;
 	}
 	Q_ASSERT(!m_droppedUrls.first().urls.isEmpty());
-	m_tagReader->readUrl(m_droppedUrls.head().urls.head());
+	UrlDrop* drop = &m_droppedUrls.head();
+	const QUrl url(drop->urls.head());
+	if(url.scheme() == "file")
+	{
+		drop->urls.dequeue();
+		QStringList fileNames;
+		fileNames.append(url.toLocalFile());
+		while(!fileNames.isEmpty())
+		{
+			const QString fileName(fileNames.takeFirst());
+			QList<QUrl> urls;
+			if(QFileInfo(fileName).isDir())
+			{
+				Q_FOREACH(const QString& entry, QDir(fileName).entryList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name))
+				{
+					fileNames.append(fileName + '/' + entry);
+				}
+			}
+			else
+			{
+				urls.prepend(QUrl::fromLocalFile(fileName));
+			}
+			Q_FOREACH(const QUrl& url, urls)
+			{
+				drop->urls.prepend(url);
+			}
+			QApplication::processEvents();
+		}
+		m_tagReader->readUrl(drop->urls.head());
+	}
+	else
+	{
+		m_tagReader->readUrl(url);
+	}
 }
 
 QStringList PlaylistModel::Implementation::mimeTypes() const
