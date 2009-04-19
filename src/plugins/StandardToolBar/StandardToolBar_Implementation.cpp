@@ -49,6 +49,8 @@ StandardToolBar::Implementation::Implementation(
 
 	m_nextAction = addAction(QIcon(":/StandardToolBar/next.svgz"), tr("Next"), m_player, SLOT(next()));
 
+	addSeparator();
+
 	// Shuffle controls
 	m_shuffleMapper = new QSignalMapper(this);
 	m_shuffleActions = new QActionGroup(this);
