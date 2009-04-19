@@ -59,10 +59,10 @@ class TagLibTagReader::Implementation: public QObject
 		TagLib::File* m_file;
 
 		TagLib::String getTag(const QString& tagName, const TagLib::String& defaultValue, bool* success) const;
-		TagLib::String tryApeTag(const QString tagName&, const TagLib::String& defaultValue, bool* success) const;
-		TagLib::String tryASFTag(const QString tagName&, const TagLib::String& defaultValue, bool* success) const;
-		TagLib::String tryID3v2Tag(const QString tagName&, const TagLib::String& defaultValue, bool* success) const;
-		TagLib::String tryXiphTag(const QString tagName&, const TagLib::String& defaultValue, bool* success) const;
+		TagLib::String tryApeTag(const QString& tagName, const TagLib::String& defaultValue, bool* success) const;
+		TagLib::String tryASFTag(const QString& tagName, const TagLib::String& defaultValue, bool* success) const;
+		TagLib::String tryID3v2Tag(const QString& tagName, const TagLib::String& defaultValue, bool* success) const;
+		TagLib::String tryXiphTag(const QString& tagName, const TagLib::String& defaultValue, bool* success) const;
 };
 
 #endif

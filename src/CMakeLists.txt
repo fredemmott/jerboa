@@ -13,10 +13,11 @@ SET(
 	StandardPlaylistView
 	StandardToolBar
 	StartPlaybackOnTrackAppend
+	TagLibTagReader
 	TrayIcon
 )
 IF(UNIX AND NOT APPLE)
-	LIST(APPEND PLUGINS Mpris)
+	LIST(APPEND PLUGINS Mpris) # D-Bus requirement
 ENDIF()
 
 ##### DON'T EDIT BELOW HERE (probably) #####

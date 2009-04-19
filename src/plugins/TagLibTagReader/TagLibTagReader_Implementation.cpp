@@ -68,13 +68,13 @@ QStringList TagLibTagReader::Implementation::metaData(const QString& key) const
 	return m_metaData.values(key);
 }
 
-TagLib::String TagLibTagReader::Implementation::tryXiphTag(const QString& _tagName, cosnt TagLib::String& defaultValue, bool* success) const
+TagLib::String TagLibTagReader::Implementation::tryXiphTag(const QString& _tagName, const TagLib::String& defaultValue, bool* success) const
 {
 	if(success)
 	{
 		*success = false;
 	}
-	const QString tagName9QString(_tagName.)replace("-", "_").toLower());
+	const QString tagName(QString(_tagName).replace("-", "_").toLower());
 
 	TagLib::Ogg::XiphComment* tag = dynamic_cast<TagLib::Ogg::XiphComment*>(m_file->tag());
 	if(!tag)
@@ -276,7 +276,6 @@ void TagLibTagReader::Implementation::resolveMetaData()
 {
 	m_metaData.clear();
 	const QString fileName(m_url.toLocalFile());
-	QString fileName = QDir::toNativeSeparators(mMediaSource.fileName());
 #ifdef _WIN32
 	TagLib::FileRef fileRef(reinterpret_cast<const wchar_t*>(fileName.utf16()));
 #else
@@ -315,7 +314,7 @@ void TagLibTagReader::Implementation::resolveMetaData()
 	}
 
 	// Track Number
-	temporaryUInt = f.tag()->track();
+	temporaryUInt = fileRef.tag()->track();
 	if(temporaryUInt)
 	{
 		m_metaData.insert("TRACK-NUMBER", QString::number(temporaryUInt));
@@ -354,5 +353,6 @@ void TagLibTagReader::Implementation::resolveMetaData()
 	if(success)
 	{
 		m_metaData.insert("MUSICBRAINZ-TRACK-ID", TStringToQString(temporaryString));
+	}
 	emit(metaDataChanged());
 }
