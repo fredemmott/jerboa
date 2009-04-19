@@ -71,7 +71,8 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 					SLOT(scrollToSelection())
 				);
 				timer->setSingleShot(true);
-				timer->start(100);
+				view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+				timer->start(1000);
 
 				const_cast<FileSystemTab*>(this)->m_view = view;
 				return view;
