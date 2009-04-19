@@ -151,6 +151,43 @@ QVariant NestedCollectionModel::Implementation::data(const QModelIndex& index, i
 				return font;
 			}
 			return QVariant();
+		case Qt::ToolTipRole:
+			{
+				const int trackCount = index.data(Qt::UserRole).value<QList<Jerboa::TrackData> >().count();
+				switch(item->type)
+				{
+					case Item::ArtistItem:
+						return tr(
+							"<b>%1</b><br />%2 albums<br />%3 tracks"
+						).arg(
+							index.data(Qt::DisplayRole).toString()
+						).arg(
+							index.model()->rowCount(index)
+						).arg(
+							trackCount
+						);
+					case Item::AlbumItem:
+						return tr(
+							"<b>%1</b><br />(%2)<br />%3 tracks"
+						).arg(
+							index.data(Qt::DisplayRole).toString()
+						).arg(
+							index.parent().data(Qt::DisplayRole).toString()
+						).arg(
+							trackCount
+						);
+					case Item::TrackItem:
+						return tr(
+							"<b>%1</b><br />(%2 - %3)"
+						).arg(
+							index.data(Qt::DisplayRole).toString()
+						).arg(
+							index.parent().data(Qt::DisplayRole).toString()
+						).arg(
+							index.parent().parent().data(Qt::DisplayRole).toString()
+						);
+				}
+			}
 		case Qt::UserRole:
 			{
 				QList<Jerboa::TrackData> tracks;
