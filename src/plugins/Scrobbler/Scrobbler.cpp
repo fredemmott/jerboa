@@ -235,7 +235,7 @@ void Scrobbler::playbackStarted(const Jerboa::TrackData& track, qint64 length)
 		submitURL.addQueryItem("b", Jerboa::Utilities::simpleAlbum(track.album()));
 		submitURL.addQueryItem("n", track.trackNumber() != 0 ? QString::number(track.trackNumber()) : "");
 		submitURL.addQueryItem("m", track.musicBrainzId() != "NONE" ? track.musicBrainzId() : "");
-		submitURL.addQueryItem("l", QString::number(length));
+		submitURL.addQueryItem("l", QString::number(length / 1000)); // msec -> sec
 		QByteArray data = QString(submitURL.encodedQuery()).toUtf8();
 
 		QNetworkRequest request(m_nowPlayingUrl);
@@ -260,7 +260,7 @@ void Scrobbler::playbackStarted(const Jerboa::TrackData& track, qint64 length)
 	}
 
 	m_currentTrack.data = track;
-	m_currentTrack.length = length;
+	m_currentTrack.length = length / 1000;  // msec -> sec
 
 	m_startTime = QDateTime::currentDateTime().toTime_t();
 	m_pauseTime = 0;
@@ -293,7 +293,7 @@ void Scrobbler::queueTrack()
 		return;
 	}
 	const quint64 total = m_currentTrack.length;
-	if(m_startTime != 0 && total > 30 && QDateTime::currentDateTime().toTime_t() - m_startTime > qMin<time_t>(240, total / 2000) )
+	if(m_startTime != 0 && total > 30 && QDateTime::currentDateTime().toTime_t() - m_startTime > qMin<time_t>(240, total / 2) )
 	{
 		QSqlQuery query;	
 		query.prepare("INSERT INTO `LastFMCache` (`TimeStamp`, `Length`, `Artist`, `Album`, `Name`, `TrackNumber`, `MBID`) \
