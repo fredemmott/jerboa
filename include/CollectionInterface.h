@@ -17,8 +17,8 @@ namespace Jerboa
 		protected:
 			CollectionInterface(QObject* parent);
 		signals:
-			void tracksRemoved(const QVector<TrackData>& tracks);
-			void tracksAdded(const QVector<TrackData>& tracks);
+			void tracksRemoved(int first, int count);
+			void tracksAdded(int first, const QVector<TrackData>& tracks);
 	};
 }
 
