@@ -35,7 +35,11 @@ namespace Jerboa
 
 	void PlaylistInterface::Private::tagReaderError()
 	{
-		incrementUrlPositions();
+		m_droppedUrls.head().urls.dequeue();
+		if(m_droppedUrls.head().urls.isEmpty())
+		{
+			m_droppedUrls.dequeue();
+		}
 		loadNextUrl();
 	}
 	
