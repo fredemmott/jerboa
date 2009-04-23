@@ -170,6 +170,10 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 			{
 				m_nextTrack = 0;
 			}
+			else if(m_loopMode == LoopAlbum)
+			{
+				m_nextTrack = startOfAlbum(m_currentTrack);
+			}
 			else
 			{
 				m_nextTrack = -1;
