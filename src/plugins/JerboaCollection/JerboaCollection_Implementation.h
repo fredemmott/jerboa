@@ -13,6 +13,8 @@ class JerboaCollection::Implementation : public Jerboa::CollectionInterface
 	public:
 		Implementation(Jerboa::TagReader* tagReader, QObject* parent);
 		QVector<Jerboa::TrackData> tracks() const;
+	private slots:
+		void applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed);
 	private:
 		QVector<Jerboa::TrackData> m_tracks;
 

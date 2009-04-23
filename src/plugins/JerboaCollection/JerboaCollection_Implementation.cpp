@@ -1,5 +1,6 @@
 #include "JerboaCollection_Implementation.h"
 
+#include "CollectionScanner.h"
 #include "TrackData.h"
 
 #include <QDebug>
@@ -10,7 +11,7 @@
 JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, QObject* parent)
 	:
 		CollectionInterface(parent),
-		m_collectionScanner(0)
+		m_collectionScanner(new CollectionScanner(tagReader, this))
 {
 	QSqlQuery query;
 	query.setForwardOnly(true);
@@ -43,6 +44,13 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 			)
 		);
 	}
+}
+
+void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed)
+{
+	Q_UNUSED(added);
+	Q_UNUSED(modified);
+	Q_UNUSED(removed);
 }
 
 QVector<Jerboa::TrackData> JerboaCollection::Implementation::tracks() const
