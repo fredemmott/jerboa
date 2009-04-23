@@ -58,6 +58,10 @@ CollectionScanner::CollectionScanner(Jerboa::TagReader* tagReader, QObject* pare
 	);
 }
 
+void CollectionScanner::skipToNextFile()
+{
+}
+
 void CollectionScanner::run()
 {
 	QSqlDatabase::database().transaction();
