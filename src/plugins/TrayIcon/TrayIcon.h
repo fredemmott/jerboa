@@ -50,6 +50,8 @@ class TrayIcon : public QObject, public Jerboa::Plugin
 		void playbackPaused();
 		void playbackStopped();
 
+		QWidget* mainWindow();
+
 		QMenu* m_menu;
 		QAction* m_playAction;
 		QAction* m_pauseAction;
@@ -61,6 +63,8 @@ class TrayIcon : public QObject, public Jerboa::Plugin
 		Jerboa::PlayerInterface* m_player;
 		Jerboa::PlaylistInterface* m_playlist;
 		QSystemTrayIcon* m_trayIcon;
+
+		QWidget* m_mainWindow;
 };
 
 #endif

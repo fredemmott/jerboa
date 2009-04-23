@@ -34,7 +34,8 @@ TrayIcon::TrayIcon()
 		m_menu(0),
 		m_player(0),
 		m_playlist(0),
-		m_trayIcon(new QSystemTrayIcon(this))
+		m_trayIcon(new QSystemTrayIcon(this)),
+		m_mainWindow(0)
 {
 	Q_INIT_RESOURCE(TrayIcon);
 	connect(
@@ -78,6 +79,26 @@ QString TrayIcon::pluginAuthor() const
 QString TrayIcon::uniqueId() const
 {
 	return "org.jerboaplayer.TrayIcon";
+}
+
+QWidget* TrayIcon::mainWindow()
+{
+	if(m_mainWindow)
+	{
+		return m_mainWindow;
+	}
+	else
+	{
+		Q_FOREACH(QWidget* widget, QApplication::topLevelWidgets())
+		{
+			m_mainWindow = qobject_cast<QMainWindow*>(widget);
+			if(m_mainWindow)
+			{
+				break;
+			}
+		}
+		Q_ASSERT(m_mainWindow);
+	}
 }
 
 void TrayIcon::load()
@@ -188,16 +209,7 @@ void TrayIcon::activated(QSystemTrayIcon::ActivationReason a)
 		mTrayIcon->contextMenu()->popup(mTrayIcon->geometry().bottomLeft());
 		return;
 #endif
-		QMainWindow* mainWindow = 0;
-		Q_FOREACH(QWidget* widget, QApplication::topLevelWidgets())
-		{
-			mainWindow = qobject_cast<QMainWindow*>(widget);
-			if(mainWindow)
-			{
-				break;
-			}
-		}
-		Q_ASSERT(mainWindow);
+		QWidget* mainWindow = this->mainWindow();
 		if(!mainWindow)
 		{
 			return;
