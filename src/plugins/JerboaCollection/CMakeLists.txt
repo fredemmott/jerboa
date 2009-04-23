@@ -1,5 +1,6 @@
 SET(
     CLASSES
+    CollectionScanner
     FileLister
     JerboaCollection
     JerboaCollection_Implementation

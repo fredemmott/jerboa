@@ -50,6 +50,7 @@ class CollectionScanner : public QObject
 		/// Called on error
 		void skipToNextFile();
 	private:
+		unsigned int artistId(const QString& artist, const QString& artistSort) const;
 		Jerboa::TagReader* m_tagReader;
 		FileLister* m_fileLister;
 

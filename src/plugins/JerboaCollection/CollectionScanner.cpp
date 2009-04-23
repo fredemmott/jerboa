@@ -129,9 +129,9 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 {
 	Q_ASSERT(m_progress + m_filesToRead.count() + 1 == m_total);
 
-	SqlQuery query;
+	QSqlQuery query;
 	QSqlField field("filename", QVariant::String);
-	field.setValue(url.toLocalFile());
+	field.setValue(track.url().toLocalFile());
 	QString safeFileName(QSqlDatabase::database().driver()->formatValue(field));
 	query.exec(
 		QString(
@@ -148,10 +148,10 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		QString albumName = track.album();
 
 		// Get an artist ID
-		unsigned int artistID = Util::getArtistID(artist, artistSort);
+		unsigned int artistId(this->artistId(artist, artistSort));
 
 		// Get an album ID
-		unsigned int albumID;
+		unsigned int albumId;
 
 		query.prepare("SELECT `ID`, `Artist` FROM `Albums` WHERE `Name` = :album");
 		query.bindValue(":album", albumName);
@@ -160,16 +160,16 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		if(query.isValid())
 		{
 			// Already have the album
-			albumID = query.record().value(0).toUInt();
+			albumId = query.record().value(0).toUInt();
 
 			// See if this artist needs to be changed to various artists
 			unsigned int albumArtist = query.record().value(1).toUInt();
-			if(albumArtist != artistID)
+			if(albumArtist != artistId)
 			{
-				unsigned int VA = Util::getArtistID(tr("Various Artists"), tr("Various Artists"));
+				unsigned int variousArtists(this->artistId(tr("Various Artists"), tr("Various Artists")));
 				query.prepare("UPDATE `Albums` SET `Artist`=? WHERE `ID`=?");
-				query.addBindValue(VA);
-				query.addBindValue(albumID);
+				query.addBindValue(variousArtists);
+				query.addBindValue(albumId);
 				query.exec();
 			}
 		}
@@ -186,27 +186,25 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 
 			// Create the record
 			query.prepare("INSERT INTO `Albums` (`Artist`, `Name`, `SortKey`) VALUES (:artist, :name, :sortKey)");
-			query.bindValue(":artist", artistID);
+			query.bindValue(":artist", artistId);
 			query.bindValue(":name", albumName);
 			query.bindValue(":sortKey", albumSort);
 			query.exec();
-			albumID = query.lastInsertId().toUInt();
+			albumId = query.lastInsertId().toUInt();
 		}
 
 		query.prepare("INSERT INTO `Tracks` (FileName, Album, Artist, Name, TrackNumber, AlbumRG, TrackRG, SearchKey, MusicBrainzTrackID) VALUES (:fileName, :album, :artist, :title, :trackNumber, :albumRG, :trackRG, :searchKey, :mbTrackID)");
-		query.bindValue(":fileName", url.toLocalFile());
+		query.bindValue(":fileName", track.url().toLocalFile());
 		query.bindValue(":title", track.title());
 		query.bindValue(":trackNumber", track.trackNumber());
 
-		float trackRG = track.trackRG();
-		float albumRG = track.albumRG();
-		query.bindValue(":albumRG", albumRG);
-		query.bindValue(":trackRG", trackRG);
+		query.bindValue(":albumRG", track.albumReplayGain());
+		query.bindValue(":trackRG", track.trackReplayGain());
 		query.bindValue(":searchKey",  QString("%1 %2 %3 %4").arg(track.title(), albumName, artist, artistSort));
-		query.bindValue(":mbTrackID", track.musicBrainzID().isNull() ? "" : track.musicBrainzID());
+		query.bindValue(":mbTrackID", track.musicBrainzId().isNull() ? "" : track.musicBrainzId());
 
-		query.bindValue(":artist", artistID);
-		query.bindValue(":album", albumID);
+		query.bindValue(":artist", artistId);
+		query.bindValue(":album", albumId);
 
 		query.exec();
 	}
@@ -222,5 +220,42 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		settings.setValue("collection/lastScanned", QDateTime::currentDateTime());
 		QSqlDatabase::database().commit();
 		emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
+	}
+}
+
+unsigned int CollectionScanner::artistId(const QString& artist, const QString& artistSort) const
+{
+	QSqlQuery query;
+	query.prepare("SELECT ID FROM Artists WHERE Name = :artist");
+	query.bindValue(":artist", artist);
+	query.exec();
+	query.first();
+	if(query.isValid())
+	{
+		// We already have this artist
+		return query.record().value(0).toUInt();
+	}
+	else
+	{
+		// Need a new artist - firstly, get a romanised form of their name from the sortkey
+		const QStringList artistRomanisedBackward = artistSort.split(", ");
+		QStringList artistRomanisedForward;
+
+		// Reversed
+		QStringListIterator it(artistRomanisedBackward);
+		it.toBack();
+		while(it.hasPrevious())
+		{
+			artistRomanisedForward.append(it.previous());
+		}
+		const QString artistRomanised = artistRomanisedForward.join(" ");
+
+		// Now, insert it into the database
+		query.prepare("INSERT INTO `Artists` (`Name`, `RomanisedName`, `SortKey`) VALUES (:name, :roman, :sort)");
+		query.bindValue(":name", artist);
+		query.bindValue(":roman", artistRomanised);
+		query.bindValue(":sort", artistSort);
+		query.exec();
+		return query.lastInsertId().toUInt();
 	}
 }
