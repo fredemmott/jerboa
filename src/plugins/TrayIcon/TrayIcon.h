@@ -38,19 +38,20 @@ class TrayIcon : public QObject, public Jerboa::Plugin
 		QString pluginAuthor() const;
 		QString uniqueId() const;
 		void addComponent(ComponentType type, QObject* component);
-	protected:
+
+		// Handle tray icon scroll wheel, and main window close events
 		bool eventFilter(QObject* obj, QEvent* event);
 	private slots:
 		void activated(QSystemTrayIcon::ActivationReason);
 		void handleStateChange(Jerboa::PlayerInterface::State);
 		void updateActions();
 		void play();
+
+		QWidget* mainWindow();
 	private:
 		void playbackStarted(const Jerboa::TrackData& track);
 		void playbackPaused();
 		void playbackStopped();
-
-		QWidget* mainWindow();
 
 		QMenu* m_menu;
 		QAction* m_playAction;

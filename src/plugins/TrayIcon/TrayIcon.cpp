@@ -18,15 +18,16 @@
 
 #include "config.h"
 
-#include <QtDebug>
-#include <QtPlugin>
 #include <QAction>
 #include <QApplication>
-#include <QMainWindow>
-#include <QWheelEvent>
 #include <QIcon>
+#include <QMainWindow>
 #include <QMenu>
+#include <QTimer>
+#include <QWheelEvent>
 #include <QWidget>
+#include <QtDebug>
+#include <QtPlugin>
 
 TrayIcon::TrayIcon()
 	:
@@ -44,6 +45,9 @@ TrayIcon::TrayIcon()
 	);
 	connect(QApplication::instance(), SIGNAL(aboutToQuit()), m_trayIcon, SLOT(deleteLater()));
 	m_trayIcon->installEventFilter(this);
+
+	// Hook in as an event filter
+	QTimer::singleShot(1000, this, SLOT(mainWindow()));
 }
 
 void TrayIcon::addComponent(ComponentType type, QObject* component)
@@ -98,6 +102,10 @@ QWidget* TrayIcon::mainWindow()
 			}
 		}
 		Q_ASSERT(m_mainWindow);
+		if(m_mainWindow)
+		{
+			m_mainWindow->installEventFilter(this);
+		}
 	}
 }
 
@@ -233,18 +241,28 @@ void TrayIcon::activated(QSystemTrayIcon::ActivationReason a)
 
 bool TrayIcon::eventFilter(QObject* obj, QEvent* event )
 {
-	if ( obj == m_trayIcon && event->type() == QEvent::Wheel )
+	if(obj == m_trayIcon && event->type() == QEvent::Wheel)
 	{
 		QWheelEvent* wheel = dynamic_cast<QWheelEvent*>(event);
 		Q_ASSERT(wheel);
 
 		const qreal step = 0.05;
 
-		if ( wheel->delta() > 0 )
+		if(wheel->delta() > 0)
+		{
 			m_player->setVolume( qMin( qreal(1.0), m_player->volume() + step ) );
+		}
 		else
+		{
 			m_player->setVolume( qMax( qreal(0.0), m_player->volume() - step ) );
+		}
 
+		return true;
+	}
+	else if(obj == m_mainWindow && event->type() == QEvent::Close)
+	{
+		m_mainWindow->hide();
+		event->ignore();
 		return true;
 	}
 	else
