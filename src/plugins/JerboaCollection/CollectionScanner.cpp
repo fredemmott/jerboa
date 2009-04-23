@@ -60,6 +60,7 @@ CollectionScanner::CollectionScanner(Jerboa::TagReader* tagReader, QObject* pare
 
 void CollectionScanner::skipToNextFile()
 {
+	m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
 }
 
 void CollectionScanner::run()
