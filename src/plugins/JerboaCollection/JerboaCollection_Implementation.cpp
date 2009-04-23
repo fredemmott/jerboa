@@ -7,9 +7,10 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-JerboaCollection::Implementation::Implementation(QObject* parent)
+JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, QObject* parent)
 	:
-		CollectionInterface(parent)
+		CollectionInterface(parent),
+		m_collectionScanner(0)
 {
 	QSqlQuery query;
 	query.setForwardOnly(true);
