@@ -4,6 +4,8 @@
 #include "TrackData.h"
 
 #include <QDebug>
+#include <QFileSystemWatcher>
+#include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -13,6 +15,23 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 		CollectionInterface(parent),
 		m_collectionScanner(new CollectionScanner(tagReader, this))
 {
+	connect(
+		m_collectionScanner,
+		SIGNAL(finished(QList<Jerboa::TrackData>,QList<Jerboa::TrackData>,QStringList)),
+		this,
+		SLOT(applyChanges(QList<Jerboa::TrackData>,QList<Jerboa::TrackData>,QStringList))
+	);
+	QFileSystemWatcher* watcher(new QFileSystemWatcher(this));
+	watcher->addPath(QSettings().value("collection/directory").toString());
+	connect(
+		watcher,
+		SIGNAL(directoryChanged(QString())),
+		m_collectionScanner,
+		SLOT(run())
+	);
+
+	m_collectionScanner->run();
+
 	QSqlQuery query;
 	query.setForwardOnly(true);
 	const bool success = query.exec(
@@ -51,6 +70,7 @@ void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackDat
 	Q_UNUSED(added);
 	Q_UNUSED(modified);
 	Q_UNUSED(removed);
+	qDebug() << "Added/modified/removed counts:" << added.count() << modified.count() << removed.count();
 }
 
 QVector<Jerboa::TrackData> JerboaCollection::Implementation::tracks() const
