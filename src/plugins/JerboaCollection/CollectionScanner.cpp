@@ -29,7 +29,7 @@
 
 CollectionScanner::CollectionScanner(Jerboa::TagReader* tagReader, QObject* parent)
 : QObject(parent)
-, m_tagReader(tagReader)
+, m_tagReader(tagReader->instance(this))
 , m_fileLister(new FileLister(this))
 {
 	connect(

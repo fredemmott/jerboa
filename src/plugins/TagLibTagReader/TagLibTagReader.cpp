@@ -26,6 +26,11 @@ void TagLibTagReader::readUrl(const QUrl& url)
 	d->setCurrentSource(url);
 }
 
+Jerboa::TagReader* TagLibTagReader::instance(QObject* parent) const
+{
+	return new TagLibTagReader(parent);
+}
+
 TagLibTagReader::TagLibTagReader(QObject* parent)
 	:
 		Jerboa::TagReader(parent)

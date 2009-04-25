@@ -15,6 +15,7 @@ class TagLibTagReader: public Jerboa::TagReader, public Jerboa::Plugin
 
 		// TagReader
 		virtual void readUrl(const QUrl& url);
+		virtual Jerboa::TagReader* instance(QObject* parent) const;
 
 		// Plugin
 		QString pluginName() const;

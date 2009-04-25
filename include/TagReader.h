@@ -14,6 +14,7 @@ namespace Jerboa
 		public:
 			virtual ~TagReader();
 			virtual void readUrl(const QUrl& url) = 0;
+			virtual TagReader* instance(QObject* parent) const = 0;
 		signals:
 			void notFound(const QUrl& url);
 			void schemeNotSupported(const QUrl& url);

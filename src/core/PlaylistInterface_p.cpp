@@ -11,22 +11,22 @@ namespace Jerboa
 		:
 			QObject(playlist),
 			m_playlist(playlist),
-			m_tagReader(tagReader)
+			m_tagReader(tagReader->instance(this))
 	{
 		connect(
-			tagReader,
+			m_tagReader,
 			SIGNAL(notFound(QUrl)),
 			this,
 			SLOT(tagReaderError())
 		);
 		connect(
-			tagReader,
+			m_tagReader,
 			SIGNAL(schemeNotSupported(QUrl)),
 			this,
 			SLOT(tagReaderError())
 		);
 		connect(
-			tagReader,
+			m_tagReader,
 			SIGNAL(finished(Jerboa::TrackData)),
 			this,
 			SLOT(addTrackFromUrlDrop(Jerboa::TrackData))

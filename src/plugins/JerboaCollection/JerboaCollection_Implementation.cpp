@@ -25,7 +25,7 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 	watcher->addPath(QSettings().value("collection/directory").toString());
 	connect(
 		watcher,
-		SIGNAL(directoryChanged(QString())),
+		SIGNAL(directoryChanged(QString)),
 		m_collectionScanner,
 		SLOT(run())
 	);
