@@ -3,6 +3,7 @@
 #include "CollectionFilter.h"
 #include "SearchLineEdit.h"
 
+#include <QApplication>
 #include <QDebug>
 #include <QLineEdit>
 #include <QTreeView>
@@ -20,7 +21,7 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 		this,
 		SLOT(updateSearch())
 	);
-	m_timer.setInterval(300);
+	m_timer.setInterval(QApplication::keyboardInputInterval());
 	m_timer.setSingleShot(true);
 	
 	m_filter = new CollectionFilter(this);
