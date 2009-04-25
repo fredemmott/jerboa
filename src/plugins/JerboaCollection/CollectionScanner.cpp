@@ -60,7 +60,14 @@ CollectionScanner::CollectionScanner(Jerboa::TagReader* tagReader, QObject* pare
 
 void CollectionScanner::skipToNextFile()
 {
-	m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
+	if(!m_filesToRead.isEmpty())
+	{
+		m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
+	}
+	else
+	{
+		emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
+	}
 }
 
 void CollectionScanner::run()
