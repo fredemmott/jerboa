@@ -67,10 +67,29 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 
 void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed)
 {
-	Q_UNUSED(added);
-	Q_UNUSED(modified);
-	Q_UNUSED(removed);
-	qDebug() << "Added/modified/removed counts:" << added.count() << modified.count() << removed.count();
+	Q_FOREACH(const Jerboa::TrackData& track, added)
+	{
+		Q_ASSERT(!m_tracks.contains(track));
+		m_tracks.append(track);
+	}
+	emit tracksAdded(added);
+	Q_FOREACH(const Jerboa::TrackData& track, modified)
+	{
+		const int index = m_tracks.indexOf(track);
+		Q_ASSERT(index >= 0);
+		m_tracks.replace(index, track);
+	}
+	emit tracksModified(modified);
+	QList<QUrl> removedUrls;
+	Q_FOREACH(const Jerboa::TrackData& track, m_tracks)
+	{
+		if(removed.contains(track.url().toLocalFile()))
+		{
+			m_tracks.remove(m_tracks.indexOf(track));
+			removedUrls.append(track.url());
+		}
+	}
+	emit tracksRemoved(removedUrls);
 }
 
 QVector<Jerboa::TrackData> JerboaCollection::Implementation::tracks() const
