@@ -139,6 +139,9 @@ void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackD
 	{
 		addTracksInSameAlbum(tracks.mid(first, count));
 	}
+
+	m_tracks += tracks.toVector();
+	qSort(m_tracks);
 }
 
 void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jerboa::TrackData>& tracks)
