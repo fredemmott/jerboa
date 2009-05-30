@@ -100,20 +100,26 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 
 bool NestedCollectionModel::Implementation::trackLessThan(const Jerboa::TrackData& a, const Jerboa::TrackData& b)
 {
-	if(a.albumArtist() < b.albumArtist())
+	const QString aArtistLower = a.albumArtistRomanised().toLower();
+	const QString bArtistLower = b.albumArtistRomanised().toLower();
+
+	if(aArtistLower < bArtistLower)
 	{
 		return true;
 	}
-	if(b.albumArtist() < a.albumArtist())
+	if(bArtistLower < aArtistLower)
 	{
 		return false;
 	}
 
-	if(a.album() < b.album())
+	const QString aAlbumLower = a.album().toLower();
+	const QString bAlbumLower = b.album().toLower();
+
+	if(aAlbumLower < bAlbumLower)
 	{
 		return true;
 	}
-	if(b.album() < a.album())
+	if(bAlbumLower < aAlbumLower)
 	{
 		return false;
 	}
