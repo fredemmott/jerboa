@@ -31,6 +31,7 @@ CollectionScanner::CollectionScanner(Jerboa::TagReader* tagReader, QObject* pare
 : QObject(parent)
 , m_tagReader(tagReader->instance(this))
 , m_fileLister(new FileLister(this))
+, m_inProgress(false)
 {
 	connect(
 		m_fileLister,
@@ -71,13 +72,20 @@ void CollectionScanner::skipToNextFile(const QUrl& url)
 		QSettings settings;
 		settings.setValue("collection/lastScanned", QDateTime::currentDateTime());
 		QSqlDatabase::database().commit();
-		emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
+		finish();
 	}
 }
 
 void CollectionScanner::run()
 {
-	qDebug() << "Re-run!";
+	if(m_inProgress)
+	{
+		m_reRun = true;
+		return;
+	}
+	m_reRun = false;
+	m_inProgress = true;
+
 	QSqlDatabase::database().transaction();
 	QSettings settings;
 	QDir collectionDirectory(settings.value("collection/directory").toString());
@@ -86,6 +94,17 @@ void CollectionScanner::run()
 	m_modifiedTracks.clear();
 	m_removedFiles.clear();
 	m_fileLister->start(collectionDirectory);
+}
+
+void CollectionScanner::finish()
+{
+	qDebug() << "FInished with" << m_removedFiles.count() << "removed files";
+	emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
+	m_inProgress = false;
+	if(m_reRun)
+	{
+		run();
+	}
 }
 
 void CollectionScanner::haveFileList(const QStringList& files)
@@ -132,37 +151,30 @@ void CollectionScanner::haveFileList(const QStringList& files)
 
 	if(m_filesToRead.isEmpty())
 	{
-		emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
+		finish();
 	}
 	else
 	{
 		m_progress = 0;
 		m_total = m_filesToRead.count();
-		emit progressChanged(m_progress, m_total);
-		qDebug() << "Asking to read url" << m_filesToRead.first() << Q_FUNC_INFO;
 		m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
+		emit progressChanged(m_progress, m_total);
 	}
 }
 
 void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 {
-	qDebug() << "Read track" << track.url();
+	qDebug() << Q_FUNC_INFO << "Read track" << track.url() << track.url().toLocalFile();
 	Q_ASSERT(m_progress + m_filesToRead.count() + 1 == m_total);
 
 	QSqlQuery query;
-	QSqlField field("filename", QVariant::String);
-	field.setValue(track.url().toLocalFile());
-	QString safeFileName(QSqlDatabase::database().driver()->formatValue(field));
-	query.exec(
-		QString(
-			"DELETE FROM `Tracks` WHERE `FileName` = %1"
-		).arg(
-			safeFileName
-		)
-	);
+	query.prepare("DELETE FROM Tracks WHERE FileName = :fileName");
+	query.bindValue(":fileName", track.url().toLocalFile());
+	query.exec();
 
 	if(track.isValid())
 	{
+		qDebug() << "Is valid";
 		QString artist = track.artist();
 		QString artistSort = track.artistRomanised();
 		QString albumName = track.album();
@@ -173,7 +185,7 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		// Get an album ID
 		unsigned int albumId;
 
-		query.prepare("SELECT `ID`, `Artist` FROM `Albums` WHERE `Name` = :album");
+		query.prepare("SELECT ID, Artist FROM Albums WHERE Name = :album");
 		query.bindValue(":album", albumName);
 		query.exec();
 		query.first();
@@ -187,7 +199,7 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 			if(albumArtist != artistId)
 			{
 				unsigned int variousArtists(this->artistId(tr("Various Artists"), tr("Various Artists")));
-				query.prepare("UPDATE `Albums` SET `Artist`=? WHERE `ID`=?");
+				query.prepare("UPDATE Albums SET Artist=? WHERE ID=?");
 				query.addBindValue(variousArtists);
 				query.addBindValue(albumId);
 				query.exec();
@@ -214,6 +226,7 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		}
 
 		query.prepare("INSERT INTO `Tracks` (FileName, Album, Artist, Name, TrackNumber, AlbumRG, TrackRG, SearchKey, MusicBrainzTrackID) VALUES (:fileName, :album, :artist, :title, :trackNumber, :albumRG, :trackRG, :searchKey, :mbTrackID)");
+		qDebug() << "Binding" << track.url().toLocalFile();
 		query.bindValue(":fileName", track.url().toLocalFile());
 		query.bindValue(":title", track.title());
 		query.bindValue(":trackNumber", track.trackNumber());
@@ -240,7 +253,7 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		QSettings settings;
 		settings.setValue("collection/lastScanned", QDateTime::currentDateTime());
 		QSqlDatabase::database().commit();
-		emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
+		finish();
 	}
 }
 

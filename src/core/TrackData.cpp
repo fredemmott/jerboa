@@ -38,7 +38,7 @@ namespace Jerboa
 	{
 		QStringList mimeData;
 		mimeData
-			   << url.toString()
+			   << url.toEncoded()
 			   << album
 			   << albumArtist
 			   << albumArtistRomanised

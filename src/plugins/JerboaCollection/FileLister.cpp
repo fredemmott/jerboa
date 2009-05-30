@@ -26,7 +26,8 @@ void FileLister::start(const QDir& dir)
 {
 	m_files.clear();
 	m_cancelled = false;
-	QtConcurrent::run(this, &FileLister::findFiles, dir, true);
+//	QtConcurrent::run(this, &FileLister::findFiles, dir, true);
+	findFiles(dir, true);
 }
 
 void FileLister::cancel()

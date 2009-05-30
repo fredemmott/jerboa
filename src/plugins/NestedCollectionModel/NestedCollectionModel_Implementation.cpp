@@ -17,6 +17,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		m_albumImage(QImage(":/NestedCollectionModel/album.png")),
 		m_trackImage(QImage(":/NestedCollectionModel/track.png"))
 {
+	qSort(m_tracks.begin(), m_tracks.end(), trackLessThan);
 	QHash<QString, QHash<QString, QList<Jerboa::TrackData> > > artistAlbumTracks;
 	QMap<QString, QString> artistOrder;
 	Q_FOREACH(const Jerboa::TrackData& data, m_tracks)
@@ -48,6 +49,170 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 				trackOrder[track.trackNumber()] = track;
 			}
 			m_tracksForAlbums[artistIndex].append(trackOrder.values());
+		}
+	}
+
+	connect(
+		collection,
+		SIGNAL(tracksRemoved(QList<QUrl>)),
+		this,
+		SLOT(removeTracks(QList<QUrl>))
+	);
+}
+
+bool NestedCollectionModel::Implementation::trackLessThan(const Jerboa::TrackData& a, const Jerboa::TrackData& b)
+{
+	if(a.albumArtist() < b.albumArtist())
+	{
+		return true;
+	}
+	if(b.albumArtist() < a.albumArtist())
+	{
+		return false;
+	}
+
+	if(a.album() < b.album())
+	{
+		return true;
+	}
+	if(b.album() < a.album())
+	{
+		return false;
+	}
+
+	if(a.trackNumber() < b.trackNumber())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackData>& tracks)
+{
+}
+
+void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::TrackData>& tracks)
+{
+}
+
+void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls)
+{
+	qDebug() << "Got" << urls.count() << "tracks to remove";
+	int first = -1;
+	Jerboa::TrackData firstTrack;
+	int count = 0;
+	Q_FOREACH(const Jerboa::TrackData& track, m_tracks)
+	{
+		if(urls.contains(track.url()))
+		{
+			qDebug() << "Removing track" << track.url() << track.title();
+			if(first != -1 && track.album() == firstTrack.album() && track.albumArtist() == firstTrack.albumArtist())
+			{
+				++count;
+				continue;
+			}
+
+			if(first != -1)
+			{
+				qDebug() << __FILE__ << __LINE__ << first << count;
+				removeTracks(first, count);
+			}
+
+			first = m_tracks.indexOf(track);
+			firstTrack = track;
+			count = 1;
+		}
+		else
+		{
+			if(first != -1)
+			{
+				qDebug() << __FILE__ << __LINE__ << first << count;
+				removeTracks(first, count);
+				count = 0;
+				first = -1;
+			}
+		}
+	}
+	if(first != -1)
+	{
+		qDebug() << __FILE__ << __LINE__ << first << count;
+		removeTracks(first, count);
+	}
+	trimEmptyParents();
+}
+
+void NestedCollectionModel::Implementation::removeTracks(int first, int count)
+{
+	const Jerboa::TrackData firstTrack = m_tracks.at(first);
+
+	// Find the albumArtist node
+	const int artistPosition = m_artists.indexOf(firstTrack.albumArtist());
+	Q_ASSERT(artistPosition >= 0);
+	const QModelIndex artistIndex = index(artistPosition, 0, QModelIndex());
+	Q_ASSERT(artistIndex.isValid());
+
+	// now the album node
+	const int albumPosition = m_albumsForArtists.at(artistPosition).indexOf(firstTrack.album());
+	Q_ASSERT(albumPosition >= 0);
+	const QModelIndex albumIndex = index(albumPosition, 0, artistIndex);
+	Q_ASSERT(albumIndex.isValid());
+
+	// Offset between m_tracks and child
+	const int childFirst = m_tracksForAlbums.at(artistPosition).at(albumPosition).indexOf(firstTrack);
+	const int childLast = childFirst + count - 1;
+	beginRemoveRows(albumIndex, childFirst, childLast);
+	m_tracks.remove(first, count);
+	qDebug() << m_tracksForAlbums.at(artistPosition).at(albumPosition).count() << __LINE__;
+	for(int i = 0; i < count; ++i)
+	{
+		qDebug() << "Removing" << i;
+		m_tracksForAlbums[artistPosition][albumPosition].removeAt(childFirst);
+	}
+	qDebug() << m_tracksForAlbums.at(artistPosition).at(albumPosition).count() << __LINE__;
+	qDebug() << m_trackItems.value(artistPosition).value(albumPosition).count() << __LINE__;
+	for(int i = 0; i < count; ++i)
+	{
+		m_trackItems[artistPosition][albumPosition].remove(childFirst + i);
+	}
+	for(int i = childFirst + count; i < m_trackItems.value(artistPosition).value(albumPosition).count(); ++i)
+	{
+		m_trackItems[artistPosition][albumPosition][i - count] = m_trackItems[artistPosition][albumPosition][i];
+		m_trackItems[artistPosition][albumPosition].remove(i);
+	}
+	qDebug() << m_trackItems.value(artistPosition).value(albumPosition).count() << __LINE__;
+	endRemoveRows();
+}
+
+void NestedCollectionModel::Implementation::trimEmptyParents()
+{
+	return;
+	for(int artistPosition = 0; artistPosition < rowCount(); ++artistPosition)
+	{
+		const QPersistentModelIndex artistIndex(index(artistPosition, 0));
+		for(int albumPosition = 0; albumPosition < rowCount(artistIndex); ++albumPosition)
+		{
+			const QModelIndex albumIndex(index(albumPosition, 0, artistIndex));
+			if(rowCount(albumIndex) == 0)
+			{
+				beginRemoveRows(artistIndex, albumPosition, 1);
+				for(int i = artistPosition + 1; i < m_albumsForArtists.at(artistPosition).count(); ++i)
+				{
+					m_albumItems[artistPosition - 1] = m_albumItems[artistPosition];
+					m_albumItems.remove(artistPosition);
+				}
+				m_albumsForArtists[artistPosition].removeAt(albumPosition);
+				endRemoveRows();
+				--albumPosition;
+			}
+		}
+		if(rowCount(artistIndex) == 0)
+		{
+			beginRemoveRows(QModelIndex(), artistPosition, 0);
+			m_artistItems.remove(artistPosition);
+			m_artists.removeAt(artistPosition);
+			endRemoveRows();
+			--artistPosition;
 		}
 	}
 }

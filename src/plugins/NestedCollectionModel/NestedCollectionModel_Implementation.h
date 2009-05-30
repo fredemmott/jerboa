@@ -17,13 +17,19 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 
 		int columnCount(const QModelIndex& parent) const;
 		QVariant data(const QModelIndex& index, int role) const;
-		QModelIndex index(int row, int column, const QModelIndex& parent) const;
+		QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent(const QModelIndex& index) const;
-		int rowCount(const QModelIndex& parent) const;
+		int rowCount(const QModelIndex& parent = QModelIndex()) const;
 		QStringList mimeTypes() const;
 		QMimeData* mimeData(const QModelIndexList& indexes) const;
 		Qt::ItemFlags flags(const QModelIndex& index) const;
+	private slots:
+		void addTracks(const QList<Jerboa::TrackData>& tracks);
+		void updateTracks(const QList<Jerboa::TrackData>& tracks);
+		void removeTracks(const QList<QUrl>& tracks);
 	private:
+		void trimEmptyParents();
+		void removeTracks(int first, int count);
 		class Item
 		{
 			public:
@@ -55,6 +61,7 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		QList<QStringList> m_albumsForArtists;
 		QList<QList<QList<Jerboa::TrackData> > > m_tracksForAlbums;
 
+		static bool trackLessThan(const Jerboa::TrackData& a, const Jerboa::TrackData& b);
 		static QString albumSortKey(const QString& album);
 };
 

@@ -50,6 +50,8 @@ class CollectionScanner : public QObject
 		/// Called on error
 		void skipToNextFile(const QUrl& url);
 	private:
+		void finish();
+		void markFileAsRemoved(const QString& file);
 		unsigned int artistId(const QString& artist, const QString& artistSort) const;
 		Jerboa::TagReader* m_tagReader;
 		FileLister* m_fileLister;
@@ -57,6 +59,8 @@ class CollectionScanner : public QObject
 		quint32 m_progress;
 		quint32 m_total;
 
+		bool m_inProgress;
+		bool m_reRun;
 		QStringList m_filesToRead;
 		QList<Jerboa::TrackData> m_addedTracks;
 		QList<Jerboa::TrackData> m_modifiedTracks;
