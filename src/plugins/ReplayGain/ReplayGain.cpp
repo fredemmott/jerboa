@@ -93,7 +93,7 @@ void ReplayGain::adjustReplayGain(const Jerboa::TrackData& track)
 		volume = m_gain + track.trackReplayGain();
 	}
 
-	if(volume > 9000)
+	if(-volume > 9000)
 	{
 		if(!m_usingReplayGain)
 		{
