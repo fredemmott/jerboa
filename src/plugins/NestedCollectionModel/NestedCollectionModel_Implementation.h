@@ -31,6 +31,7 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		void removeTracks(const QList<QUrl>& tracks);
 	private:
 		void trimEmptyParents();
+		void addTracksInSameAlbum(const QList<Jerboa::TrackData>& tracks);
 		void removeTracks(int first, int count);
 		class Item
 		{
@@ -60,6 +61,7 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		QVector<Jerboa::TrackData> m_tracks;
 
 		QStringList m_artists;
+		QList<QString> m_artistSortOrder;
 		QList<QStringList> m_albumsForArtists;
 		QList<QList<QList<Jerboa::TrackData> > > m_tracksForAlbums;
 

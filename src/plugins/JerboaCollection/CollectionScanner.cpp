@@ -98,6 +98,7 @@ void CollectionScanner::run()
 
 void CollectionScanner::finish()
 {
+	qDebug() << "Emitting finished with" << m_addedTracks.count() << "new tracks";
 	emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
 	m_inProgress = false;
 	if(m_reRun)
@@ -163,6 +164,7 @@ void CollectionScanner::haveFileList(const QStringList& files)
 
 void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 {
+	qDebug() << Q_FUNC_INFO << track.url();
 	Q_ASSERT(m_progress + m_filesToRead.count() + 1 == m_total);
 
 	QSqlQuery query;
@@ -236,6 +238,15 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		query.bindValue(":album", albumId);
 
 		query.exec();
+
+		if(m_modifiedFiles.contains(track.url().toLocalFile()))
+		{
+			m_modifiedTracks.append(track);
+		}
+		else
+		{
+			m_addedTracks.append(track);
+		}
 	}
 
 	emit progressChanged(++m_progress, m_total);

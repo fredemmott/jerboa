@@ -33,6 +33,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 			albumIndex = -1;
 
 			m_artists.append(track.albumArtist());
+			m_artistSortOrder.append(track.albumArtistRomanised().toLower());
 			m_albumsForArtists.append(QStringList());
 			m_tracksForAlbums.append(QList< QList<Jerboa::TrackData> >());
 
@@ -49,8 +50,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 
 		m_tracksForAlbums[artistIndex][albumIndex].append(track);
 
-		previousArtist = track.albumArtist();
-		previousAlbum = track.album();
+		previousArtist = track.albumArtist(); previousAlbum = track.album();
 	}
 
 	// Sort out the model items
@@ -93,6 +93,12 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 
 	connect(
 		collection,
+		SIGNAL(tracksAdded(QList<Jerboa::TrackData>)),
+		this,
+		SLOT(addTracks(QList<Jerboa::TrackData>))
+	);
+	connect(
+		collection,
 		SIGNAL(tracksRemoved(QList<QUrl>)),
 		this,
 		SLOT(removeTracks(QList<QUrl>))
@@ -133,8 +139,159 @@ bool NestedCollectionModel::Implementation::trackLessThan(const Jerboa::TrackDat
 	return false;
 }
 
-void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackData>& tracks)
+void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackData>& _tracks)
 {
+	qDebug() << Q_FUNC_INFO << __LINE__ << "Adding" << _tracks.count() << "tracks";
+	// Get artists/albums contiguous, and ordered by track number
+	QList<Jerboa::TrackData> tracks(_tracks);
+	qSort(tracks.begin(), tracks.end(), trackLessThan);
+	const int trackCount = tracks.count();
+
+	QString currentArtist;
+	QString currentAlbum;
+	int first = -1;
+	int count = 0;
+	for(int i = 0; i < trackCount; ++i)
+	{
+		const Jerboa::TrackData& track = tracks.at(i);
+
+		// See if we've the artist/album has changed
+		if(track.albumArtist() != currentArtist || track.album() != currentAlbum)
+		{
+			if(count != 0)
+			{
+				addTracksInSameAlbum(tracks.mid(first, count));
+			}
+			first = i;
+			count = 0;
+			currentArtist = track.albumArtist();
+			currentAlbum = track.album();
+		}
+		++count;
+	}
+	if(count != 0)
+	{
+		addTracksInSameAlbum(tracks.mid(first, count));
+	}
+}
+
+void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jerboa::TrackData>& tracks)
+{
+	const Jerboa::TrackData& first = tracks.first();
+	int artistPosition = m_artists.indexOf(first.albumArtist());
+
+	if(artistPosition == -1)
+	{
+		// New artist
+		const QString sortKey = first.albumArtistRomanised().toLower();
+		// Add our sort key to the sort list
+		m_artistSortOrder.append(sortKey);
+		// Sort the sort list
+		qSort(m_artistSortOrder);
+		// Find our new index;
+		artistPosition = m_artistSortOrder.indexOf(sortKey);
+
+		beginInsertRows(QModelIndex(), artistPosition, artistPosition);
+
+		// Add artist to its' lists
+		m_artists.insert(artistPosition, first.albumArtist());
+
+		Item* item = new Item();
+		item->type = Item::ArtistItem;
+		m_artistItems.insert(artistPosition, sharePtr(item));
+
+		// Add empty lists for albums/tracks
+		m_albumsForArtists.insert(artistPosition, QStringList());
+		m_albumItems.insert(artistPosition, QVector< QSharedPointer<Item> >());
+
+		m_tracksForAlbums.insert(artistPosition, QList< QList<Jerboa::TrackData> >());
+		m_trackItems.insert(artistPosition, QVector< QVector< QSharedPointer<Item> > >());
+
+		endInsertRows();
+	}
+
+	const QPersistentModelIndex artistIndex = index(artistPosition, 0);
+
+	int albumPosition = m_albumsForArtists.value(artistPosition).indexOf(first.album());
+	if(albumPosition == -1)
+	{
+		// New album, add it
+		// Figure out the position
+		QStringList albums = m_albumsForArtists.at(artistPosition);
+		albums.append(first.album());
+		qSort(albums);
+
+		albumPosition = albums.indexOf(first.album());
+
+		beginInsertRows(artistIndex, albumPosition, albumPosition);
+
+		// Insert it into its' own lists
+		m_albumsForArtists[artistPosition] = albums;
+		Item* item = new Item();
+		item->type = Item::AlbumItem;
+		item->parent = artistIndex;
+		m_albumItems[artistPosition].insert(albumPosition, sharePtr(item));
+
+		// Expand the track list
+		m_tracksForAlbums[artistPosition].insert(albumPosition, QList<Jerboa::TrackData>());
+		m_trackItems[artistPosition].insert(albumPosition, QVector< QSharedPointer<Item> >());
+	}
+
+	const QPersistentModelIndex albumIndex = index(albumPosition, 0, artistIndex);
+
+	Q_ASSERT(artistIndex.isValid());
+	Q_ASSERT(albumIndex.isValid());
+	
+	// Okay, got everything, now work out if post-insert which of these are contiguous
+	QList< QList<Jerboa::TrackData> > contiguousSets;
+	QList<Jerboa::TrackData> currentSet;
+	int previousIndex = -1;
+
+	QList<Jerboa::TrackData> newTracks = m_tracksForAlbums.at(artistPosition).at(albumPosition);
+	newTracks.append(tracks);
+	qSort(newTracks.begin(), newTracks.end(), trackLessThan);
+
+	Q_FOREACH(const Jerboa::TrackData& track, tracks)
+	{
+		const int index = newTracks.indexOf(track);
+		if(index != previousIndex + 1 && ! currentSet.isEmpty())
+		{
+			contiguousSets.append(currentSet);
+		}
+		currentSet.append(track);
+		previousIndex = index;
+	}
+
+	if(!currentSet.isEmpty())
+	{
+		contiguousSets.append(currentSet);
+	}
+
+	Q_FOREACH(const QList<Jerboa::TrackData>& trackBatch, contiguousSets)
+	{
+		QList<Jerboa::TrackData> batchNewTracks = m_tracksForAlbums.at(artistPosition).at(albumPosition);
+		batchNewTracks.append(trackBatch);
+		qSort(batchNewTracks.begin(), batchNewTracks.end(), trackLessThan);
+
+		const int first = batchNewTracks.indexOf(trackBatch.first());
+		const int count = trackBatch.count();
+		beginInsertRows(albumIndex, first, first + (count - 1));
+
+		m_tracksForAlbums[artistPosition][albumPosition] = batchNewTracks;
+
+		QVector< QSharedPointer<Item> >& trackItems = m_trackItems[artistPosition][albumPosition];
+		trackItems.insert(first, count, QSharedPointer<Item>());
+		for(int trackIndex = 0; trackIndex < count; ++ trackIndex)
+		{
+			Item* item = new Item();
+			item->type = Item::TrackItem;
+			item->parent = albumIndex;
+			item->data = trackBatch.at(trackIndex);
+			trackItems[trackIndex + first] = sharePtr(item);
+		}
+		
+		endInsertRows();
+	}
 }
 
 void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::TrackData>& tracks)
