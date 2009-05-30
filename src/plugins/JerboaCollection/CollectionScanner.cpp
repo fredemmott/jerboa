@@ -98,7 +98,6 @@ void CollectionScanner::run()
 
 void CollectionScanner::finish()
 {
-	qDebug() << "FInished with" << m_removedFiles.count() << "removed files";
 	emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
 	m_inProgress = false;
 	if(m_reRun)
@@ -164,7 +163,6 @@ void CollectionScanner::haveFileList(const QStringList& files)
 
 void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 {
-	qDebug() << Q_FUNC_INFO << "Read track" << track.url() << track.url().toLocalFile();
 	Q_ASSERT(m_progress + m_filesToRead.count() + 1 == m_total);
 
 	QSqlQuery query;
@@ -174,7 +172,6 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 
 	if(track.isValid())
 	{
-		qDebug() << "Is valid";
 		QString artist = track.artist();
 		QString artistSort = track.artistRomanised();
 		QString albumName = track.album();
@@ -226,7 +223,6 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		}
 
 		query.prepare("INSERT INTO `Tracks` (FileName, Album, Artist, Name, TrackNumber, AlbumRG, TrackRG, SearchKey, MusicBrainzTrackID) VALUES (:fileName, :album, :artist, :title, :trackNumber, :albumRG, :trackRG, :searchKey, :mbTrackID)");
-		qDebug() << "Binding" << track.url().toLocalFile();
 		query.bindValue(":fileName", track.url().toLocalFile());
 		query.bindValue(":title", track.title());
 		query.bindValue(":trackNumber", track.trackNumber());
@@ -245,7 +241,6 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 	emit progressChanged(++m_progress, m_total);
 	if(!m_filesToRead.isEmpty())
 	{
-		qDebug() << "Asking to read url" << m_filesToRead.first() << Q_FUNC_INFO;
 		m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
 	}
 	else

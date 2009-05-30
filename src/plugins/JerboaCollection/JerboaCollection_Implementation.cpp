@@ -13,7 +13,6 @@
 
 void JerboaCollection::Implementation::monitorDirectory(const QDir& directory)
 {
-	qDebug() << "Watching directory" << directory.absolutePath();
 	if(!m_watcher->directories().contains(directory.absolutePath()))
 	{
 		m_watcher->addPath(directory.absolutePath());

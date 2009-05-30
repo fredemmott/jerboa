@@ -136,7 +136,6 @@ void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::Tra
 
 void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls)
 {
-	qDebug() << "Got" << urls.count() << "tracks to remove";
 	int first = -1;
 	Jerboa::TrackData firstTrack;
 	int count = 0;
@@ -144,7 +143,6 @@ void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls
 	{
 		if(urls.contains(track.url()))
 		{
-			qDebug() << "Removing track" << track.url() << track.title();
 			if(first != -1 && track.album() == firstTrack.album() && track.albumArtist() == firstTrack.albumArtist())
 			{
 				++count;
@@ -153,7 +151,6 @@ void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls
 
 			if(first != -1)
 			{
-				qDebug() << __FILE__ << __LINE__ << first << count;
 				removeTracks(first, count);
 			}
 
@@ -165,7 +162,6 @@ void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls
 		{
 			if(first != -1)
 			{
-				qDebug() << __FILE__ << __LINE__ << first << count;
 				removeTracks(first, count);
 				count = 0;
 				first = -1;
@@ -174,7 +170,6 @@ void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls
 	}
 	if(first != -1)
 	{
-		qDebug() << __FILE__ << __LINE__ << first << count;
 		removeTracks(first, count);
 	}
 	trimEmptyParents();
@@ -204,12 +199,8 @@ void NestedCollectionModel::Implementation::removeTracks(int first, int count)
 	m_trackItems[artistPosition][albumPosition].remove(childFirst, count);
 	for(int i = 0; i < count; ++i)
 	{
-		qDebug() << "Removing" << i;
 		m_tracksForAlbums[artistPosition][albumPosition].removeAt(childFirst);
 	}
-	qDebug() << m_tracksForAlbums.at(artistPosition).at(albumPosition).count() << __LINE__;
-	qDebug() << m_trackItems.value(artistPosition).value(albumPosition).count() << __LINE__;
-	qDebug() << m_trackItems.value(artistPosition).value(albumPosition).count() << __LINE__;
 	endRemoveRows();
 }
 
@@ -232,7 +223,6 @@ void NestedCollectionModel::Implementation::trimEmptyParents()
 		}
 		if(rowCount(artistIndex) == 0)
 		{
-			qDebug() << "Removing artist" << artistIndex.data().toString() << "at position" << artistPosition;
 			beginRemoveRows(QModelIndex(), artistPosition, artistPosition);
 
 			m_artistItems.remove(artistPosition);
