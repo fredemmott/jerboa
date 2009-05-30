@@ -19,40 +19,41 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		m_albumImage(QImage(":/NestedCollectionModel/album.png")),
 		m_trackImage(QImage(":/NestedCollectionModel/track.png"))
 {
+	// Get things in the right order for a flat tree
 	qSort(m_tracks.begin(), m_tracks.end(), trackLessThan);
-	QHash<QString, QHash<QString, QList<Jerboa::TrackData> > > artistAlbumTracks;
-	QMap<QString, QString> artistOrder;
-	Q_FOREACH(const Jerboa::TrackData& data, m_tracks)
+	int artistIndex = -1;
+	int albumIndex = -1;
+	QString previousArtist;
+	QString previousAlbum;
+	Q_FOREACH(const Jerboa::TrackData& track, m_tracks)
 	{
+		if(previousArtist != track.albumArtist())
+		{
+			++artistIndex;
+			albumIndex = -1;
 
-		artistAlbumTracks[data.albumArtist()][data.album()].append(data);
-		artistOrder[data.albumArtistRomanised().toLower()] = data.albumArtist();
+			m_artists.append(track.albumArtist());
+			m_albumsForArtists.append(QStringList());
+			m_tracksForAlbums.append(QList< QList<Jerboa::TrackData> >());
+
+			previousAlbum = QString();
+		}
+
+		if(previousAlbum != track.album())
+		{
+			++albumIndex;
+
+			m_albumsForArtists[artistIndex].append(track.album());
+			m_tracksForAlbums[artistIndex].append(QList<Jerboa::TrackData>());
+		}
+
+		m_tracksForAlbums[artistIndex][albumIndex].append(track);
+
+		previousArtist = track.albumArtist();
+		previousAlbum = track.album();
 	}
 
-	Q_FOREACH(const QString& albumArtist, artistOrder)
-	{
-		m_artists.append(albumArtist);
-		const int artistIndex = m_artists.count() - 1;
-		QMap<QString, QString> albumOrder;
-		Q_FOREACH(const QString& album, artistAlbumTracks.value(albumArtist).keys())
-		{
-			albumOrder[albumSortKey(album)] = album;
-		}
-		const QStringList albums(albumOrder.values());
-		m_albumsForArtists.append(albums);
-		m_tracksForAlbums.append(QList<QList<Jerboa::TrackData> >());
-		for(int albumIndex = 0; albumIndex < albums.count(); ++albumIndex)
-		{
-			const QString& album(albums.at(albumIndex));
-
-			QMap<int, Jerboa::TrackData> trackOrder;
-			Q_FOREACH(const Jerboa::TrackData& track, artistAlbumTracks.value(albumArtist).value(album))
-			{
-				trackOrder[track.trackNumber()] = track;
-			}
-			m_tracksForAlbums[artistIndex].append(trackOrder.values());
-		}
-	}
+	// Sort out the model items
 	const int artistCount = m_artists.count();
 	m_artistItems.resize(artistCount);
 	m_albumItems.resize(artistCount);
