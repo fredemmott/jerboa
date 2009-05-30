@@ -17,6 +17,7 @@
 #ifndef _JERBOA_PLUGIN_H
 #define _JERBOA_PLUGIN_H
 
+#include <QDebug>
 #include <QSet>
 #include <QString>
 #include <QUrl>
@@ -29,6 +30,7 @@ namespace Jerboa
 	 */
 	class Plugin
 	{
+		Q_GADGET
 		public:
 			enum ComponentType {
 				Container, // Container
@@ -46,6 +48,7 @@ namespace Jerboa
 				BackEnd, // TBA
 				FrontEnd // TBA
 			};
+			Q_ENUMS(ComponentType);
 			/** Gets the plugins name.
 			 * This is potentially user-visible, so should be translated
 			 */
@@ -87,4 +90,6 @@ Q_DECLARE_INTERFACE(
 	Jerboa::Plugin,
 	"uk.co.fredemmott.jerboa.plugin/2.0"
 );
+
+QDebug operator<<(QDebug debug, Jerboa::Plugin::ComponentType type);
 #endif

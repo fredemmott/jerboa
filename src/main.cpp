@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 			{
 				if(p->components().contains(component))
 				{
-					qDebug() << qPrintable(QObject::tr("\t- Provides component %1").arg(component));
+					qDebug() << "\t- Provides component" << component;
 					componentProviders.insert(component, p);
 				}
 			}

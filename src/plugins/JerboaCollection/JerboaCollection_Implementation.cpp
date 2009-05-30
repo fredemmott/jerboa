@@ -22,6 +22,7 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 		SLOT(applyChanges(QList<Jerboa::TrackData>,QList<Jerboa::TrackData>,QStringList))
 	);
 	QFileSystemWatcher* watcher(new QFileSystemWatcher(this));
+	qDebug() << "Watching" << QSettings().value("collection/directory").toString();
 	watcher->addPath(QSettings().value("collection/directory").toString());
 	connect(
 		watcher,

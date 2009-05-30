@@ -1,6 +1,7 @@
 #include "Plugin.h"
 
-#include <QDebug>
+#include <QMetaObject>
+#include <QMetaEnum>
 
 namespace Jerboa
 {
@@ -23,3 +24,12 @@ namespace Jerboa
 		qFatal("Plugin '%s' was asked to create a component of type %d", qPrintable(uniqueId()), componentType);
 	}
 };
+
+QDebug operator<<(QDebug debug, Jerboa::Plugin::ComponentType type)
+{
+	const QMetaObject metaObject = Jerboa::Plugin::staticMetaObject;
+	const int index = metaObject.indexOfEnumerator("ComponentType");
+	const QMetaEnum enumerator = metaObject.enumerator(index);
+	debug.nospace() << enumerator.valueToKey(type) << " (" << static_cast<int>(type) << ")";
+	return debug.space();
+}
