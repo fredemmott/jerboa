@@ -62,6 +62,7 @@ void CollectionScanner::skipToNextFile()
 {
 	if(!m_filesToRead.isEmpty())
 	{
+		++m_progress;
 		m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
 	}
 	else
