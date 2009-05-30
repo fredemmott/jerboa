@@ -48,18 +48,19 @@ CollectionScanner::CollectionScanner(Jerboa::TagReader* tagReader, QObject* pare
 		m_tagReader,
 		SIGNAL(notFound(QUrl)),
 		this,
-		SLOT(skipToNextFile())
+		SLOT(skipToNextFile(QUrl))
 	);
 	connect(
 		m_tagReader,
 		SIGNAL(schemeNotSupported(QUrl)),
 		this,
-		SLOT(skipToNextFile())
+		SLOT(skipToNextFile(QUrl))
 	);
 }
 
-void CollectionScanner::skipToNextFile()
+void CollectionScanner::skipToNextFile(const QUrl& url)
 {
+	qDebug() << "Skipping" << url;
 	if(!m_filesToRead.isEmpty())
 	{
 		++m_progress;
@@ -67,6 +68,9 @@ void CollectionScanner::skipToNextFile()
 	}
 	else
 	{
+		QSettings settings;
+		settings.setValue("collection/lastScanned", QDateTime::currentDateTime());
+		QSqlDatabase::database().commit();
 		emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
 	}
 }
@@ -134,12 +138,14 @@ void CollectionScanner::haveFileList(const QStringList& files)
 		m_progress = 0;
 		m_total = m_filesToRead.count();
 		emit progressChanged(m_progress, m_total);
+		qDebug() << "Asking to read url" << m_filesToRead.first() << Q_FUNC_INFO;
 		m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
 	}
 }
 
 void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 {
+	qDebug() << "Read track" << track.url();
 	Q_ASSERT(m_progress + m_filesToRead.count() + 1 == m_total);
 
 	QSqlQuery query;
@@ -225,6 +231,7 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 	emit progressChanged(++m_progress, m_total);
 	if(!m_filesToRead.isEmpty())
 	{
+		qDebug() << "Asking to read url" << m_filesToRead.first() << Q_FUNC_INFO;
 		m_tagReader->readUrl(QUrl::fromLocalFile(m_filesToRead.takeFirst()));
 	}
 	else

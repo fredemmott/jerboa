@@ -48,7 +48,7 @@ class CollectionScanner : public QObject
 		 */
 		void processTrack(const Jerboa::TrackData& track);
 		/// Called on error
-		void skipToNextFile();
+		void skipToNextFile(const QUrl& url);
 	private:
 		unsigned int artistId(const QString& artist, const QString& artistSort) const;
 		Jerboa::TagReader* m_tagReader;
