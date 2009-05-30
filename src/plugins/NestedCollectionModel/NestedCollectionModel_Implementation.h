@@ -7,6 +7,7 @@
 #include <QAbstractItemModel>
 #include <QHash>
 #include <QImage>
+#include <QSharedPointer>
 #include <QStringList>
 #include <QVector>
 
@@ -51,9 +52,9 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		const QImage m_trackImage;
 
 		mutable Item m_rootItem;
-		mutable QVector<Item*> m_artistItems;
-		mutable QVector<QVector<Item*> > m_albumItems;
-		mutable QVector<QVector<QVector<Item*> > > m_trackItems;
+		mutable QVector< QSharedPointer<Item> > m_artistItems;
+		mutable QVector< QVector< QSharedPointer<Item> > > m_albumItems;
+		mutable QVector< QVector< QVector< QSharedPointer<Item> > > > m_trackItems;
 
 		Jerboa::CollectionInterface* m_collection;
 		QVector<Jerboa::TrackData> m_tracks;

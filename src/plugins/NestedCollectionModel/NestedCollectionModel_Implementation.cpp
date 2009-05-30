@@ -9,6 +9,8 @@
 #include <QRegExp>
 #include <QSet>
 
+template<typename T> QSharedPointer<T> sharePtr(T* raw) { return QSharedPointer<T>(raw); }
+
 NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterface* collection, QObject* parent)
 	:
 		QAbstractItemModel(parent),
@@ -64,7 +66,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 
 		Item* artistItem = new Item();
 		artistItem->type = Item::ArtistItem;
-		m_artistItems[artistPosition] = artistItem;
+		m_artistItems[artistPosition] = sharePtr(artistItem);
 		const QPersistentModelIndex artistIndex = index(artistPosition, 0);
 		for(int albumPosition = 0; albumPosition < albumCount; ++albumPosition)
 		{
@@ -74,7 +76,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 			Item* albumItem = new Item();
 			albumItem->type = Item::AlbumItem;
 			albumItem->parent = artistIndex;
-			m_albumItems[artistPosition][albumPosition] = albumItem;
+			m_albumItems[artistPosition][albumPosition] = sharePtr(albumItem);
 			const QPersistentModelIndex albumIndex = index(albumPosition, 0, artistIndex);
 
 			for(int trackPosition = 0; trackPosition < trackCount; ++trackPosition)
@@ -83,7 +85,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 				trackItem->type = Item::TrackItem;
 				trackItem->parent = albumIndex;
 				trackItem->data = m_tracksForAlbums.at(artistPosition).at(albumPosition).at(trackPosition);
-				m_trackItems[artistPosition][albumPosition][trackPosition] = trackItem;
+				m_trackItems[artistPosition][albumPosition][trackPosition] = sharePtr(trackItem);
 			}
 		}
 	}
@@ -232,8 +234,16 @@ void NestedCollectionModel::Implementation::trimEmptyParents()
 		{
 			qDebug() << "Removing artist" << artistIndex.data().toString() << "at position" << artistPosition;
 			beginRemoveRows(QModelIndex(), artistPosition, artistPosition);
+
 			m_artistItems.remove(artistPosition);
 			m_artists.removeAt(artistPosition);
+
+			m_albumItems.remove(artistPosition);
+			m_albumsForArtists.removeAt(artistPosition);
+
+			m_trackItems.remove(artistPosition);
+			m_tracksForAlbums.removeAt(artistPosition);
+
 			endRemoveRows();
 			--artistPosition;
 		}
@@ -462,10 +472,9 @@ QModelIndex NestedCollectionModel::Implementation::index(int row, int column, co
 		{
 			return QModelIndex();
 		}
-		return createIndex(row, 0, m_artistItems.value(row));
+		return createIndex(row, 0, m_artistItems.value(row).data());
 	}
 	Item* parentItem = reinterpret_cast<Item*>(parent.internalPointer());
-	Item* item;
 	switch(parentItem->type)
 	{
 		case Item::TrackItem:
@@ -485,8 +494,7 @@ QModelIndex NestedCollectionModel::Implementation::index(int row, int column, co
 				{
 					return QModelIndex();
 				}
-				item = m_trackItems.value(artistId).value(albumId).value(trackId);
-				return createIndex(row, 0, item);
+				return createIndex(row, 0, m_trackItems.value(artistId).value(albumId).value(trackId).data());
 			}
 		case Item::ArtistItem:
 			{
@@ -500,8 +508,7 @@ QModelIndex NestedCollectionModel::Implementation::index(int row, int column, co
 				{
 					return QModelIndex();
 				}
-				item = m_albumItems.value(artistId).value(albumId);
-				return createIndex(row, 0, item);
+				return createIndex(row, 0, m_albumItems.value(artistId).value(albumId).data());
 			}
 	}
 
