@@ -54,7 +54,45 @@ namespace Jerboa
 		d->valid = true;
 	};
 
-	bool TrackData::operator==(const TrackData& other) const {
+	bool TrackData::operator<(const TrackData& other) const
+	{
+		const Jerboa::TrackData& a = *this;
+		const Jerboa::TrackData& b = other;
+
+		const QString aArtistLower = a.albumArtistRomanised().toLower();
+		const QString bArtistLower = b.albumArtistRomanised().toLower();
+	
+		if(aArtistLower < bArtistLower)
+		{
+			return true;
+		}
+		if(bArtistLower < aArtistLower)
+		{
+			return false;
+		}
+	
+		const QString aAlbumLower = a.album().toLower();
+		const QString bAlbumLower = b.album().toLower();
+	
+		if(aAlbumLower < bAlbumLower)
+		{
+			return true;
+		}
+		if(bAlbumLower < aAlbumLower)
+		{
+			return false;
+		}
+	
+		if(a.trackNumber() < b.trackNumber())
+		{
+			return true;
+		}
+	
+		return false;
+	}
+
+	bool TrackData::operator==(const TrackData& other) const
+	{
 		if(!isValid())
 		{
 			return ! other.isValid();

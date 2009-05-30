@@ -65,7 +65,6 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		QList<QStringList> m_albumsForArtists;
 		QList<QList<QList<Jerboa::TrackData> > > m_tracksForAlbums;
 
-		static bool trackLessThan(const Jerboa::TrackData& a, const Jerboa::TrackData& b);
 		static QString albumSortKey(const QString& album);
 };
 

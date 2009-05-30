@@ -68,7 +68,11 @@ namespace Jerboa
 			 */
 			bool operator==(const TrackData& other) const;
 
+			/// Opposite of operator==
 			bool operator!=(const TrackData& other) const;
+
+			/// Sort TrackData objects by albumArtistRomanised().toLower(), album(), and trackNumber()
+			bool operator<(const TrackData& other) const;
 
 			/// If the TrackData object is valid.
 			bool isValid() const;

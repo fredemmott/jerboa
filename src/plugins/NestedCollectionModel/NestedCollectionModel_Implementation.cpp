@@ -20,7 +20,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 		m_trackImage(QImage(":/NestedCollectionModel/track.png"))
 {
 	// Get things in the right order for a flat tree
-	qSort(m_tracks.begin(), m_tracks.end(), trackLessThan);
+	qSort(m_tracks);
 	int artistIndex = -1;
 	int albumIndex = -1;
 	QString previousArtist;
@@ -105,46 +105,12 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 	);
 }
 
-bool NestedCollectionModel::Implementation::trackLessThan(const Jerboa::TrackData& a, const Jerboa::TrackData& b)
-{
-	const QString aArtistLower = a.albumArtistRomanised().toLower();
-	const QString bArtistLower = b.albumArtistRomanised().toLower();
-
-	if(aArtistLower < bArtistLower)
-	{
-		return true;
-	}
-	if(bArtistLower < aArtistLower)
-	{
-		return false;
-	}
-
-	const QString aAlbumLower = a.album().toLower();
-	const QString bAlbumLower = b.album().toLower();
-
-	if(aAlbumLower < bAlbumLower)
-	{
-		return true;
-	}
-	if(bAlbumLower < aAlbumLower)
-	{
-		return false;
-	}
-
-	if(a.trackNumber() < b.trackNumber())
-	{
-		return true;
-	}
-
-	return false;
-}
-
 void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackData>& _tracks)
 {
 	qDebug() << Q_FUNC_INFO << __LINE__ << "Adding" << _tracks.count() << "tracks";
 	// Get artists/albums contiguous, and ordered by track number
 	QList<Jerboa::TrackData> tracks(_tracks);
-	qSort(tracks.begin(), tracks.end(), trackLessThan);
+	qSort(tracks);
 	const int trackCount = tracks.count();
 
 	QString currentArtist;
@@ -249,7 +215,7 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 
 	QList<Jerboa::TrackData> newTracks = m_tracksForAlbums.at(artistPosition).at(albumPosition);
 	newTracks.append(tracks);
-	qSort(newTracks.begin(), newTracks.end(), trackLessThan);
+	qSort(newTracks);
 
 	Q_FOREACH(const Jerboa::TrackData& track, tracks)
 	{
@@ -271,7 +237,7 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 	{
 		QList<Jerboa::TrackData> batchNewTracks = m_tracksForAlbums.at(artistPosition).at(albumPosition);
 		batchNewTracks.append(trackBatch);
-		qSort(batchNewTracks.begin(), batchNewTracks.end(), trackLessThan);
+		qSort(batchNewTracks);
 
 		const int first = batchNewTracks.indexOf(trackBatch.first());
 		const int count = trackBatch.count();
