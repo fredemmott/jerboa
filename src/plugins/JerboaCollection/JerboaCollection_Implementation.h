@@ -7,6 +7,9 @@
 
 class CollectionScanner;
 
+class QDir;
+class QFileSystemWatcher;
+
 class JerboaCollection::Implementation : public Jerboa::CollectionInterface
 {
 	Q_OBJECT
@@ -16,8 +19,10 @@ class JerboaCollection::Implementation : public Jerboa::CollectionInterface
 	private slots:
 		void applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed);
 	private:
+		void monitorDirectory(const QDir& directory);
 		QVector<Jerboa::TrackData> m_tracks;
 
+		QFileSystemWatcher* m_watcher;
 		CollectionScanner* m_collectionScanner;
 };
 

@@ -4,11 +4,25 @@
 #include "TrackData.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QFileSystemWatcher>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+
+void JerboaCollection::Implementation::monitorDirectory(const QDir& directory)
+{
+	qDebug() << "Watching directory" << directory.absolutePath();
+	if(!m_watcher->directories().contains(directory.absolutePath()))
+	{
+		m_watcher->addPath(directory.absolutePath());
+		Q_FOREACH(const QString& subdirectory, directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+		{
+			monitorDirectory(directory.absolutePath() + "/" + subdirectory);
+		}
+	}
+}
 
 JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, QObject* parent)
 	:
@@ -21,11 +35,10 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 		this,
 		SLOT(applyChanges(QList<Jerboa::TrackData>,QList<Jerboa::TrackData>,QStringList))
 	);
-	QFileSystemWatcher* watcher(new QFileSystemWatcher(this));
-	qDebug() << "Watching" << QSettings().value("collection/directory").toString();
-	watcher->addPath(QSettings().value("collection/directory").toString());
+	m_watcher = new QFileSystemWatcher(this);
+	monitorDirectory(QDir(QSettings().value("collection/directory").toString()));
 	connect(
-		watcher,
+		m_watcher,
 		SIGNAL(directoryChanged(QString)),
 		m_collectionScanner,
 		SLOT(run())

@@ -77,6 +77,7 @@ void CollectionScanner::skipToNextFile(const QUrl& url)
 
 void CollectionScanner::run()
 {
+	qDebug() << "Re-run!";
 	QSqlDatabase::database().transaction();
 	QSettings settings;
 	QDir collectionDirectory(settings.value("collection/directory").toString());
