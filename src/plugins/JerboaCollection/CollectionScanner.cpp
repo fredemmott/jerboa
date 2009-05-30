@@ -197,6 +197,7 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 			unsigned int albumArtist = query.record().value(1).toUInt();
 			if(albumArtist != artistId)
 			{
+				// TODO: update existing track data
 				unsigned int variousArtists(this->artistId(tr("Various Artists"), tr("Various Artists")));
 				query.prepare("UPDATE Albums SET Artist=? WHERE ID=?");
 				query.addBindValue(variousArtists);
@@ -239,13 +240,33 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 
 		query.exec();
 
+		// Find the actual album artist name, for track data
+		query.prepare("SELECT Artists.Name, Artists.RomanisedName FROM Albums JOIN Artists ON Albums.Artist = Artists.ID WHERE Albums.ID = ?");
+		query.addBindValue(albumId);
+		query.exec();
+		query.first();
+		Q_ASSERT(query.isValid());
+
+		const Jerboa::TrackData fullTrack(
+			track.url(),
+			track.album(),
+			query.value(0).toString(),
+			query.value(1).toString(),
+			track.artist(),
+			track.artistRomanised(),
+			track.title(),
+			track.trackNumber(),
+			track.albumReplayGain(),
+			track.trackReplayGain(),
+			track.musicBrainzId()
+		);
 		if(m_modifiedFiles.contains(track.url().toLocalFile()))
 		{
-			m_modifiedTracks.append(track);
+			m_modifiedTracks.append(fullTrack);
 		}
 		else
 		{
-			m_addedTracks.append(track);
+			m_addedTracks.append(fullTrack);
 		}
 	}
 
