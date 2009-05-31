@@ -113,7 +113,6 @@ void SearchLineEdit::paintEvent(QPaintEvent *event)
 		initStyleOption(&panel);
 		QRect r = style()->subElementRect(QStyle::SE_LineEditContents, &panel, this);
 
-		int availableHeight = r.height() - (top + bottom);
 		painter.drawText(
 			rightEdge + 5, r.top() + top + metrics.height() - metrics.descent(), tr("Search")
 		);

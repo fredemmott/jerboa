@@ -22,6 +22,7 @@ namespace Jerboa
 	QObject* Plugin::component(ComponentType componentType, QObject*)
 	{
 		qFatal("Plugin '%s' was asked to create a component of type %d", qPrintable(uniqueId()), componentType);
+		return 0; // -Wall -Werror
 	}
 };
 

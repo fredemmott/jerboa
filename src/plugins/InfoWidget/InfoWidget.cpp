@@ -54,7 +54,7 @@ QObject* InfoWidget::component(ComponentType type, QObject* parent)
 	{
 		return new Implementation(m_player, qobject_cast<QWidget*>(parent));
 	}
-	Jerboa::Plugin::component(type, parent);
+	return Jerboa::Plugin::component(type, parent);
 }
 
 void InfoWidget::addComponent(ComponentType type, QObject* component)

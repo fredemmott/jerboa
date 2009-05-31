@@ -800,5 +800,5 @@ QModelIndex NestedCollectionModel::Implementation::index(int row, int column, co
 				return createIndex(row, 0, m_albumItems.value(artistId).value(albumId).data());
 			}
 	}
-
+	return QModelIndex();
 }

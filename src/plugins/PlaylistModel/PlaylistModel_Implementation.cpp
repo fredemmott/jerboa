@@ -16,9 +16,9 @@
 PlaylistModel::Implementation::Implementation(Jerboa::PlaylistInterface* playlist, QObject* parent)
 	:
 		QAbstractItemModel(parent),
+		m_currentTrack(-1),
 		m_playlist(playlist),
-		m_tracks(playlist->tracks()),
-		m_currentTrack(-1)
+		m_tracks(playlist->tracks())
 {
 	connect(
 		playlist,

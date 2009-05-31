@@ -87,11 +87,7 @@ QString TrayIcon::uniqueId() const
 
 QWidget* TrayIcon::mainWindow()
 {
-	if(m_mainWindow)
-	{
-		return m_mainWindow;
-	}
-	else
+	if(!m_mainWindow)
 	{
 		Q_FOREACH(QWidget* widget, QApplication::topLevelWidgets())
 		{
@@ -107,6 +103,7 @@ QWidget* TrayIcon::mainWindow()
 			m_mainWindow->installEventFilter(this);
 		}
 	}
+	return m_mainWindow;
 }
 
 void TrayIcon::load()
@@ -122,7 +119,8 @@ void TrayIcon::load()
 	m_previousAction = m_menu->addAction(QIcon(":/TrayIcon/previous.svgz"), tr("Previous"), m_player, SLOT(previous()));
 	m_nextAction = m_menu->addAction(QIcon(":/TrayIcon/next.svgz"), tr("Next"), m_player, SLOT(next()));
 	m_menu->addSeparator();
-	QAction* quitAction = m_menu->addAction(QIcon(), tr("Quit"), QCoreApplication::instance(), SLOT(quit()));
+
+	m_menu->addAction(QIcon(), tr("Quit"), QCoreApplication::instance(), SLOT(quit()));
 
 	m_trayIcon->setContextMenu(m_menu);
 
