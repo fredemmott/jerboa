@@ -155,6 +155,7 @@ void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackD
 	}
 
 	QVector<Jerboa::TrackData>::Iterator it = m_tracks.begin();
+	m_tracks.reserve(m_tracks.count() + tracks.count());
 	Q_FOREACH(const Jerboa::TrackData& track, tracks)
 	{
 		while(it != m_tracks.end() && *it < track)
