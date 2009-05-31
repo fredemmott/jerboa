@@ -338,6 +338,7 @@ void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::Tra
 	Q_FOREACH(const Jerboa::TrackData& track, tracks)
 	{
 		const int index = m_tracks.indexOf(m_tracksFromUrls.value(track.url()));
+		qDebug() << index << previousIndex << previousAlbum << track.album();
 		Q_ASSERT(index != -1);
 		if(
 			(
@@ -353,6 +354,7 @@ void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::Tra
 			currentSet.clear();
 		}
 		currentSet.append(track);
+		previousIndex = index;
 		previousAlbum = track.album();
 	}
 	if(!currentSet.isEmpty())
