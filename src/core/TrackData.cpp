@@ -28,7 +28,7 @@ inline QString albumSortKey(const QString& album)
 	// Need to make a new Album record - this needs a sortKey
 	// Eat spaces
 	QString input = album;
-	input.replace(' ', QString());
+	input.remove(' ');
 
 	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
 	for(
@@ -47,9 +47,10 @@ inline QString albumSortKey(const QString& album)
 	QString buffer;
 	QString albumSort;
 	bool inNumerics = false;
+	const QString::ConstIterator end = input.constEnd();
 	for(
 		QString::ConstIterator it = input.constBegin();
-		it != input.constEnd();
+		it != end;
 		++it
 	)
 	{
