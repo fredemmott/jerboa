@@ -34,7 +34,7 @@ inline QString albumSortKey(const QString& album)
 	QString::ConstIterator end = input.constEnd();
 	for(
 		QString::Iterator it = input.begin();
-		it != input.end();
+		it != end;
 		++it
 	)
 	{
