@@ -32,62 +32,56 @@ inline QString albumSortKey(const QString& album)
 
 	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
 	QString::ConstIterator end = input.constEnd();
+	QList<int> numberStarts;
+	QList<int> numberLengths;
+	int index = 0;
+	int numberCount = 0;
+	bool inNumber = false;
 	for(
 		QString::Iterator it = input.begin();
 		it != end;
-		++it
+		++it, ++index
 	)
 	{
 		if(!it->isLetterOrNumber())
 		{
 			*it = '!';
 		}
-	}
-
-	// Pad numbers to six figures
-	QString buffer;
-	QString albumSort;
-	bool inNumerics = false;
-	end = input.constEnd();
-	for(
-		QString::ConstIterator it = input.constBegin();
-		it != end;
-		++it
-	)
-	{
-		const bool nowNumerics = it->isNumber();
-		if(nowNumerics != inNumerics)
+		const bool nowNumber = it->isNumber();
+		if(nowNumber != inNumber)
 		{
-			if(inNumerics)
+			if(nowNumber)
 			{
-				albumSort.append(buffer.right(6));
+				numberStarts.append(index);
+				numberCount = 1;
 			}
 			else
 			{
-				albumSort.append(buffer);
+				numberLengths.append(numberCount);
+				numberCount = 0;
 			}
-			if(nowNumerics)
-			{
-				buffer = numberPad;
-			}
-			else
-			{
-				buffer.clear();
-			}
-			inNumerics = nowNumerics;
+			inNumber = nowNumber;
 		}
-		buffer.append(*it);
+		else if(inNumber)
+		{
+			++numberCount;
+		}
 	}
-	if(inNumerics)
+	if(inNumber)
 	{
-		albumSort.append(buffer.right(6));
-	}
-	else
-	{
-		albumSort.append(buffer);
+		numberLengths.append(numberCount);
 	}
 
-	return albumSort;
+	int offset = 0;
+	const int numberCounts = numberLengths.count();
+	for(int i = 0; i < numberCounts; ++i)
+	{
+		const int padLength = 6 - numberLengths.at(i);
+		input.insert(numberStarts.at(i) + offset, QString(padLength, QChar('0')));
+		offset += padLength;
+	}
+
+	return input;
 }
 
 namespace Jerboa
