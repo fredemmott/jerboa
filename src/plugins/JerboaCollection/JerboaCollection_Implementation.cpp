@@ -80,19 +80,30 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 
 void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed)
 {
+	// Added
 	Q_FOREACH(const Jerboa::TrackData& track, added)
 	{
 		Q_ASSERT(!m_tracks.contains(track));
 		m_tracks.append(track);
 	}
-	emit tracksAdded(added);
+	if(!added.isEmpty())
+	{
+		emit tracksAdded(added);
+	}
+
+	// Modified
 	Q_FOREACH(const Jerboa::TrackData& track, modified)
 	{
 		const int index = m_tracks.indexOf(track);
 		Q_ASSERT(index >= 0);
 		m_tracks.replace(index, track);
 	}
-	emit tracksModified(modified);
+	if(!modified.isEmpty())
+	{
+		emit tracksModified(modified);
+	}
+
+	// Removed
 	QList<QUrl> removedUrls;
 	Q_FOREACH(const Jerboa::TrackData& track, m_tracks)
 	{
@@ -102,7 +113,10 @@ void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackDat
 			removedUrls.append(track.url());
 		}
 	}
-	emit tracksRemoved(removedUrls);
+	if(!removedUrls.isEmpty())
+	{
+		emit tracksRemoved(removedUrls);
+	}
 }
 
 QVector<Jerboa::TrackData> JerboaCollection::Implementation::tracks() const
