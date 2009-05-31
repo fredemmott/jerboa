@@ -22,6 +22,7 @@ class CollectionWidget : public QWidget
 		void addItemToPlaylist(const QModelIndex& index);
 		void updateSearch();
 		void acceptSearch();
+		void expandArtists();
 	private:
 		QTimer m_timer;
 		Jerboa::PlaylistInterface* m_playlist;

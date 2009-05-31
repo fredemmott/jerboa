@@ -9,6 +9,11 @@
 #include <QRegExp>
 #include <QSet>
 
+inline uint qHash(const QUrl& url)
+{
+	return qHash(url.toString());
+}
+
 template<typename T> QSharedPointer<T> sharePtr(T* raw) { return QSharedPointer<T>(raw); }
 
 NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterface* collection, QObject* parent)
@@ -27,6 +32,8 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 	QString previousAlbum;
 	Q_FOREACH(const Jerboa::TrackData& track, m_tracks)
 	{
+		m_tracksFromUrls.insert(track.url(), track);
+
 		if(previousArtist != track.albumArtist())
 		{
 			++artistIndex;
@@ -99,6 +106,12 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 	);
 	connect(
 		collection,
+		SIGNAL(tracksModified(QList<Jerboa::TrackData>)),
+		this,
+		SLOT(updateTracks(QList<Jerboa::TrackData>))
+	);
+	connect(
+		collection,
 		SIGNAL(tracksRemoved(QList<QUrl>)),
 		this,
 		SLOT(removeTracks(QList<QUrl>))
@@ -120,6 +133,7 @@ void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackD
 	for(int i = 0; i < trackCount; ++i)
 	{
 		const Jerboa::TrackData& track = tracks.at(i);
+		m_tracksFromUrls.insert(track.url(), track);
 
 		// See if we've the artist/album has changed
 		if(track.albumArtist() != currentArtist || track.album() != currentAlbum)
@@ -144,15 +158,14 @@ void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackD
 	qSort(m_tracks);
 }
 
-void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jerboa::TrackData>& tracks)
+int NestedCollectionModel::Implementation::findOrCreateArtist(const Jerboa::TrackData& track, bool* created)
 {
-	const Jerboa::TrackData& first = tracks.first();
-	int artistPosition = m_artists.indexOf(first.albumArtist());
+	int artistPosition = m_artists.indexOf(track.albumArtist());
 
 	if(artistPosition == -1)
 	{
 		// New artist
-		const QString sortKey = first.albumArtistRomanised().toLower();
+		const QString sortKey = track.albumArtistRomanised().toLower();
 		// Add our sort key to the sort list
 		m_artistSortOrder.append(sortKey);
 		// Sort the sort list
@@ -163,7 +176,7 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 		beginInsertRows(QModelIndex(), artistPosition, artistPosition);
 
 		// Add artist to its' lists
-		m_artists.insert(artistPosition, first.albumArtist());
+		m_artists.insert(artistPosition, track.albumArtist());
 
 		Item* item = new Item();
 		item->type = Item::ArtistItem;
@@ -177,20 +190,40 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 		m_trackItems.insert(artistPosition, QVector< QVector< QSharedPointer<Item> > >());
 
 		endInsertRows();
+
+		if(created)
+		{
+			*created = true;
+		}
+	}
+	else if(created)
+	{
+		*created = false;
 	}
 
-	const QPersistentModelIndex artistIndex = index(artistPosition, 0);
+	return artistPosition;
+}
 
-	int albumPosition = m_albumsForArtists.value(artistPosition).indexOf(first.album());
+int NestedCollectionModel::Implementation::findOrCreateAlbum(const Jerboa::TrackData& track, int artistPosition, bool* created)
+{
+	if(artistPosition == -1)
+	{
+		artistPosition = findOrCreateArtist(track);
+	}
+	Q_ASSERT(artistPosition != -1);
+	const QPersistentModelIndex artistIndex = index(artistPosition, 0);
+	Q_ASSERT(artistIndex.isValid());
+
+	int albumPosition = m_albumsForArtists.value(artistPosition).indexOf(track.album());
 	if(albumPosition == -1)
 	{
 		// New album, add it
 		// Figure out the position
 		QStringList albums = m_albumsForArtists.at(artistPosition);
-		albums.append(first.album());
+		albums.append(track.album());
 		qSort(albums);
 
-		albumPosition = albums.indexOf(first.album());
+		albumPosition = albums.indexOf(track.album());
 
 		beginInsertRows(artistIndex, albumPosition, albumPosition);
 
@@ -204,13 +237,35 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 		// Expand the track list
 		m_tracksForAlbums[artistPosition].insert(albumPosition, QList<Jerboa::TrackData>());
 		m_trackItems[artistPosition].insert(albumPosition, QVector< QSharedPointer<Item> >());
+
+		endInsertRows();
+
+		if(created)
+		{
+			*created = true;
+		}
 	}
+	else if(created)
+	{
+		*created = false;
+	}
+	return albumPosition;
+}
 
-	const QPersistentModelIndex albumIndex = index(albumPosition, 0, artistIndex);
+void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jerboa::TrackData>& tracks)
+{
+	const Jerboa::TrackData& first = tracks.first();
 
+	int artistPosition = findOrCreateArtist(first);
+	Q_ASSERT(artistPosition != -1);
+	const QPersistentModelIndex artistIndex = index(artistPosition, 0);
 	Q_ASSERT(artistIndex.isValid());
+
+	const int albumPosition = findOrCreateAlbum(first, artistPosition);
+	Q_ASSERT(albumPosition != -1);
+	const QPersistentModelIndex albumIndex = index(albumPosition, 0, artistIndex);
 	Q_ASSERT(albumIndex.isValid());
-	
+
 	// Okay, got everything, now work out if post-insert which of these are contiguous
 	QList< QList<Jerboa::TrackData> > contiguousSets;
 	QList<Jerboa::TrackData> currentSet;
@@ -226,6 +281,7 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 		if(index != previousIndex + 1 && ! currentSet.isEmpty())
 		{
 			contiguousSets.append(currentSet);
+			currentSet.clear();
 		}
 		currentSet.append(track);
 		previousIndex = index;
@@ -263,8 +319,118 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 	}
 }
 
-void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::TrackData>& tracks)
+void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::TrackData>& _tracks)
 {
+	if(_tracks.isEmpty())
+	{
+		return;
+	}
+
+	QList<Jerboa::TrackData> tracks(_tracks);
+	qSort(tracks);
+
+	QList< QList<Jerboa::TrackData> > contiguousSets;
+	QList<Jerboa::TrackData> currentSet;
+
+	QString previousAlbum;
+	int previousIndex = -1;
+
+	Q_FOREACH(const Jerboa::TrackData& track, tracks)
+	{
+		const int index = m_tracks.indexOf(m_tracksFromUrls.value(track.url()));
+		Q_ASSERT(index != -1);
+		if(
+			(
+				index != previousIndex + 1
+				||
+				previousAlbum != track.album()
+			)
+			&&
+			!currentSet.isEmpty()
+		)
+		{
+			contiguousSets.append(currentSet);
+			currentSet.clear();
+		}
+		currentSet.append(track);
+		previousAlbum = track.album();
+	}
+	if(!currentSet.isEmpty())
+	{
+		contiguousSets.append(currentSet);
+	}
+	Q_FOREACH(const QList<Jerboa::TrackData>& set, contiguousSets)
+	{
+		updateContiguousTracks(set);
+	}
+}
+
+void NestedCollectionModel::Implementation::updateContiguousTracks(const QList<Jerboa::TrackData>& tracks)
+{
+	const Jerboa::TrackData& first = tracks.first();
+
+	bool newArtist;
+	bool newAlbum;
+
+	const int artistPosition = findOrCreateArtist(first, &newArtist);
+	Q_ASSERT(artistPosition != -1);
+	const QModelIndex artistIndex = index(artistPosition, 0, QModelIndex());
+	Q_ASSERT(artistIndex.isValid());
+
+	const int albumPosition = findOrCreateAlbum(first, artistPosition, &newAlbum);
+	Q_ASSERT(albumPosition != -1);
+	const QModelIndex albumIndex = index(albumPosition, 0, artistIndex);
+	Q_ASSERT(albumIndex.isValid());
+
+	QHash<QUrl, Jerboa::TrackData> newTracks;
+	QList<QUrl> urls;
+	Q_FOREACH(const Jerboa::TrackData& track, tracks)
+	{
+		newTracks.insert(track.url(), track);
+		urls.append(track.url());
+	}
+
+	if(newArtist || newAlbum)
+	{
+		// Remove and insert
+		removeTracks(urls);
+		addTracks(tracks);
+	}
+	else
+	{
+		// Update
+	
+		// Replace the data
+		QList<Jerboa::TrackData>& albumTracks = m_tracksForAlbums[artistPosition][albumPosition];
+		Q_FOREACH(const Jerboa::TrackData& oldTrack, albumTracks)
+		{
+			if(newTracks.contains(oldTrack.url()))
+			{
+				const int index = albumTracks.indexOf(oldTrack);
+				albumTracks.replace(index, newTracks.value(oldTrack.url()));
+			}
+		}
+	
+		const int firstPosition = albumTracks.indexOf(first);
+		const int lastPosition = albumTracks.indexOf(tracks.last());
+	
+		for(int i = firstPosition; i <= lastPosition; ++i)
+		{
+			m_trackItems[artistPosition][albumPosition][i]->data = albumTracks.at(i);
+		}
+
+		Q_FOREACH(const Jerboa::TrackData& track, m_tracks)
+		{
+			if(urls.contains(track.url()))
+			{
+				m_tracks.remove(m_tracks.indexOf(track));
+			}
+		}
+		m_tracks += tracks.toVector();
+		qSort(m_tracks);
+	
+		emit dataChanged(index(firstPosition, 0, albumIndex), index(lastPosition, 0, albumIndex));
+	}
 }
 
 void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls)
@@ -347,6 +513,7 @@ void NestedCollectionModel::Implementation::trimEmptyParents()
 			const QModelIndex albumIndex(index(albumPosition, 0, artistIndex));
 			if(rowCount(albumIndex) == 0)
 			{
+				qDebug() << Q_FUNC_INFO << __LINE__ << "Removing album" << m_albumsForArtists.at(artistPosition).at(albumPosition);
 				beginRemoveRows(artistIndex, albumPosition, albumPosition);
 				m_albumItems[artistPosition].remove(albumPosition);
 				m_albumsForArtists[artistPosition].removeAt(albumPosition);

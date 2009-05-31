@@ -62,6 +62,17 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 		this,
 		SLOT(addItemToPlaylist(QModelIndex))
 	);
+	connect(
+		m_filter,
+		SIGNAL(rowsInserted(QModelIndex, int, int)),
+		this,
+		SLOT(expandArtists())
+	);
+}
+
+void CollectionWidget::expandArtists()
+{
+	m_treeView->expandToDepth(0);
 }
 
 void CollectionWidget::updateSearch()
