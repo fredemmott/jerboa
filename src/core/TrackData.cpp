@@ -18,19 +18,30 @@
 #include "TrackData_p.h"
 
 #include <QDebug>
-#include <QRegExp>
 #include <QStringList>
 #include <QTime>
 
+/// Human-sensible sorting for album names
 inline QString albumSortKey(const QString& album)
 {
+	/* This used to use regexes (see git history).
+	 *
+	 * Enabling this made a very noticable slowdown on launch.
+	 *
+	 * This version, without regular expressions, is around 20 times
+	 * as fast.
+	 * 
+	 * Sorry that it's less readable.
+	 */
+
 	static QChar zero('0');
-	// Need to make a new Album record - this needs a sortKey
+
 	// Eat spaces
 	QString input = album;
 	input.remove(' ');
 
-	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
+	// Replace symbols with '!' (ascii sorting precendence for that symbol;
+	// it's before the letters), and find the start and length of any numbers
 	QVector<int> numberStarts;
 	QVector<int> numberLengths;
 
@@ -75,11 +86,16 @@ inline QString albumSortKey(const QString& album)
 		}
 	}
 
+	// Pad all numbers to 6 digits long
 	int offset = 0;
 	const int numberCounts = numberLengths.count();
 	for(int i = 0; i < numberCounts; ++i)
 	{
 		const int padLength = 6 - numberLengths.at(i);
+		if(padLength <= 0)
+		{
+			continue;
+		}
 		input.insert(numberStarts.at(i) + offset, QString(padLength, zero));
 		offset += padLength;
 	}
@@ -140,8 +156,7 @@ namespace Jerboa
 	
 		const QString aAlbumLower = albumSortKey(a.album());
 		const QString bAlbumLower = albumSortKey(b.album());
-//		const QString aAlbumLower = a.album().toLower();	
-//		const QString bAlbumLower = b.album().toLower();	
+
 		if(aAlbumLower < bAlbumLower)
 		{
 			return true;
