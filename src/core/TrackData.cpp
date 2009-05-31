@@ -31,45 +31,48 @@ inline QString albumSortKey(const QString& album)
 	input.remove(' ');
 
 	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
-	QString::ConstIterator end = input.constEnd();
-	QList<int> numberStarts;
-	QList<int> numberLengths;
-	int index = 0;
-	int numberCount = 0;
-	bool inNumber = false;
-	for(
-		QString::Iterator it = input.begin();
-		it != end;
-		++it, ++index
-	)
+	QVector<int> numberStarts;
+	QVector<int> numberLengths;
+
 	{
-		if(!it->isLetterOrNumber())
+		const QString::Iterator end = input.end();
+		int index = 0;
+		int numberCount = 0;
+		bool inNumber = false;
+		for(
+			QString::Iterator it = input.begin();
+			it != end;
+			++it, ++index
+		)
 		{
-			*it = '!';
-		}
-		const bool nowNumber = it->isNumber();
-		if(nowNumber != inNumber)
-		{
-			if(nowNumber)
+			if(!it->isLetterOrNumber())
 			{
-				numberStarts.append(index);
-				numberCount = 1;
+				*it = '!';
 			}
-			else
+			const bool nowNumber = it->isNumber();
+			if(nowNumber != inNumber)
 			{
-				numberLengths.append(numberCount);
-				numberCount = 0;
+				if(nowNumber)
+				{
+					numberStarts.append(index);
+					numberCount = 1;
+				}
+				else
+				{
+					numberLengths.append(numberCount);
+					numberCount = 0;
+				}
+				inNumber = nowNumber;
 			}
-			inNumber = nowNumber;
+			else if(inNumber)
+			{
+				++numberCount;
+			}
 		}
-		else if(inNumber)
+		if(inNumber)
 		{
-			++numberCount;
+			numberLengths.append(numberCount);
 		}
-	}
-	if(inNumber)
-	{
-		numberLengths.append(numberCount);
 	}
 
 	int offset = 0;
