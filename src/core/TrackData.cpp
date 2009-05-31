@@ -24,7 +24,7 @@
 
 inline QString albumSortKey(const QString& album)
 {
-	static const QString numberPad("00000");
+	static QChar zero('0');
 	// Need to make a new Album record - this needs a sortKey
 	// Eat spaces
 	QString input = album;
@@ -80,7 +80,7 @@ inline QString albumSortKey(const QString& album)
 	for(int i = 0; i < numberCounts; ++i)
 	{
 		const int padLength = 6 - numberLengths.at(i);
-		input.insert(numberStarts.at(i) + offset, QString(padLength, QChar('0')));
+		input.insert(numberStarts.at(i) + offset, QString(padLength, zero));
 		offset += padLength;
 	}
 
