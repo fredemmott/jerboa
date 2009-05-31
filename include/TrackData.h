@@ -101,6 +101,9 @@ namespace Jerboa
 			 * If the TrackData object is invalid, it returns an empty map.
 			 */
 			QVariantMap mprisData() const;
+
+			/// Human-sensible album sorting
+			static bool albumLessThan(const QString& a, const QString& b);
 		private:
 			QSharedDataPointer<TrackDataPrivate> d;
 	};

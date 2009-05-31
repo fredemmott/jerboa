@@ -105,6 +105,11 @@ inline QString albumSortKey(const QString& album)
 
 namespace Jerboa
 {
+	bool TrackData::albumLessThan(const QString& a, const QString& b)
+	{
+		return albumSortKey(a) < albumSortKey(b);
+	}
+
 	TrackData::TrackData(
 		const QUrl& url,
 		const QString& album,

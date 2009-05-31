@@ -221,7 +221,7 @@ int NestedCollectionModel::Implementation::findOrCreateAlbum(const Jerboa::Track
 		// Figure out the position
 		QStringList albums = m_albumsForArtists.at(artistPosition);
 		albums.append(track.album());
-		qSort(albums);
+		qSort(albums.begin(), albums.end(), Jerboa::TrackData::albumLessThan);
 
 		albumPosition = albums.indexOf(track.album());
 
