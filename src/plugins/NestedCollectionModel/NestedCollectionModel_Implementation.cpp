@@ -515,10 +515,12 @@ void NestedCollectionModel::Implementation::trimEmptyParents()
 			const QModelIndex albumIndex(index(albumPosition, 0, artistIndex));
 			if(rowCount(albumIndex) == 0)
 			{
-				qDebug() << Q_FUNC_INFO << __LINE__ << "Removing album" << m_albumsForArtists.at(artistPosition).at(albumPosition);
 				beginRemoveRows(artistIndex, albumPosition, albumPosition);
 				m_albumItems[artistPosition].remove(albumPosition);
 				m_albumsForArtists[artistPosition].removeAt(albumPosition);
+
+				m_trackItems[artistPosition].remove(albumPosition);
+				m_tracksForAlbums[artistPosition].removeAt(albumPosition);
 				endRemoveRows();
 				--albumPosition;
 			}
