@@ -739,19 +739,6 @@ int NestedCollectionModel::Implementation::rowCount(const QModelIndex& parent) c
 	return 0;
 }
 
-QString NestedCollectionModel::Implementation::albumSortKey(const QString& albumName)
-{
-	// Need to make a new Album record - this needs a sortKey
-	// Eat spaces
-	QString albumSort = QString(albumName.toLower()).replace(" ", "");
-	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
-	albumSort.replace(QRegExp("\\W"), "!");
-	// Pad numbers to six figures
-	albumSort.replace(QRegExp("(\\d+)"), "00000\\1");
-	albumSort.replace(QRegExp("\\d+(\\d{6})"), "\\1");
-	return albumSort;
-}
-
 QModelIndex NestedCollectionModel::Implementation::index(int row, int column, const QModelIndex& parent) const
 {
 	if(column != 0 || row < 0)

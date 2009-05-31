@@ -68,8 +68,6 @@ class NestedCollectionModel::Implementation : public QAbstractItemModel
 		QList<QString> m_artistSortOrder;
 		QList<QStringList> m_albumsForArtists;
 		QList<QList<QList<Jerboa::TrackData> > > m_tracksForAlbums;
-
-		static QString albumSortKey(const QString& album);
 };
 
 #endif

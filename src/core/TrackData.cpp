@@ -18,7 +18,22 @@
 #include "TrackData_p.h"
 
 #include <QDebug>
+#include <QRegExp>
 #include <QStringList>
+#include <QTime>
+
+inline QString albumSortKey(const QString& albumName)
+{
+	// Need to make a new Album record - this needs a sortKey
+	// Eat spaces
+	QString albumSort = QString(albumName.toLower()).replace(" ", "");
+	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
+	albumSort.replace(QRegExp("\\W"), "!");
+	// Pad numbers to six figures
+	albumSort.replace(QRegExp("(\\d+)"), "00000\\1");
+	albumSort.replace(QRegExp("\\d+(\\d{6})"), "\\1");
+	return albumSort;
+}
 
 namespace Jerboa
 {
@@ -71,9 +86,10 @@ namespace Jerboa
 			return false;
 		}
 	
-		const QString aAlbumLower = a.album().toLower();
-		const QString bAlbumLower = b.album().toLower();
-	
+		const QString aAlbumLower = albumSortKey(a.album());
+		const QString bAlbumLower = albumSortKey(b.album());
+//		const QString aAlbumLower = a.album().toLower();	
+//		const QString bAlbumLower = b.album().toLower();	
 		if(aAlbumLower < bAlbumLower)
 		{
 			return true;
