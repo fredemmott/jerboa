@@ -154,8 +154,15 @@ void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackD
 		addTracksInSameAlbum(tracks.mid(first, count));
 	}
 
-	m_tracks += tracks.toVector();
-	qSort(m_tracks);
+	QVector<Jerboa::TrackData>::Iterator it = m_tracks.begin();
+	Q_FOREACH(const Jerboa::TrackData& track, tracks)
+	{
+		while(it != m_tracks.end() && *it < track)
+		{
+			++it;
+		}
+		m_tracks.insert(it, track);
+	}
 }
 
 int NestedCollectionModel::Implementation::findOrCreateArtist(const Jerboa::TrackData& track, bool* created)
