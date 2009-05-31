@@ -31,13 +31,14 @@ inline QString albumSortKey(const QString& album)
 	input.remove(' ');
 
 	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
+	QString::ConstIterator end = input.constEnd();
 	for(
 		QString::Iterator it = input.begin();
 		it != input.end();
 		++it
 	)
 	{
-		if(! (it->isLetterOrNumber() || it->isSpace()))
+		if(!it->isLetterOrNumber())
 		{
 			*it = '!';
 		}
@@ -47,7 +48,7 @@ inline QString albumSortKey(const QString& album)
 	QString buffer;
 	QString albumSort;
 	bool inNumerics = false;
-	const QString::ConstIterator end = input.constEnd();
+	end = input.constEnd();
 	for(
 		QString::ConstIterator it = input.constBegin();
 		it != end;
