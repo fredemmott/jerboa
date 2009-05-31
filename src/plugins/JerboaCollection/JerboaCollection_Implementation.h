@@ -7,7 +7,8 @@
 
 class CollectionScanner;
 
-class QDir;
+#include <QDir>
+
 class QFileSystemWatcher;
 
 class JerboaCollection::Implementation : public Jerboa::CollectionInterface
@@ -18,8 +19,10 @@ class JerboaCollection::Implementation : public Jerboa::CollectionInterface
 		QVector<Jerboa::TrackData> tracks() const;
 	private slots:
 		void applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed);
+		void rescanTree();
 	private:
 		void monitorDirectory(const QDir& directory);
+		const QDir m_directory;
 		QVector<Jerboa::TrackData> m_tracks;
 
 		QFileSystemWatcher* m_watcher;

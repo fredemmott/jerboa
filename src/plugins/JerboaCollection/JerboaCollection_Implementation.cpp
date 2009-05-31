@@ -16,16 +16,17 @@ void JerboaCollection::Implementation::monitorDirectory(const QDir& directory)
 	if(!m_watcher->directories().contains(directory.absolutePath()))
 	{
 		m_watcher->addPath(directory.absolutePath());
-		Q_FOREACH(const QString& subdirectory, directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
-		{
-			monitorDirectory(directory.absolutePath() + "/" + subdirectory);
-		}
+	}
+	Q_FOREACH(const QString& subdirectory, directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+	{
+		monitorDirectory(directory.absolutePath() + "/" + subdirectory);
 	}
 }
 
 JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, QObject* parent)
 	:
 		CollectionInterface(parent),
+		m_directory(QSettings().value("collection/directory").toString()),
 		m_collectionScanner(new CollectionScanner(tagReader, this))
 {
 	connect(
@@ -35,12 +36,12 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 		SLOT(applyChanges(QList<Jerboa::TrackData>,QList<Jerboa::TrackData>,QStringList))
 	);
 	m_watcher = new QFileSystemWatcher(this);
-	monitorDirectory(QDir(QSettings().value("collection/directory").toString()));
+	monitorDirectory(m_directory);
 	connect(
 		m_watcher,
 		SIGNAL(directoryChanged(QString)),
-		m_collectionScanner,
-		SLOT(run())
+		this,
+		SLOT(rescanTree())
 	);
 
 	m_collectionScanner->run();
@@ -76,6 +77,12 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 			)
 		);
 	}
+}
+
+void JerboaCollection::Implementation::rescanTree()
+{
+	m_collectionScanner->run();
+	monitorDirectory(m_directory);
 }
 
 void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed)
