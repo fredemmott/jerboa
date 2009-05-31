@@ -22,16 +22,69 @@
 #include <QStringList>
 #include <QTime>
 
-inline QString albumSortKey(const QString& albumName)
+inline QString albumSortKey(const QString& album)
 {
+	static const QString numberPad("00000");
 	// Need to make a new Album record - this needs a sortKey
 	// Eat spaces
-	QString albumSort = QString(albumName.toLower()).replace(" ", "");
+	QString input = album;
+	input.replace(' ', QString());
+
 	// Replaces symbols with ! ("Foo: bar" comes before "Foo 2: Bar")
-	albumSort.replace(QRegExp("\\W"), "!");
+	for(
+		QString::Iterator it = input.begin();
+		it != input.end();
+		++it
+	)
+	{
+		if(! (it->isLetterOrNumber() || it->isSpace()))
+		{
+			*it = '!';
+		}
+	}
+
 	// Pad numbers to six figures
-	albumSort.replace(QRegExp("(\\d+)"), "00000\\1");
-	albumSort.replace(QRegExp("\\d+(\\d{6})"), "\\1");
+	QString buffer;
+	QString albumSort;
+	bool inNumerics = false;
+	for(
+		QString::ConstIterator it = input.constBegin();
+		it != input.constEnd();
+		++it
+	)
+	{
+		const bool nowNumerics = it->isNumber();
+		if(nowNumerics != inNumerics)
+		{
+			if(inNumerics)
+			{
+				albumSort.append(buffer.right(6));
+			}
+			else
+			{
+				albumSort.append(buffer);
+			}
+			if(nowNumerics)
+			{
+				buffer = numberPad;
+			}
+			else
+			{
+				buffer.clear();
+			}
+			inNumerics = nowNumerics;
+		}
+		buffer.append(*it);
+	}
+	if(inNumerics)
+	{
+		albumSort.append(buffer.right(6));
+	}
+	else
+	{
+		albumSort.append(buffer);
+	}
+
 	return albumSort;
 }
 
