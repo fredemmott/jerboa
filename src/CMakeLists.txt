@@ -10,12 +10,14 @@ SET(
 	PlaylistModel
 	ReplayGain
 	Scrobbler
+	SeekToolBar
 	StandardContainer
 	StandardPlaylistView
 	StandardToolBar
 	StartPlaybackOnTrackAppend
 	TagLibTagReader
 	TrayIcon
+	VolumeToolBar
 )
 IF(UNIX AND NOT APPLE)
 	LIST(APPEND PLUGINS Mpris) # D-Bus requirement
