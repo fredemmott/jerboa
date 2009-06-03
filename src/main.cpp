@@ -17,10 +17,13 @@
 
 #include "CollectionInterface.h"
 #include "Container.h"
-#include "core/modeltest.h"
 #include "PlaylistInterface.h"
 #include "StaticPlugins.h"
 #include "Plugin.h"
+
+#ifdef WITH_DEBUG_FEATURES
+#include "core/modeltest.h"
+#endif
 
 #include <QAbstractItemModel>
 #include <QApplication>
@@ -119,11 +122,13 @@ int main(int argc, char** argv)
 		Q_FOREACH(Jerboa::Plugin* p, componentProviders.values(type))
 		{
 			QObject* component = p->component(type, container);
+#ifdef WITH_DEBUG_FEATURES
 			QAbstractItemModel* model = qobject_cast<QAbstractItemModel*>(component);
 			if(model)
 			{
 				new ModelTest(model, &app);
 			}
+#endif
 			Q_FOREACH(Jerboa::Plugin* q, plugins)
 			{
 				q->addComponent(type, component);

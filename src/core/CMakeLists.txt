@@ -15,8 +15,11 @@ SET(
 	PRIVATE_CLASSES
 	PlayerInterface_p
 	PlaylistInterface_p
-	modeltest
 )
+
+IF("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+	LIST(APPEND PRIVATE_CLASSES modeltest)
+ENDIF()
 
 SET(SOURCES)
 SET(HEADERS)
