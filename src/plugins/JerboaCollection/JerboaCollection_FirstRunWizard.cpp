@@ -24,9 +24,10 @@ JerboaCollection::FirstRunWizard::FirstRunWizard(QWidget* parent)
 
 	QPushButton* button = new QPushButton(
 		style()->standardIcon(QStyle::SP_DirIcon),
-		tr("Select Directory"),
+		QString(),
 		this
 	);
+	button->setToolTip(tr("Find Directory"));
 
 	QHBoxLayout* entryLayout = new QHBoxLayout();
 	entryLayout->addWidget(m_path);
@@ -36,8 +37,33 @@ JerboaCollection::FirstRunWizard::FirstRunWizard(QWidget* parent)
 	mainLayout->addWidget(label);
 	mainLayout->addLayout(entryLayout);
 	setLayout(mainLayout);
+
+	connect(
+		button,
+		SIGNAL(clicked()),
+		SLOT(browseForDirectory())
+	);
+}
+
+void JerboaCollection::FirstRunWizard::browseForDirectory()
+{
+	const QString path = QFileDialog::getExistingDirectory(
+		this,
+		tr("Music Location"),
+		QDesktopServices::storageLocation(QDesktopServices::MusicLocation)
+	);
+	if(!path.isEmpty())
+	{
+		m_path->setText(QDir::toNativeSeparators(path));
+	}
 }
 
 void JerboaCollection::FirstRunWizard::save()
 {
+	QSettings settings;
+	const QDir dir(QDir::fromNativeSeparators(m_path->text()));
+	if(dir.exists())
+	{
+		settings.setValue("collection/directory", dir.absolutePath());
+	}
 }

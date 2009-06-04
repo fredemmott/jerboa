@@ -11,6 +11,8 @@ class JerboaCollection::FirstRunWizard : public Jerboa::WizardPage
 	public:
 		FirstRunWizard(QWidget* parent);
 		void save();
+	private slots:
+		void browseForDirectory();
 	private:
 		const QString m_defaultLocation;
 		QLineEdit* m_path;
