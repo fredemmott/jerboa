@@ -3,15 +3,31 @@
 #include "JerboaCollection_FirstRunWizard.h"
 #include "JerboaCollection_Implementation.h"
 
+#include <QFile>
 #include <QtPlugin>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 QObject* JerboaCollection::component(Jerboa::Plugin::ComponentType type, QObject* parent)
 {
 	switch(type)
 	{
 		case Jerboa::Plugin::CollectionSource:
-			Q_ASSERT(m_tagReader);
-			return new Implementation(m_tagReader, parent);
+			{
+				Q_ASSERT(m_tagReader);
+				QSqlDatabase database;
+				if(!database.tables().contains("Albums"))
+				{
+					QFile sql(":/JerboaCollection/tables.sql");
+					sql.open(QIODevice::ReadOnly);
+					QSqlQuery query;
+					Q_FOREACH(const QString statement, QString(sql.readAll()).split("\n\n"))
+					{
+						query.exec(statement);
+					}
+				}
+				return new Implementation(m_tagReader, parent);
+			}
 		case Jerboa::Plugin::FirstRunWizardPage:
 			return new JerboaCollection::FirstRunWizard(qobject_cast<QWidget*>(parent));
 		default:
@@ -24,6 +40,7 @@ JerboaCollection::JerboaCollection()
 		QObject(0),
 		m_tagReader(0)
 {
+	Q_INIT_RESOURCE(JerboaCollection);
 }
 
 QString JerboaCollection::pluginName() const
