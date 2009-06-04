@@ -1,5 +1,6 @@
 #include "Scrobbler_FirstRunWizard.h"
 
+#include <QCryptographicHash>
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -41,5 +42,11 @@ void Scrobbler::FirstRunWizard::save()
 	QSettings settings;
 	settings.beginGroup("lastfm");
 	settings.setValue("user", m_user->text());
-	settings.setValue("password", m_password->text());
+	settings.setValue(
+		"password",
+		QCryptographicHash::hash(
+			m_password->text().toUtf8(),
+			QCryptographicHash::Md5
+		).toHex()
+	);
 }
