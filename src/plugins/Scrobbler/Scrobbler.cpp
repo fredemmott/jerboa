@@ -44,8 +44,7 @@ void Scrobbler::addComponent(ComponentType type, QObject* component)
 {
 	if(type == Player)
 	{
-		QSqlDatabase database;
-		if(!database.tables().contains("LastFMCache"))
+		if(!QSqlDatabase::database().tables().contains("LastFMCache"))
 		{
 			QFile file(":/Scrobbler/tables.sql");
 			file.open(QIODevice::ReadOnly);

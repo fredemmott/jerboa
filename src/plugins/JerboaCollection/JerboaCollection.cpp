@@ -14,25 +14,18 @@ QObject* JerboaCollection::component(Jerboa::Plugin::ComponentType type, QObject
 	switch(type)
 	{
 		case Jerboa::Plugin::CollectionSource:
+			Q_ASSERT(m_tagReader);
+			if(!QSqlDatabase::database().tables().contains("Albums"))
 			{
-				Q_ASSERT(m_tagReader);
-				QSqlDatabase database;
-				if(!database.tables().contains("Albums"))
+				QFile sql(":/JerboaCollection/tables.sql");
+				sql.open(QIODevice::ReadOnly);
+				QSqlQuery query;
+				Q_FOREACH(const QString statement, QString(sql.readAll()).split("\n\n"))
 				{
-					QFile sql(":/JerboaCollection/tables.sql");
-					sql.open(QIODevice::ReadOnly);
-					QSqlQuery query;
-					Q_FOREACH(const QString statement, QString(sql.readAll()).split("\n\n"))
-					{
-						qDebug() << "Executing query" << statement;
-						if(!query.exec(statement))
-						{
-							qDebug() << query.lastError().text();
-						}
-					}
+					query.exec(statement);
 				}
-				return new Implementation(m_tagReader, parent);
 			}
+			return new Implementation(m_tagReader, parent);
 		case Jerboa::Plugin::FirstRunWizardPage:
 			return new JerboaCollection::FirstRunWizard(qobject_cast<QWidget*>(parent));
 		default:
