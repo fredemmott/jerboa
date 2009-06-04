@@ -1,5 +1,6 @@
 #include "JerboaCollection.h"
 
+#include "JerboaCollection_FirstRunWizard.h"
 #include "JerboaCollection_Implementation.h"
 
 #include <QtPlugin>
@@ -11,6 +12,8 @@ QObject* JerboaCollection::component(Jerboa::Plugin::ComponentType type, QObject
 		case Jerboa::Plugin::CollectionSource:
 			Q_ASSERT(m_tagReader);
 			return new Implementation(m_tagReader, parent);
+		case Jerboa::Plugin::FirstRunWizardPage:
+			return new JerboaCollection::FirstRunWizard(qobject_cast<QWidget*>(parent));
 		default:
 			return Jerboa::Plugin::component(type, parent);
 	}
@@ -40,7 +43,10 @@ QString JerboaCollection::uniqueId() const
 
 QSet<Jerboa::Plugin::ComponentType> JerboaCollection::components() const
 {
-	return QSet<Jerboa::Plugin::ComponentType>() << Jerboa::Plugin::CollectionSource;
+	return QSet<Jerboa::Plugin::ComponentType>()
+		<< Jerboa::Plugin::CollectionSource
+		<< Jerboa::Plugin::FirstRunWizardPage
+	;
 }
 
 void JerboaCollection::addComponent(ComponentType type, QObject* component)

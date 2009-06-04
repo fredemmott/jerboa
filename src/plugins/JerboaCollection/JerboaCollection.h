@@ -19,6 +19,7 @@ class JerboaCollection: public QObject, public Jerboa::Plugin
 		QObject* component(ComponentType, QObject* parent);
 		void addComponent(ComponentType, QObject* component);
 	private:
+		class FirstRunWizard;
 		class Implementation;
 		Jerboa::TagReader* m_tagReader;
 };

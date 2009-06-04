@@ -10,9 +10,12 @@ SET(
 	TrackData
 	TrackData_p
 	Utilities
+	WizardPage
 )
 SET(
 	PRIVATE_CLASSES
+	Application
+	FirstRunWizard
 	PlayerInterface_p
 	PlaylistInterface_p
 )

@@ -3,6 +3,7 @@ SET(
     CollectionScanner
     FileLister
     JerboaCollection
+    JerboaCollection_FirstRunWizard
     JerboaCollection_Implementation
 )
 

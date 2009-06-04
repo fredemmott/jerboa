@@ -97,7 +97,6 @@ QWidget* TrayIcon::mainWindow()
 				break;
 			}
 		}
-		Q_ASSERT(m_mainWindow);
 		if(m_mainWindow)
 		{
 			m_mainWindow->installEventFilter(this);
