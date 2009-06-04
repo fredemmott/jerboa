@@ -133,6 +133,7 @@ void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackD
 	for(int i = 0; i < trackCount; ++i)
 	{
 		const Jerboa::TrackData& track = tracks.at(i);
+		Q_ASSERT(track.isValid());
 		m_tracksFromUrls.insert(track.url(), track);
 
 		// See if we've the artist/album has changed
@@ -154,15 +155,15 @@ void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackD
 		addTracksInSameAlbum(tracks.mid(first, count));
 	}
 
-	QVector<Jerboa::TrackData>::Iterator it = m_tracks.begin();
-	m_tracks.reserve(m_tracks.count() + tracks.count());
+	int i = 0;
+	m_tracks.reserve(m_tracks.count() + tracks.count() );
 	Q_FOREACH(const Jerboa::TrackData& track, tracks)
 	{
-		while(it != m_tracks.end() && *it < track)
+		while(i < m_tracks.count() && m_tracks.at(i) < track)
 		{
-			++it;
+			++i;
 		}
-		m_tracks.insert(it, track);
+		m_tracks.insert(i, track);
 	}
 }
 

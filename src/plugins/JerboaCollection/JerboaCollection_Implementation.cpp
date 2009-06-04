@@ -90,6 +90,7 @@ void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackDat
 	// Added
 	Q_FOREACH(const Jerboa::TrackData& track, added)
 	{
+		Q_ASSERT(track.isValid());
 		Q_ASSERT(!m_tracks.contains(track));
 		m_tracks.append(track);
 	}

@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QtPlugin>
 #include <QSqlDatabase>
+#include <QSqlError>
 #include <QSqlQuery>
 
 QObject* JerboaCollection::component(Jerboa::Plugin::ComponentType type, QObject* parent)
@@ -23,7 +24,11 @@ QObject* JerboaCollection::component(Jerboa::Plugin::ComponentType type, QObject
 					QSqlQuery query;
 					Q_FOREACH(const QString statement, QString(sql.readAll()).split("\n\n"))
 					{
-						query.exec(statement);
+						qDebug() << "Executing query" << statement;
+						if(!query.exec(statement))
+						{
+							qDebug() << query.lastError().text();
+						}
 					}
 				}
 				return new Implementation(m_tagReader, parent);
