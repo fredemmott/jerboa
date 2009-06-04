@@ -36,6 +36,7 @@ namespace Jerboa
 	QWizardPage* FirstRunWizard::createIntroductionPage()
 	{
 		QWizardPage* page = new QWizardPage;
+		page->setFinalPage(true);
 		page->setTitle(tr("Introduction"));
 
 		QLabel* label = new QLabel("Welcome to Jerboa; there's a few settings you might want to change now, but you can just click 'Finish' at any time, and change them later from settings.", page);
