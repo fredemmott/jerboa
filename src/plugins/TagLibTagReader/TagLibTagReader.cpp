@@ -60,7 +60,6 @@ void TagLibTagReader::metaDataChanged()
 	const qreal trackReplayGain = d->getTag<qreal>("REPLAYGAIN-TRACK-GAIN", -10000);
 	const qreal albumReplayGain = d->getTag<qreal>("REPLAYGAIN-ALBUM-GAIN", trackReplayGain);
 	const QString mbid = d->getTag<QString>("MUSICBRAINZ-TRACK-ID", QString());
-	qDebug() << "Read track" << Q_FUNC_INFO << d->currentSource() << d->currentSource().toLocalFile();
 	emit finished(
 		Jerboa::TrackData(
 			d->currentSource(),
