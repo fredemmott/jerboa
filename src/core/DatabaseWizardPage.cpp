@@ -16,10 +16,10 @@ namespace Jerboa
 	DatabaseWizardPage::DatabaseWizardPage(QWidget* parent)
 	: WizardPage(parent)
 	{
-
+		setTitle(tr("Database"));
 		QVBoxLayout* layout = new QVBoxLayout;
 		setLayout(layout);
-		QLabel* label = new QLabel(tr("Where would you like Jerboa to store its collection database? The defaults are fine for most users."), this);
+		QLabel* label = new QLabel(tr("Where would you like Jerboa to store its database? If you don't know what this means, the default is fine."), this);
 		label->setWordWrap(true);
 		layout->addWidget(label);
 
