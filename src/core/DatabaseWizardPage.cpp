@@ -41,6 +41,12 @@ namespace Jerboa
 		formLayout->addRow(tr("Password:"), m_password);
 
 		fillDefaults();
+
+		connect(
+			m_driver,
+			SIGNAL(currentIndexChanged(int)),
+			SLOT(fillDefaults())
+		);
 	}
 
 	void DatabaseWizardPage::fillDefaults()
