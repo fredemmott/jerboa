@@ -265,6 +265,11 @@ void CollectionScanner::processTrack(const Jerboa::TrackData& track)
 		else
 		{
 			m_addedTracks.append(fullTrack);
+			if(m_addedTracks.count() >= 20)
+			{
+				emit finished(m_addedTracks, QList<Jerboa::TrackData>(), QStringList());
+				m_addedTracks.clear();
+			}
 		}
 	}
 
