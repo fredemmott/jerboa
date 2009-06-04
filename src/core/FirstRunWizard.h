@@ -17,7 +17,7 @@ namespace Jerboa
 			virtual void accept();
 		private:
 			static const bool pluginComesBefore(Plugin* a, Plugin* b);
-//			QWizardPage* createIntroductionPage();
+			QWizardPage* createIntroductionPage();
 			QList<WizardPage*> m_pages;
 	};
 }

@@ -4,6 +4,8 @@
 #include "WizardPage.h"
 
 #include <QCoreApplication>
+#include <QLabel>
+#include <QVBoxLayout>
 
 namespace Jerboa
 {
@@ -11,6 +13,7 @@ namespace Jerboa
 	: QWizard(parent)
 	{
 		setWindowTitle(QCoreApplication::applicationName());
+		addPage(createIntroductionPage());
 
 		QList<Plugin*> sortedPlugins(plugins);
 		qSort(sortedPlugins.begin(), sortedPlugins.end(), pluginComesBefore);
@@ -26,7 +29,22 @@ namespace Jerboa
 				}
 			}
 		}
-		addPage(new DatabaseWizardPage());
+		WizardPage* databasePage = new DatabaseWizardPage();
+		addPage(databasePage);
+	}
+
+	QWizardPage* FirstRunWizard::createIntroductionPage()
+	{
+		QWizardPage* page = new QWizardPage;
+		page->setTitle(tr("Introduction"));
+
+		QLabel* label = new QLabel("Welcome to Jerboa; there's a few settings you might want to change now, but you can just click 'Finish' at any time, and change them later from settings.", page);
+		label->setWordWrap(true);
+		QVBoxLayout* layout = new QVBoxLayout;
+		layout->addWidget(label);
+		page->setLayout(layout);
+
+		return page;
 	}
 
 	void FirstRunWizard::accept()
