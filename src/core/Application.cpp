@@ -94,9 +94,15 @@ namespace Jerboa
 		);
 		connect(
 			wizard,
-			SIGNAL(finished(int)),
+			SIGNAL(accepted()),
 			this,
 			SLOT(loadMainWindow())
+		);
+		connect(
+			wizard,
+			SIGNAL(rejected()),
+			this,
+			SLOT(quit())
 		);
 		wizard->show();
 	}
