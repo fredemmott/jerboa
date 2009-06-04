@@ -15,6 +15,7 @@ SET(
 SET(
 	PRIVATE_CLASSES
 	Application
+	DatabaseWizardPage
 	FirstRunWizard
 	PlayerInterface_p
 	PlaylistInterface_p

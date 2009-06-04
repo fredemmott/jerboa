@@ -1,5 +1,6 @@
 #include "FirstRunWizard.h"
 
+#include "DatabaseWizardPage.h"
 #include "WizardPage.h"
 
 #include <QCoreApplication>
@@ -25,6 +26,7 @@ namespace Jerboa
 				}
 			}
 		}
+		addPage(new DatabaseWizardPage());
 	}
 
 	const bool FirstRunWizard::pluginComesBefore(Plugin* a, Plugin* b)
