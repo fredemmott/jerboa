@@ -29,6 +29,15 @@ namespace Jerboa
 		addPage(new DatabaseWizardPage());
 	}
 
+	void FirstRunWizard::accept()
+	{
+		Q_FOREACH(WizardPage* page, m_pages)
+		{
+			page->save();
+		}
+		QDialog::accept();
+	}
+
 	const bool FirstRunWizard::pluginComesBefore(Plugin* a, Plugin* b)
 	{
 		QList<Plugin::ComponentType> aTypes = a->components().toList();

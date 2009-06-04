@@ -14,9 +14,10 @@ namespace Jerboa
 		Q_OBJECT;
 		public:
 			FirstRunWizard(const QList<Plugin*>& plugins, QWidget* parent = 0);
+			virtual void accept();
 		private:
 			static const bool pluginComesBefore(Plugin* a, Plugin* b);
 //			QWizardPage* createIntroductionPage();
-			QList<Jerboa::WizardPage*> m_pages;
+			QList<WizardPage*> m_pages;
 	};
 }
