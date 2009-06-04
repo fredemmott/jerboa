@@ -22,14 +22,18 @@
 #include <QtPlugin>
 #include <QCryptographicHash>
 #include <QDateTime>
+#include <QFile>
 #include <QDebug>
 #include <QSettings>
+#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QStringList>
 
 Scrobbler::Scrobbler() : QObject()
 {
+	Q_INIT_RESOURCE(Scrobbler);
+
 	m_online = false;
 	m_failTime = 0;
 	m_submissionReply = 0;
@@ -40,6 +44,17 @@ void Scrobbler::addComponent(ComponentType type, QObject* component)
 {
 	if(type == Player)
 	{
+		QSqlDatabase database;
+		if(!database.tables().contains("LastFMCache"))
+		{
+			QFile file(":/Scrobbler/tables.sql");
+			file.open(QIODevice::ReadOnly);
+			QSqlQuery query;
+			Q_FOREACH(const QString& statement, QString(file.readAll()).split("\n\n"))
+			{
+				query.exec(statement);
+			}
+		}
 		m_player = qobject_cast<Jerboa::PlayerInterface*>(component);
 		Q_ASSERT(m_player);
 

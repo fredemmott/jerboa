@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/Scrobbler">
+	<file alias="lastfm.png">lastfm_black.png</file>
+	<file>tables.sql</file>
+</qresource>
+</RCC>

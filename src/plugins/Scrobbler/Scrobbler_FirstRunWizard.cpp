@@ -10,6 +10,8 @@ Scrobbler::FirstRunWizard::FirstRunWizard(QWidget* parent)
 : Jerboa::WizardPage(parent)
 {
 	setTitle(QString::fromLatin1("last.fm"));
+	setPixmap(QWizard::LogoPixmap, QPixmap(":/Scrobbler/lastfm.png"));
+
 	QLabel* label = new QLabel(
 		tr("If you use <a href='http://www.last.fm'>last.fm</a>, enter your account details below so that Jerboa can scrobble the tracks you listen to."),
 		this
