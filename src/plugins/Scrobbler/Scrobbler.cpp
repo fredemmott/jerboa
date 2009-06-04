@@ -15,6 +15,7 @@
 	along with Jerboa.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Scrobbler.h"
+#include "Scrobbler_FirstRunWizard.h"
 
 #include "Utilities.h"
 
@@ -102,6 +103,19 @@ void Scrobbler::login()
 	QNetworkReply* reply = m_manager.get(QNetworkRequest(initURL));
 	connect(reply, SIGNAL(finished()), this, SLOT(loginFinished()));
 	connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
+}
+
+QObject* Scrobbler::component(ComponentType type, QObject* parent)
+{
+	Q_ASSERT(type == FirstRunWizardPage);
+	return new FirstRunWizard(qobject_cast<QWidget*>(parent));
+}
+
+QSet<Jerboa::Plugin::ComponentType> Scrobbler::components() const
+{
+	return QSet<Jerboa::Plugin::ComponentType>()
+		<< FirstRunWizardPage
+	;
 }
 
 void Scrobbler::error(QNetworkReply::NetworkError error)

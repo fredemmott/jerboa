@@ -40,12 +40,16 @@ class Scrobbler : public QObject, public Jerboa::Plugin
 		QString pluginAuthor() const;
 		QString uniqueId() const;
 		void addComponent(ComponentType type, QObject* component);
+
+		QObject* component(ComponentType, QObject* parent);
+		QSet<ComponentType> components() const;
 	private slots:
 		void loginFinished();
 		void submitFinished();
 		void error(QNetworkReply::NetworkError code);
 		void playerStateChanged(Jerboa::PlayerInterface::State state);
 	private:
+		class FirstRunWizard;
 		void playbackStarted(const Jerboa::TrackData& track, qint64 length);
 		void playbackPaused();
 		void playbackStopped(); // or end is reached

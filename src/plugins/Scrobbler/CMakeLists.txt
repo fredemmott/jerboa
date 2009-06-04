@@ -1,10 +1,12 @@
 SET(
     SOURCES
     Scrobbler.cpp
+    Scrobbler_FirstRunWizard.cpp
 )
 SET(
     HEADERS
     Scrobbler.h
+    Scrobbler_FirstRunWizard.h
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
