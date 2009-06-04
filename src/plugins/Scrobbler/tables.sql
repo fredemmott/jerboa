@@ -1,10 +1,9 @@
-/* IMPORTANT - \n\n *MUST* separate commands */ 
-CREATE TABLE LastFMCache (
-	TimeStampINT NOT NULL,
-	Length INT NOT NULL,
-	Artist VARCHAR(255) NOT NULL,
-	Album VARCHAR(255) NOT NULL,
-	Name VARCHAR(255) NOT NULL,
-	TrackNumber INT NOT NULL,
-	MBID VARCHAR(255) NOT NULL
+CREATE TABLE `LastFMCache` (
+	`TimeStamp`INT NOT NULL,
+	`Length` INT NOT NULL,
+	`Artist` TEXT NOT NULL,
+	`Album` TEXT NOT NULL,
+	`Name` TEXT NOT NULL,
+	`TrackNumber` INT NOT NULL,
+	`MBID` TEXT NOT NULL
 );
