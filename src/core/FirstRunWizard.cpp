@@ -25,11 +25,13 @@ namespace Jerboa
 				Q_ASSERT(page);
 				if(page)
 				{
+					m_pages.append(page);
 					addPage(page);
 				}
 			}
 		}
 		WizardPage* databasePage = new DatabaseWizardPage();
+		m_pages.append(databasePage);
 		addPage(databasePage);
 	}
 
@@ -52,6 +54,7 @@ namespace Jerboa
 	{
 		Q_FOREACH(WizardPage* page, m_pages)
 		{
+			qDebug() << "Calling save on" << page;
 			page->save();
 		}
 		QDialog::accept();
