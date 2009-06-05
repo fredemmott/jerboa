@@ -11,7 +11,7 @@ StandardToolBar::Implementation::Implementation(
 	Jerboa::PlaylistInterface* playlist,
 	QWidget* parent
 )
-: QToolBar(parent)
+: Jerboa::ToolBar(parent)
 , m_player(player)
 , m_playlist(playlist)
 {

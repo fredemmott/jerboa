@@ -3,16 +3,16 @@
 #include "SeekToolBar.h"
 
 #include "PlayerInterface.h"
-
-#include <QToolBar>
+#include "ToolBar.h"
 
 class QSlider;
 
-class SeekToolBar::Implementation : public QToolBar
+class SeekToolBar::Implementation : public Jerboa::ToolBar
 {
 	Q_OBJECT;
 	public:
 		Implementation(Jerboa::PlayerInterface* player, QWidget* parent);
+		Qt::ToolBarArea initialArea() const;
 	private slots:
 		void reload();
 		void adaptToState(Jerboa::PlayerInterface::State);

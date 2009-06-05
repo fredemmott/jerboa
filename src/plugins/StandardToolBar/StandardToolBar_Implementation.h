@@ -5,13 +5,14 @@
 
 #include "PlayerInterface.h"
 #include "PlaylistInterface.h"
+#include "ToolBar.h"
 
 #include <QToolBar>
 
 class QActionGroup;
 class QSignalMapper;
 
-class StandardToolBar::Implementation : public QToolBar
+class StandardToolBar::Implementation : public Jerboa::ToolBar
 {
 	Q_OBJECT;
 	public:

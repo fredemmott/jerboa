@@ -1,10 +1,11 @@
 #include "MainWindow.h"
 
+#include "ToolBar.h"
+
 #include <QDebug>
 #include <QSplitter>
 #include <QTabBar>
 #include <QTabWidget>
-#include <QToolBar>
 
 MainWindow::MainWindow(
 	QWidget* parent
@@ -27,8 +28,19 @@ void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidg
 			m_leftWidgets.append(component);
 			break;
 		case Jerboa::Plugin::ToolBar:
-			Q_ASSERT(qobject_cast<QToolBar*>(component));
-			addToolBar(qobject_cast<QToolBar*>(component));
+			{
+				Jerboa::ToolBar* toolBar = qobject_cast<Jerboa::ToolBar*>(component);
+				if(toolBar)
+				{
+					addToolBar(toolBar->initialArea(), toolBar);
+				}
+				else
+				{
+					QToolBar* qToolBar = qobject_cast<QToolBar*>(component);
+					Q_ASSERT(qToolBar);
+					addToolBar(qToolBar);
+				}
+			}
 			break;
 		case Jerboa::Plugin::PlaylistView:
 			component->setWindowTitle(tr("Playlist"));

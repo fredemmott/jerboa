@@ -11,7 +11,7 @@ SeekToolBar::Implementation::Implementation(
 	Jerboa::PlayerInterface* player,
 	QWidget* parent
 )
-: QToolBar(parent)
+: Jerboa::ToolBar(parent)
 , m_player(player)
 , m_slider(new QSlider(Qt::Horizontal, this))
 , m_dontPropogateChange(false)
@@ -58,6 +58,11 @@ void SeekToolBar::Implementation::reload()
 	m_slider->setValue(m_player->position());
 	m_slider->setMaximum(m_player->trackLength());
 	m_slider->setDisabled(m_slider->maximum() == 0);
+}
+
+Qt::ToolBarArea SeekToolBar::Implementation::initialArea() const
+{
+	return Qt::BottomToolBarArea;
 }
 
 void SeekToolBar::Implementation::adaptToState(Jerboa::PlayerInterface::State state)

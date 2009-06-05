@@ -13,7 +13,7 @@ VolumeToolBar::Implementation::Implementation(
 	Jerboa::PlayerInterface* player,
 	QWidget* parent
 )
-: QToolBar(parent)
+: Jerboa::ToolBar(parent)
 , m_player(player)
 , m_slider(new QSlider(Qt::Horizontal, this))
 , m_dontPropogateChange(false)
@@ -42,6 +42,11 @@ VolumeToolBar::Implementation::Implementation(
 		SIGNAL(volumeChanged(qreal)),
 		SLOT(volumeChanged(qreal))
 	);
+}
+
+Qt::ToolBarArea VolumeToolBar::Implementation::initialArea() const
+{
+	return Qt::BottomToolBarArea;
 }
 
 void VolumeToolBar::Implementation::changeVolume(int value)
