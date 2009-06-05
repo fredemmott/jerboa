@@ -48,7 +48,6 @@ SeekToolBar::Implementation::Implementation(
 
 void SeekToolBar::Implementation::reload()
 {
-	qDebug() << Q_FUNC_INFO;
 	m_slider->setValue(m_player->position());
 	m_slider->setMaximum(m_player->trackLength());
 	m_slider->setDisabled(m_slider->maximum() == 0);

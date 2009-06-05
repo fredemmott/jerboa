@@ -19,7 +19,6 @@
 #include "PlayerInterface.h"
 
 #include <QtPlugin>
-#include <QDebug>
 #include <QSettings>
 
 ReplayGain::ReplayGain()
@@ -78,7 +77,6 @@ void ReplayGain::adjustReplayGain(const Jerboa::TrackData& track)
 	Q_ASSERT(m_player);
 	if(!(track.isValid() && m_enabled))
 	{
-		qDebug() << "SKIPPING REPLAY GAIN" << track.isValid() << m_enabled;
 		return;
 	}
 

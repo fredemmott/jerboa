@@ -54,7 +54,6 @@ namespace Jerboa
 	{
 		Q_FOREACH(WizardPage* page, m_pages)
 		{
-			qDebug() << "Calling save on" << page;
 			page->save();
 		}
 		QDialog::accept();

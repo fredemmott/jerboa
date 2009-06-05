@@ -3,7 +3,6 @@
 #include "MimeData.h"
 
 #include <QApplication>
-#include <QDebug>
 #include <QFont>
 #include <QPalette>
 #include <QRegExp>
@@ -120,7 +119,6 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 
 void NestedCollectionModel::Implementation::addTracks(const QList<Jerboa::TrackData>& _tracks)
 {
-	qDebug() << Q_FUNC_INFO << __LINE__ << "Adding" << _tracks.count() << "tracks";
 	// Get artists/albums contiguous, and ordered by track number
 	QList<Jerboa::TrackData> tracks(_tracks);
 	qSort(tracks);
@@ -347,7 +345,6 @@ void NestedCollectionModel::Implementation::updateTracks(const QList<Jerboa::Tra
 	Q_FOREACH(const Jerboa::TrackData& track, tracks)
 	{
 		const int index = m_tracks.indexOf(m_tracksFromUrls.value(track.url()));
-		qDebug() << index << previousIndex << previousAlbum << track.album();
 		Q_ASSERT(index != -1);
 		if(
 			(
