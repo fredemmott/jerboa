@@ -17,9 +17,12 @@ SeekToolBar::Implementation::Implementation(
 , m_slider(new QSlider(Qt::Horizontal, this))
 , m_timer(new QTimer(this))
 {
+	m_slider->setSingleStep(1000);
+	m_slider->setPageStep(10000);
 	m_slider->setToolTip(tr("Position"));
-	m_timer->setInterval(1000);
 	addWidget(m_slider);
+
+	m_timer->setInterval(1000);
 
 	connect(
 		m_timer,
