@@ -122,7 +122,7 @@ namespace Jerboa
 		qreal albumRG,
 		qreal trackRG,
 		const QString& musicBrainzID)
-		: d(new TrackDataPrivate)
+		: d(new Private)
 	{
 		QStringList mimeData;
 		mimeData
@@ -188,6 +188,12 @@ namespace Jerboa
 		return d->url == other.d->url;
 	}
 
+	TrackData& TrackData::operator=(const TrackData& other)
+	{
+		d = other.d;
+		return *this;
+	}
+
 	bool TrackData::operator!=(const TrackData& other) const
 	{
 		return ! (other == *this);
@@ -199,14 +205,14 @@ namespace Jerboa
 	}
 
 	TrackData::TrackData(const QString& mimeData)
-		: d(new TrackDataPrivate)
+		: d(new Private)
 	{
 		d->mimeData = mimeData;
 		d->populateMembers();
 		d->valid = true;
 	};
 
-	TrackData::TrackData() : d(new TrackDataPrivate)
+	TrackData::TrackData() : d(new Private)
 	{
 		d->valid = false;
 	}

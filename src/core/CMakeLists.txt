@@ -9,7 +9,6 @@ SET(
 	TagReader
 	ToolBar
 	TrackData
-	TrackData_p
 	Utilities
 	WizardPage
 )
@@ -20,6 +19,7 @@ SET(
 	FirstRunWizard
 	PlayerInterface_p
 	PlaylistInterface_p
+	TrackData_p
 )
 
 IF("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")

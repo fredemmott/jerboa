@@ -17,8 +17,6 @@
 #ifndef _JERBOA_TRACKDATA_H
 #define _JERBOA_TRACKDATA_H
 
-#include "TrackData_p.h"
-
 #include <QSharedDataPointer>
 #include <QString>
 #include <QUrl>
@@ -52,7 +50,10 @@ namespace Jerboa
 			TrackData(const QString& mimeData);
 
 			/// Copy constructor.
-			TrackData(const TrackData &);
+			TrackData(const TrackData& other);
+
+			/// Assignment operator
+			TrackData& operator=(const TrackData& other);
 
 			/** Creates an invalid TrackData object.
 			 * An object created with this constructor will have failed Q_ASSERTs on all of the members
@@ -104,8 +105,10 @@ namespace Jerboa
 
 			/// Human-sensible album sorting
 			static bool albumLessThan(const QString& a, const QString& b);
+
 		private:
-			QSharedDataPointer<TrackDataPrivate> d;
+			class Private;
+			QSharedDataPointer<Private> d;
 	};
 };
 

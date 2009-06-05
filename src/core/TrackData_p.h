@@ -17,13 +17,15 @@
 #ifndef _JERBOA_TRACKDATA_P_H
 #define _JERBOA_TRACKDATA_P_H
 
+#include "TrackData.h"
+
 #include <QSharedData>
 #include <QString>
 #include <QUrl>
 
 namespace Jerboa
 {
-	class TrackDataPrivate : public QSharedData
+	class TrackData::Private : public QSharedData
 	{
 		public:
 			// Functions
