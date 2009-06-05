@@ -18,6 +18,8 @@ VolumeToolBar::Implementation::Implementation(
 , m_slider(new QSlider(Qt::Horizontal, this))
 , m_dontPropogateChange(false)
 {
+	setWindowTitle(tr("Volume"));
+
 	m_slider->setToolTip(tr("Volume"));
 	m_slider->setRange(0, 100);
 	volumeChanged(player->volume());

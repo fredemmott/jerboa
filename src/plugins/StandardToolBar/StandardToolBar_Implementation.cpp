@@ -15,6 +15,8 @@ StandardToolBar::Implementation::Implementation(
 , m_player(player)
 , m_playlist(playlist)
 {
+	setWindowTitle(tr("Player Controls"));
+
 	connect(
 		m_player,
 		SIGNAL(stateChanged(Jerboa::PlayerInterface::State)),
