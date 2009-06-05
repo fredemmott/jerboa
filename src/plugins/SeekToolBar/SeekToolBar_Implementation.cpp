@@ -2,7 +2,7 @@
 
 #include <QAction>
 #include <QActionGroup>
-#include <QIcon>
+#include <QLabel>
 #include <QMenu>
 #include <QSignalMapper>
 #include <QSlider>
@@ -16,6 +16,10 @@ SeekToolBar::Implementation::Implementation(
 , m_slider(new QSlider(Qt::Horizontal, this))
 , m_dontPropogateChange(false)
 {
+	QLabel* label = new QLabel(this);
+	label->setPixmap(QPixmap(":/SeekToolBar/icon.png"));
+	addWidget(label);
+
 	m_slider->setSingleStep(1000);
 	m_slider->setPageStep(10000);
 	m_slider->setToolTip(tr("Position"));

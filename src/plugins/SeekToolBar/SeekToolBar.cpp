@@ -9,7 +9,7 @@ SeekToolBar::SeekToolBar()
 		QObject(0),
 		m_player(0)
 {
-//	Q_INIT_RESOURCE(SeekToolBar);
+	Q_INIT_RESOURCE(SeekToolBar);
 }
 
 QObject* SeekToolBar::component(Jerboa::Plugin::ComponentType type, QObject* parent)
