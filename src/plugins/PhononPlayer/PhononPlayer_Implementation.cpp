@@ -65,11 +65,13 @@ qreal PhononPlayer::Implementation::volumeDecibel() const
 void PhononPlayer::Implementation::setVolume(qreal value)
 {
 	m_output->setVolume(value);
+	emit volumeChanged(value);
 }
 
 void PhononPlayer::Implementation::setVolumeDecibel(qreal value)
 {
 	m_output->setVolumeDecibel(value);
+	emit volumeChanged(volume());
 }
 
 void PhononPlayer::Implementation::queueNextTrack()
