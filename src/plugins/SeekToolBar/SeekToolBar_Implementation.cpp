@@ -16,6 +16,7 @@ SeekToolBar::Implementation::Implementation(
 , m_slider(new QSlider(Qt::Horizontal, this))
 , m_dontPropogateChange(false)
 {
+	setAllowedAreas(Qt::BottomToolBarArea | Qt::TopToolBarArea);
 	setWindowTitle(tr("Track Position"));
 
 	QLabel* label = new QLabel(this);
