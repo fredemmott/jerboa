@@ -18,6 +18,7 @@ SeekToolBar::Implementation::Implementation(
 {
 	setAllowedAreas(Qt::BottomToolBarArea | Qt::TopToolBarArea);
 	setWindowTitle(tr("Track Position"));
+	setObjectName("SeekToolBar");
 
 	QLabel* label = new QLabel(this);
 	label->setPixmap(QPixmap(":/SeekToolBar/icon.png"));

@@ -20,6 +20,7 @@ VolumeToolBar::Implementation::Implementation(
 {
 	setAllowedAreas(Qt::BottomToolBarArea | Qt::TopToolBarArea);
 	setWindowTitle(tr("Volume"));
+	setObjectName("VolumeToolBar");
 
 	m_slider->setToolTip(tr("Volume"));
 	m_slider->setRange(0, 100);

@@ -2,10 +2,14 @@
 
 #include "ToolBar.h"
 
+#include <QCoreApplication>
 #include <QDebug>
+#include <QSettings>
 #include <QSplitter>
 #include <QTabBar>
 #include <QTabWidget>
+
+const int MainWindow::m_stateVersion(2);
 
 MainWindow::MainWindow(
 	QWidget* parent
@@ -14,8 +18,42 @@ MainWindow::MainWindow(
 {
 
 	setUnifiedTitleAndToolBarOnMac(true);
+	QSettings settings;
+	settings.beginGroup("StandardContainerPlugin");
+	restoreGeometry(settings.value("geometry").toByteArray());
 
 	m_splitter = 0;
+
+	connect(
+		qApp,
+		SIGNAL(aboutToQuit()),
+		SLOT(saveSettings())
+	);
+}
+
+void MainWindow::saveSettings()
+{
+	QSettings settings;
+	settings.beginGroup("StandardContainerPlugin");
+	settings.setValue("geometry", saveGeometry());
+	settings.setValue("state", saveState(m_stateVersion));
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+	QMainWindow::closeEvent(event);
+	saveSettings();
+}
+
+void MainWindow::showEvent(QShowEvent* event)
+{
+	QSettings settings;
+	settings.beginGroup("StandardContainerPlugin");
+	restoreGeometry(settings.value("geometry").toByteArray());
+	restoreState(settings.value("state").toByteArray(), m_stateVersion);
+	QMainWindow::showEvent(event);
+	restoreGeometry(settings.value("geometry").toByteArray());
+
 }
 
 void MainWindow::addComponent(Jerboa::Plugin::ComponentType componentType, QWidget* component)

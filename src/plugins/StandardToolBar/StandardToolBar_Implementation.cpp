@@ -16,6 +16,7 @@ StandardToolBar::Implementation::Implementation(
 , m_playlist(playlist)
 {
 	setWindowTitle(tr("Player Controls"));
+	setObjectName("StandardToolBar");
 
 	connect(
 		m_player,

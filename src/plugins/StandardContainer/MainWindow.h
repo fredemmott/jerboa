@@ -15,7 +15,13 @@ class MainWindow : public QMainWindow
 	public:
 		MainWindow(QWidget* parent);
 		void addComponent(Jerboa::Plugin::ComponentType componentType, QWidget* component);
+	protected:
+		void showEvent(QShowEvent* event);
+		void closeEvent(QCloseEvent* event);
+	private slots:
+		void saveSettings();
 	private:
+		static const int m_stateVersion;
 		void setupTabs();
 
 		QList<QWidget*> m_leftWidgets;
