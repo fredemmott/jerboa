@@ -20,6 +20,7 @@ class PhononPlayer::Implementation : public Jerboa::PlayerInterface
 		qreal volume() const;
 		qreal volumeDecibel() const;
 		qint64 trackLength() const;
+		virtual quint64 position() const;
 	public slots:
 		void play();
 		void pause();
@@ -27,6 +28,7 @@ class PhononPlayer::Implementation : public Jerboa::PlayerInterface
 
 		void setVolume(qreal);
 		void setVolumeDecibel(qreal);
+		virtual void setPosition(quint64);
 	protected:
 		void setCurrentTrack(const Jerboa::TrackData& track);
 	private slots:

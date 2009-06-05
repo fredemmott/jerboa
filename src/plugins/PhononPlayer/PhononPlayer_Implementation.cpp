@@ -68,6 +68,20 @@ void PhononPlayer::Implementation::setVolume(qreal value)
 	emit volumeChanged(value);
 }
 
+quint64 PhononPlayer::Implementation::position() const
+{
+	return static_cast<quint64>(m_player->currentTime());
+}
+
+void PhononPlayer::Implementation::setPosition(quint64 position)
+{
+	if(position != this->position())
+	{
+		m_player->seek(static_cast<qint64>(position));
+		emit positionChanged(this->position());
+	}
+}
+
 void PhononPlayer::Implementation::setVolumeDecibel(qreal value)
 {
 	m_output->setVolumeDecibel(value);
