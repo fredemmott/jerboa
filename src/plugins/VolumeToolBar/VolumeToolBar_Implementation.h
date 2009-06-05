@@ -19,4 +19,5 @@ class VolumeToolBar::Implementation : public QToolBar
 	private:
 		Jerboa::PlayerInterface* m_player;
 		QSlider* m_slider;
+		bool m_dontPropogateChange;
 };

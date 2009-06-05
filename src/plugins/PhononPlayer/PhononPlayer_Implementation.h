@@ -35,6 +35,7 @@ class PhononPlayer::Implementation : public Jerboa::PlayerInterface
 		void handlePhononStateChange(Phonon::State newState, Phonon::State oldState);
 		void queueNextTrack();
 		void stopAndClear();
+		void emitPositionChanged(qint64 time);
 	private:
 		void setState(State);
 		State m_state;

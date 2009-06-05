@@ -16,6 +16,7 @@ VolumeToolBar::Implementation::Implementation(
 : QToolBar(parent)
 , m_player(player)
 , m_slider(new QSlider(Qt::Horizontal, this))
+, m_dontPropogateChange(false)
 {
 	m_slider->setToolTip(tr("Volume"));
 	m_slider->setRange(0, 100);
@@ -42,10 +43,20 @@ VolumeToolBar::Implementation::Implementation(
 
 void VolumeToolBar::Implementation::changeVolume(int value)
 {
-	m_player->setVolume(value / 100.0);
+	if(!m_dontPropogateChange)
+	{
+		m_dontPropogateChange = true;
+		m_player->setVolume(value / 100.0);
+		m_dontPropogateChange = false;
+	}
 }
 
 void VolumeToolBar::Implementation::volumeChanged(qreal value)
 {
-	m_slider->setValue(qRound(value * 100));
+	if(!m_dontPropogateChange)
+	{
+		m_dontPropogateChange = true;
+		m_slider->setValue(qRound(value * 100));
+		m_dontPropogateChange = false;
+	}
 }

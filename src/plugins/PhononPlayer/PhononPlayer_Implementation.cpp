@@ -12,6 +12,7 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 	m_output = new Phonon::AudioOutput(Phonon::MusicCategory, this);
 	m_player = new Phonon::MediaObject(this);
 	m_player->setTransitionTime(0);
+	m_player->setTickInterval(200);
 	
 	Phonon::createPath(m_player, m_output);
 
@@ -32,6 +33,12 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 		SIGNAL(finished()),
 		this,
 		SLOT(stopAndClear())
+	);
+	connect(
+		m_player,
+		SIGNAL(tick(qint64)),
+		this,
+		SLOT(emitPositionChanged(qint64))
 	);
 }
 
@@ -57,6 +64,11 @@ qint64 PhononPlayer::Implementation::trackLength() const
 	}
 }
 
+void PhononPlayer::Implementation::emitPositionChanged(qint64 time)
+{
+	emit positionChanged(static_cast<quint64>(time));
+}
+
 qreal PhononPlayer::Implementation::volumeDecibel() const
 {
 	return m_output->volumeDecibel();
@@ -75,10 +87,11 @@ quint64 PhononPlayer::Implementation::position() const
 
 void PhononPlayer::Implementation::setPosition(quint64 position)
 {
-	if(position != this->position())
+	quint64 newPosition = qMin(position, static_cast<quint64>(trackLength()));
+	if(newPosition != this->position())
 	{
-		m_player->seek(static_cast<qint64>(position));
-		emit positionChanged(this->position());
+		m_player->seek(static_cast<qint64>(newPosition));
+		emit positionChanged(newPosition);
 	}
 }
 

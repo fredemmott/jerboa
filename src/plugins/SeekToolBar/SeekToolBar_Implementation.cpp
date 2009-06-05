@@ -6,7 +6,6 @@
 #include <QMenu>
 #include <QSignalMapper>
 #include <QSlider>
-#include <QTimer>
 
 SeekToolBar::Implementation::Implementation(
 	Jerboa::PlayerInterface* player,
@@ -15,20 +14,12 @@ SeekToolBar::Implementation::Implementation(
 : QToolBar(parent)
 , m_player(player)
 , m_slider(new QSlider(Qt::Horizontal, this))
-, m_timer(new QTimer(this))
+, m_dontPropogateChange(false)
 {
 	m_slider->setSingleStep(1000);
 	m_slider->setPageStep(10000);
 	m_slider->setToolTip(tr("Position"));
 	addWidget(m_slider);
-
-	m_timer->setInterval(1000);
-
-	connect(
-		m_timer,
-		SIGNAL(timeout()),
-		SLOT(updatePosition())
-	);
 
 	connect(
 		player,
@@ -47,11 +38,17 @@ SeekToolBar::Implementation::Implementation(
 		SIGNAL(valueChanged(int)),
 		SLOT(changePosition(int))
 	);
+
+	connect(
+		player,
+		SIGNAL(stateChanged(Jerboa::PlayerInterface::State)),
+		SLOT(adaptToState(Jerboa::PlayerInterface::State))
+	);
 }
 
 void SeekToolBar::Implementation::reload()
 {
-	m_timer->stop();
+	qDebug() << Q_FUNC_INFO;
 	m_slider->setValue(m_player->position());
 	m_slider->setMaximum(m_player->trackLength());
 	m_slider->setDisabled(m_slider->maximum() == 0);
@@ -59,28 +56,28 @@ void SeekToolBar::Implementation::reload()
 
 void SeekToolBar::Implementation::adaptToState(Jerboa::PlayerInterface::State state)
 {
-	if(state == Jerboa::PlayerInterface::Loading)
+	if(state == Jerboa::PlayerInterface::Playing)
 	{
 		reload();
-		m_timer->start();
-	}
-	else
-	{
-		m_timer->stop();
 	}
 }
 
 void SeekToolBar::Implementation::changePosition(int newPosition)
 {
-	m_player->setPosition(newPosition);
+	if(!m_dontPropogateChange)
+	{
+		m_dontPropogateChange = true;
+		m_player->setPosition(newPosition);
+		m_dontPropogateChange = false;
+	}
 }
 
 void SeekToolBar::Implementation::moveSlider(quint64 trackPosition)
 {
-	m_slider->setValue(trackPosition);
-}
-
-void SeekToolBar::Implementation::updatePosition()
-{
-	moveSlider(m_player->position());
+	if(!m_dontPropogateChange)
+	{
+		m_dontPropogateChange = true;
+		m_slider->setValue(trackPosition);
+		m_dontPropogateChange = false;
+	}
 }
