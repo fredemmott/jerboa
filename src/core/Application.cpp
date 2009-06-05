@@ -73,7 +73,7 @@ namespace Jerboa
 			}
 		}
 
-		if(QCoreApplication::arguments().contains("--first-run"))
+		if(QCoreApplication::arguments().contains("--first-run") || QSettings().value("firstRun", true).toBool() == true)
 		{
 			loadFirstRunWizard();
 		}
@@ -109,6 +109,7 @@ namespace Jerboa
 
 	void Application::loadMainWindow()
 	{
+		QSettings().setValue("firstRun", false);
 		setupDatabase();
 	
 		Jerboa::Container* container = 0;
