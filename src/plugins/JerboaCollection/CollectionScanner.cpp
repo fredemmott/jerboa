@@ -20,6 +20,7 @@
 
 #include <QDateTime>
 #include <QDebug>
+#include <QMutexLocker>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlDriver>
@@ -78,6 +79,8 @@ void CollectionScanner::skipToNextFile(const QUrl& url)
 
 void CollectionScanner::run()
 {
+	QMutexLocker lock(&m_restartMutex);
+
 	if(m_inProgress)
 	{
 		m_reRun = true;
@@ -98,6 +101,8 @@ void CollectionScanner::run()
 
 void CollectionScanner::finish()
 {
+	QMutexLocker lock(&m_restartMutex);
+
 	emit finished(m_addedTracks, m_modifiedTracks, m_removedFiles);
 	m_inProgress = false;
 	if(m_reRun)

@@ -19,6 +19,7 @@
 #include "TagReader.h"
 #include "TrackData.h"
 
+#include <QMutex>
 #include <QObject>
 #include <QStringList>
 
@@ -66,6 +67,8 @@ class CollectionScanner : public QObject
 		QList<Jerboa::TrackData> m_modifiedTracks;
 		QStringList m_modifiedFiles;
 		QStringList m_removedFiles;
+
+		QMutex m_restartMutex;
 };
 
 #endif

@@ -11,8 +11,8 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 
 	m_output = new Phonon::AudioOutput(Phonon::MusicCategory, this);
 	m_player = new Phonon::MediaObject(this);
-	m_player->setTransitionTime(0);
 	m_player->setTickInterval(200);
+	m_player->setTransitionTime(0);
 	
 	Phonon::createPath(m_player, m_output);
 
