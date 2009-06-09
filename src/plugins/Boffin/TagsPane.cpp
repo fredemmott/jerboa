@@ -5,6 +5,7 @@
 #include "CollectionTagFetcher.h"
 #include "TagCloudModel.h"
 #include "TagCloudView.h"
+#include "TagDelegate.h"
 #include "WeightedTag.h"
 
 #include <QSqlQuery>
@@ -16,6 +17,7 @@ TagsPane::TagsPane(Jerboa::CollectionInterface* collection, QWidget* parent)
 , m_view(new TagCloudView(this))
 {
 	m_view->setModel(m_model);
+	m_view->setItemDelegate(new TagDelegate(this));
 
 	setWindowTitle(tr("Tags"));
 
@@ -40,10 +42,10 @@ TagsPane::TagsPane(Jerboa::CollectionInterface* collection, QWidget* parent)
 
 void TagsPane::readTags()
 {
-	const int count = 10;
+	//const int count = 50;
 	QList<WeightedTag> tags;
 	QSqlQuery query;
-	query.exec("SELECT Tag, Weight FROM TopTags LIMIT " + QString::number(count));
+	query.exec("SELECT Tag, Weight FROM TopTags"/* LIMIT " + QString::number(count) */);
 	for(query.first(); query.isValid(); query.next())
 	{
 		tags.append(
