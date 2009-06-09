@@ -1,6 +1,7 @@
 SET(
     CLASSES
     LastFmTagFetcher
+    LastFmTagFetcher_Tag
     LastFmTagFetcher_Track
 )
 
