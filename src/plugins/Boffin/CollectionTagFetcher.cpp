@@ -20,12 +20,9 @@ CollectionTagFetcher::CollectionTagFetcher(Jerboa::CollectionInterface* collecti
 		SLOT(saveTags(QMap<unsigned int, QList<LastFmTagFetcher::Tag> >))
 	);
 
-	QDateTime lastValid = QDateTime::currentDateTime();
-	lastValid.addDays(-5);
-
 	QSqlQuery query;
 	query.prepare("DELETE FROM TaggedFiles WHERE LastFetch < :lastValid");
-	query.bindValue(":lastValid", lastValid.toTime_t());
+	query.bindValue(":lastValid", QDateTime::currentDateTime().addDays(-5).toTime_t());
 	query.exec();
 
 	query.exec("DELETE FROM Tags WHERE FileID NOT IN (SELECT ID FROM TaggedFiles)");

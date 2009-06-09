@@ -1,5 +1,6 @@
 SET(
 	PLUGINS
+	Boffin
 	CollectionTreeView
 	FileSystemTab
 	InfoWidget
