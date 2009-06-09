@@ -1,5 +1,7 @@
 #include "LastFmTagFetcher.h"
 
+#include "WeightedTag.h"
+
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -52,7 +54,7 @@ void LastFmTagFetcher::findTags(const QList<Track>& tracks)
 
 void LastFmTagFetcher::parseReply(QNetworkReply* reply)
 {
-	QMap<unsigned int, QList<Tag> > out;
+	QMap<unsigned int, QList<WeightedTag> > out;
 	Q_FOREACH(const QString& line, QString::fromUtf8(reply->readAll()).split('\n'))
 	{
 		if(!line.isEmpty())
@@ -70,12 +72,12 @@ void LastFmTagFetcher::parseReply(QNetworkReply* reply)
 					Q_ASSERT(evenParts);
 					if(evenParts)
 					{
-						QList<Tag> tags;
+						QList<WeightedTag> tags;
 						while(!parts.isEmpty())
 						{
 							const QString name = parts.takeFirst();
 							const qreal weight = parts.takeFirst().toDouble();
-							tags.append(Tag(name, weight));
+							tags.append(WeightedTag(name, weight));
 						}
 						if(!tags.isEmpty())
 						{

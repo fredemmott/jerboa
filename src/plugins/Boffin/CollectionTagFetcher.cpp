@@ -1,6 +1,7 @@
 #include "CollectionTagFetcher.h"
 
 #include "LastFmTagFetcher.h"
+#include "WeightedTag.h"
 
 #include <QDateTime>
 
@@ -15,9 +16,9 @@ CollectionTagFetcher::CollectionTagFetcher(Jerboa::CollectionInterface* collecti
 	Q_ASSERT(collection);
 	connect(
 		m_tagFetcher,
-		SIGNAL(gotTags(QMap<unsigned int, QList<LastFmTagFetcher::Tag> >)),
+		SIGNAL(gotTags(QMap<unsigned int, QList<WeightedTag> >)),
 		this,
-		SLOT(saveTags(QMap<unsigned int, QList<LastFmTagFetcher::Tag> >))
+		SLOT(saveTags(QMap<unsigned int, QList<WeightedTag> >))
 	);
 
 	QSqlQuery query;
@@ -48,7 +49,7 @@ CollectionTagFetcher::CollectionTagFetcher(Jerboa::CollectionInterface* collecti
 	m_tagFetcher->findTags(tracks);
 }
 
-void CollectionTagFetcher::saveTags(const QMap<unsigned int, QList<LastFmTagFetcher::Tag> >& tags)
+void CollectionTagFetcher::saveTags(const QMap<unsigned int, QList<WeightedTag> >& tags)
 {
 
 	QSqlQuery fileQuery;
@@ -58,7 +59,7 @@ void CollectionTagFetcher::saveTags(const QMap<unsigned int, QList<LastFmTagFetc
 	QSqlQuery tagQuery;
 	tagQuery.prepare("INSERT INTO Tags (FileId, Tag, Weight) VALUES (:FileId, :Tag, :Weight)");
 
-	typedef QMap<unsigned int, QList<LastFmTagFetcher::Tag> >::ConstIterator constIterator;
+	typedef QMap<unsigned int, QList<WeightedTag> >::ConstIterator constIterator;
 	const constIterator end = tags.constEnd();
 	for(
 		constIterator it = tags.constBegin();
@@ -70,7 +71,7 @@ void CollectionTagFetcher::saveTags(const QMap<unsigned int, QList<LastFmTagFetc
 		fileQuery.bindValue(":FileName", m_urls.at(it.key()));
 		fileQuery.exec();
 		tagQuery.bindValue(":FileId", fileQuery.lastInsertId());
-		Q_FOREACH(const LastFmTagFetcher::Tag& tag, it.value())
+		Q_FOREACH(const WeightedTag& tag, it.value())
 		{
 			tagQuery.bindValue(":Tag", tag.name());
 			tagQuery.bindValue(":Weight", tag.weight());

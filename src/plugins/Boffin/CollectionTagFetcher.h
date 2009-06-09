@@ -3,6 +3,7 @@
 #include "LastFmTagFetcher.h"
 
 #include "CollectionInterface.h"
+#include "WeightedTag.h"
 
 #include <QList>
 #include <QObject>
@@ -18,7 +19,7 @@ class CollectionTagFetcher : public QObject
 	signals:
 		void savedTags();
 	private slots:
-		void saveTags(const QMap<unsigned int, QList<LastFmTagFetcher::Tag> >& tags);
+		void saveTags(const QMap<unsigned int, QList<WeightedTag> >& tags);
 	private:
 		QList<QString> m_urls;
 		LastFmTagFetcher* m_tagFetcher;

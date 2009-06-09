@@ -1,8 +1,8 @@
 #pragma once
 
-#include "LastFmTagFetcher_Tag.h"
+#include "WeightedTag.h"
 
-class LastFmTagFetcher::Tag::Private : public QSharedData
+class WeightedTag::Private : public QSharedData
 {
 	public:
 		Private()

@@ -3,7 +3,7 @@ SET(
     Boffin
     CollectionTagFetcher
     LastFmTagFetcher
-    LastFmTagFetcher_Tag
+    WeightedTag
     LastFmTagFetcher_Track
 )
 
