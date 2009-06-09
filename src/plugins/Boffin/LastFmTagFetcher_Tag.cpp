@@ -13,6 +13,10 @@ LastFmTagFetcher::Tag::Tag(const Tag& other)
 {
 }
 
+LastFmTagFetcher::Tag::~Tag()
+{
+}
+
 LastFmTagFetcher::Tag& LastFmTagFetcher::Tag::operator=(const Tag& other)
 {
 	d = other.d;

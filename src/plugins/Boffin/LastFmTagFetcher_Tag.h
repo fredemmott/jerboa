@@ -11,6 +11,7 @@ class LastFmTagFetcher::Tag
 		Tag(const QString& tag, const qreal& weight);
 		Tag(const Tag& other);
 		Tag& operator=(const Tag& other);
+		~Tag();
 
 		qreal weight() const;
 		QString name() const;
