@@ -3,9 +3,10 @@ SET(
     Boffin
     CollectionTagFetcher
     LastFmTagFetcher
-    WeightedTag
-    TagCloudModel
     LastFmTagFetcher_Track
+    TagCloudModel
+    TagCloudView
+    WeightedTag
 )
 
 SET(SOURCES)
