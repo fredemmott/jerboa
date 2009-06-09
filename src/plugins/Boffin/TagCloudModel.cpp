@@ -26,8 +26,12 @@
 #include <cmath>
 #include <limits>
 
-TagCloudModel::TagCloudModel(const QList<WeightedTag>& tags,  QObject* parent)
+TagCloudModel::TagCloudModel(QObject* parent)
 : QAbstractItemModel(parent)
+{
+}
+
+void TagCloudModel::setTags(const QList<WeightedTag>& tags)
 {
 	m_tagHash.clear();
 	m_logTagHash.clear();
@@ -44,6 +48,7 @@ TagCloudModel::TagCloudModel(const QList<WeightedTag>& tags,  QObject* parent)
 		m_logTagHash.insert(logWeight, tag.name());
 		m_tagHash.insert(tag.weight(), tag.name());
 	}
+	reset();
 }
 
 TagCloudModel::~TagCloudModel()

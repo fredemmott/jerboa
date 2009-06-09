@@ -35,8 +35,10 @@ class TagCloudModel: public QAbstractItemModel
 			LinearWeightRole
 		};
 	
-		TagCloudModel(const QList<WeightedTag>& tags, QObject* parent = 0);
+		TagCloudModel(QObject* parent = 0);
 		~TagCloudModel();
+
+		void setTags(const QList<WeightedTag>& tags);
 	
 		virtual QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		
