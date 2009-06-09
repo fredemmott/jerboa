@@ -4,6 +4,7 @@ SET(
     CollectionTagFetcher
     LastFmTagFetcher
     WeightedTag
+    TagCloudModel
     LastFmTagFetcher_Track
 )
 
