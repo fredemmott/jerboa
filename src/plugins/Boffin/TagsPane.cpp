@@ -8,6 +8,7 @@
 #include "TagDelegate.h"
 #include "WeightedTag.h"
 
+#include <QLabel>
 #include <QSqlQuery>
 #include <QVBoxLayout>
 
@@ -23,6 +24,12 @@ TagsPane::TagsPane(Jerboa::CollectionInterface* collection, QWidget* parent)
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(m_view);
+
+	QLabel* label = new QLabel(this);
+	label->setText("<a href='http://www.last.fm'><img src=':/Boffin/lastfm.png' /></a>");
+	label->setAlignment(Qt::AlignHCenter);
+	label->setOpenExternalLinks(true);
+	layout->addWidget(label);
 
 	CollectionTagFetcher* fetcher = new CollectionTagFetcher(collection, this);
 
@@ -42,10 +49,10 @@ TagsPane::TagsPane(Jerboa::CollectionInterface* collection, QWidget* parent)
 
 void TagsPane::readTags()
 {
-	//const int count = 50;
+	const int count = 200;
 	QList<WeightedTag> tags;
 	QSqlQuery query;
-	query.exec("SELECT Tag, Weight FROM TopTags"/* LIMIT " + QString::number(count) */);
+	query.exec("SELECT Tag, Weight FROM TopTags LIMIT " + QString::number(count));
 	for(query.first(); query.isValid(); query.next())
 	{
 		tags.append(

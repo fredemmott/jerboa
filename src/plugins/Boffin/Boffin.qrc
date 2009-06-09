@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/Boffin">
+	<file>lastfm.png</file>
 	<file>tables.sql</file>
 </qresource>
 </RCC>
