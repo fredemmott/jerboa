@@ -1,5 +1,6 @@
 #include "LastFmTagFetcher.h"
 
+#include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QStringList>
@@ -12,7 +13,7 @@ LastFmTagFetcher::LastFmTagFetcher(QObject* parent)
 	connect(
 		m_manager,
 		SIGNAL(finished(QNetworkReply*)),
-		SLOT(parseReply(QNetworkReply* reply))
+		SLOT(parseReply(QNetworkReply*))
 	);
 }
 
@@ -54,28 +55,32 @@ void LastFmTagFetcher::parseReply(QNetworkReply* reply)
 	QMap<unsigned int, QList<Tag> > out;
 	Q_FOREACH(const QString& line, QString::fromUtf8(reply->readAll()).split('\n'))
 	{
-		QStringList parts = line.split("\t");
-		if(!parts.isEmpty())
+		if(!line.isEmpty())
 		{
-			bool ok;
-			const unsigned int id = parts.takeFirst().toInt(&ok);
-			Q_ASSERT(ok);
-			if(ok)
+			QStringList parts = line.split("\t");
+			if(!parts.isEmpty())
 			{
-				const bool evenParts = parts.count() % 2 == 0;
-				Q_ASSERT(evenParts);
-				if(evenParts)
+				bool ok;
+				qDebug() << "Checkign parts" << parts;;
+				const unsigned int id = parts.takeFirst().toInt(&ok);
+				Q_ASSERT(ok);
+				if(ok)
 				{
-					QList<Tag> tags;
-					while(!parts.isEmpty())
+					const bool evenParts = parts.count() % 2 == 0;
+					Q_ASSERT(evenParts);
+					if(evenParts)
 					{
-						const QString name = parts.takeFirst();
-						const qreal weight = parts.takeFirst().toDouble();
-						tags.append(Tag(name, weight));
-					}
-					if(!tags.isEmpty())
-					{
-						out.insert(id, tags);
+						QList<Tag> tags;
+						while(!parts.isEmpty())
+						{
+							const QString name = parts.takeFirst();
+							const qreal weight = parts.takeFirst().toDouble();
+							tags.append(Tag(name, weight));
+						}
+						if(!tags.isEmpty())
+						{
+							out.insert(id, tags);
+						}
 					}
 				}
 			}

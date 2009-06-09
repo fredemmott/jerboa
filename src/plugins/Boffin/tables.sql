@@ -1,0 +1,39 @@
+/* IMPORTANT - \n\n *MUST* separate commands */ 
+CREATE TABLE Tags (
+	FileId INTEGER NOT NULL,
+	Tag TEXT NOT NULL,
+	Weight FLOAT NOT NULL
+);
+
+CREATE TABLE TaggedFiles (
+	ID INTEGER PRIMARY KEY,
+	FileName TEXT NOT NULL,
+	LastFetch INTEGER NOT NULL
+);
+
+CREATE VIEW TopTags AS
+	SELECT
+		Tag,
+		SUM(Tags.Weight) AS Weight
+	FROM
+		Tags
+	GROUP BY
+		Tags.Tag
+	ORDER BY 
+		Weight DESC
+;
+
+/* For MySQL - SQLite Will Barf */
+ALTER TABLE Tags ADD KEY(FileId);
+
+ALTER TABLE TaggedFiles CHANGE COLUMN ID ID INTEGER AUTO_INCREMENT;
+
+ALTER TABLE TaggedFiles ADD KEY(FileName);
+
+ALTER TABLE TaggedFiles ADD KEY(LastFetch);
+
+ALTER TABLE Tags ADD KEY(Tag);
+
+ALTER TABLE Tags CONVERT TO CHARACTER SET UTF8;
+
+ALTER TABLE TaggedFiles CONVERT TO CHARACTER SET UTF8;
