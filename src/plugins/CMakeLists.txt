@@ -3,8 +3,6 @@
 ##############################################
 # The plugins list is in ../CMakeLists.txt
 
-FOREACH(Plugin ${PLUGINS})
-	IF(WITH_${Plugin}_PLUGIN)
-		ADD_SUBDIRECTORY(${Plugin})
-	ENDIF(WITH_${Plugin}_PLUGIN)
+FOREACH(Plugin ${ACTIVE_PLUGINS})
+	ADD_SUBDIRECTORY(${Plugin})
 ENDFOREACH()

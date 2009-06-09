@@ -1,6 +1,5 @@
 SET(
 	PLUGINS
-	Boffin
 	CollectionTreeView
 	FileSystemTab
 	InfoWidget
@@ -20,6 +19,11 @@ SET(
 	TrayIcon
 	VolumeToolBar
 )
+SET(
+	DEFAULT_OFF_PLUGINS
+	Boffin # Privacy issues
+)
+
 IF(UNIX AND NOT APPLE)
 	LIST(APPEND PLUGINS Mpris) # D-Bus requirement
 ENDIF()
@@ -30,6 +34,12 @@ ENDIF()
 SET(ACTIVE_PLUGINS)
 FOREACH(plugin ${PLUGINS})
 	OPTION(WITH_${plugin}_PLUGIN "Build the ${plugin} plugin" ON)
+	IF(WITH_${plugin}_PLUGIN)
+		SET(ACTIVE_PLUGINS ${ACTIVE_PLUGINS} ${plugin})
+	ENDIF()
+ENDFOREACH()
+FOREACH(plugin ${DEFAULT_OFF_PLUGINS})
+	OPTION(WITH_${plugin}_PLUGIN "Build the ${plugin} plugin" OFF)
 	IF(WITH_${plugin}_PLUGIN)
 		SET(ACTIVE_PLUGINS ${ACTIVE_PLUGINS} ${plugin})
 	ENDIF()
