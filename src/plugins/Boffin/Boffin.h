@@ -4,6 +4,8 @@
 
 #include <QObject>
 
+namespace Jerboa { class CollectionInterface; }
+
 class Boffin: public QObject, public Jerboa::Plugin
 {
 	Q_OBJECT;
@@ -14,5 +16,9 @@ class Boffin: public QObject, public Jerboa::Plugin
 		QString pluginAuthor() const;
 		QString uniqueId() const;
 
+		QSet<ComponentType> components() const;
 		void addComponent(ComponentType, QObject* component);
+		QObject* component(ComponentType, QObject* parent);
+	private:
+		Jerboa::CollectionInterface* m_collection;
 };

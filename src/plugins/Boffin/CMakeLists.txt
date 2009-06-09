@@ -6,6 +6,7 @@ SET(
     LastFmTagFetcher_Track
     TagCloudModel
     TagCloudView
+    TagsPane
     WeightedTag
 )
 

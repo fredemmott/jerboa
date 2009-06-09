@@ -1,6 +1,8 @@
 #include "Boffin.h"
 
-#include "CollectionTagFetcher.h"
+#include "TagsPane.h"
+
+#include "CollectionInterface.h"
 
 #include <QFile>
 #include <QtPlugin>
@@ -11,6 +13,7 @@
 
 Boffin::Boffin()
 : QObject(0)
+, m_collection(0)
 {
 	Q_INIT_RESOURCE(Boffin);
 }
@@ -45,7 +48,25 @@ void Boffin::addComponent(ComponentType type, QObject* component)
 				query.exec(statement);
 			}
 		}
-		new CollectionTagFetcher(qobject_cast<Jerboa::CollectionInterface*>(component), this);
+		m_collection = qobject_cast<Jerboa::CollectionInterface*>(component);
+		Q_ASSERT(m_collection);
+	}
+}
+
+QSet<Jerboa::Plugin::ComponentType> Boffin::components() const
+{
+	return QSet<ComponentType>() << WidgetUsedWithPlaylist;
+}
+
+QObject* Boffin::component(ComponentType type, QObject* parent)
+{
+	switch(type)
+	{
+		case WidgetUsedWithPlaylist:
+			Q_ASSERT(m_collection);
+			return new TagsPane(m_collection, qobject_cast<QWidget*>(parent));
+		default:
+			return Plugin::component(type, parent);
 	}
 }
 

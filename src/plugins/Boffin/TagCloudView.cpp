@@ -85,7 +85,7 @@ TagCloudView::paintEvent( QPaintEvent* e )
 
     if( model()->rowCount() == 0 )
     {
-        p.drawText( viewport()->rect(), Qt::AlignCenter,  "No tags have been found!" );
+        p.drawText( viewport()->rect(), Qt::AlignCenter,  tr("No tags have been found!"));
         return;
     }
 
