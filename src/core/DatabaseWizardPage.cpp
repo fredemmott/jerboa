@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QDir>
+#include <QFileInfo>
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -82,5 +83,11 @@ namespace Jerboa
 		settings.setValue("name", m_database->text());
 		settings.setValue("user", m_user->text());
 		settings.setValue("password", m_password->text());
+
+		if(m_driver->currentText() == QLatin1String("QSQLITE"))
+		{
+			const QFileInfo info(m_database->text());
+			info.dir().mkpath(info.dir().absolutePath());
+		}
 	}
 }
