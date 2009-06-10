@@ -1,6 +1,7 @@
 SET(
 	CLASSES
 	FileSystemTab
+	FileSystemModelWithToolTip
 )
 
 SET(SOURCES)

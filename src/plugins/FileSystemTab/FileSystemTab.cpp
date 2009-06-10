@@ -1,9 +1,10 @@
 #include "FileSystemTab.h"
 
+#include "FileSystemModelWithToolTip.h"
+
 #include <QDebug>
 #include <QDesktopServices>
 #include <QDir>
-#include <QFileSystemModel>
 #include <QSettings>
 #include <QTimer>
 #include <QTreeView>
@@ -31,7 +32,7 @@ QObject* FileSystemTab::component(Jerboa::Plugin::ComponentType type, QObject* p
 	{
 		case Jerboa::Plugin::WidgetUsedWithPlaylist:
 			{
-				QFileSystemModel* model = new QFileSystemModel(parent);
+				QFileSystemModel* model = new FileSystemModelWithToolTip(parent);
 				model->setRootPath("/");
 				model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::AllDirs);
 				model->setNameFilterDisables(false);
