@@ -9,6 +9,7 @@
 #include "CollectionInterface.h"
 #include "PlaylistInterface.h"
 
+#include <QDebug>
 #include <QHash>
 #include <QLabel>
 #include <QPushButton>
@@ -101,9 +102,17 @@ void TagsPane::addTracks()
 				tracks.append(track);
 			}
 		}
-		m_playlist->appendTracks(tracks);
 		
 		query.exec("DROP TABLE MatchingFiles");
+
+		if(!tracks.isEmpty())
+		{
+			m_playlist->appendTracks(tracks);
+		}
+		else
+		{
+			qDebug() << "Matching urls:" << urls << "matching tags:" << tags;
+		}
 	}
 }
 
