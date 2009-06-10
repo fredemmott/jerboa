@@ -78,7 +78,7 @@ void TagsPane::addTracks()
 	{
 		QSqlQuery query;
 		query.exec("DROP TABLE IF EXISTS MatchingFiles;");
-		query.exec("CREATE TEMPORARY TABLE MatchingFiles (FileId NOT NULL);");
+		query.exec("CREATE TEMPORARY TABLE MatchingFiles (FileId INTEGER NOT NULL);");
 		query.exec("INSERT INTO MatchingFiles (FileId) SELECT ID FROM TaggedFiles");
 		query.prepare("DELETE FROM MatchingFiles WHERE FileId NOT IN (SELECT FileId FROM Tags WHERE Tag = :tag);");
 		Q_FOREACH(const QString& tag, tags)
