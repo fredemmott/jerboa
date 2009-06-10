@@ -321,7 +321,7 @@ void Scrobbler::queueTrack()
 		return;
 	}
 	const quint64 total = m_currentTrack.length;
-	if(m_startTime != 0 && total > 30 && QDateTime::currentDateTime().toTime_t() - m_startTime > qMin<time_t>(240, total / 2) )
+	if(m_startTime != 0 && total > 30 && static_cast<time_t>(QDateTime::currentDateTime().toTime_t()) - m_startTime > qMin<time_t>(240, total / 2) )
 	{
 		QSqlQuery query;	
 		query.prepare("INSERT INTO `LastFMCache` (`TimeStamp`, `Length`, `Artist`, `Album`, `Name`, `TrackNumber`, `MBID`) \
