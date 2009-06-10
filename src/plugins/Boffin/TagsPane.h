@@ -10,6 +10,8 @@ namespace Jerboa {
 	class PlaylistInterface;
 }
 
+class QPushButton;
+
 class TagsPane : public QWidget
 {
 	Q_OBJECT;
@@ -22,4 +24,5 @@ class TagsPane : public QWidget
 		Jerboa::PlaylistInterface* m_playlist;
 		TagCloudModel* m_model;
 		TagCloudView* m_view;
+		QPushButton* m_addButton;
 };

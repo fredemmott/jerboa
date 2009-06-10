@@ -10,6 +10,7 @@
 #include "PlaylistInterface.h"
 
 #include <QLabel>
+#include <QPushButton>
 #include <QSqlQuery>
 #include <QVBoxLayout>
 
@@ -29,6 +30,10 @@ TagsPane::TagsPane(Jerboa::CollectionInterface* collection, Jerboa::PlaylistInte
 	setWindowTitle(tr("Tags"));
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
+
+	m_addButton = new QPushButton(tr("Add Tracks"), this);
+	layout->addWidget(m_addButton);
+
 	layout->addWidget(m_view);
 
 	QLabel* label = new QLabel(this);
