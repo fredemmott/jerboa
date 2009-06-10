@@ -3,6 +3,7 @@
 #include "TagsPane.h"
 
 #include "CollectionInterface.h"
+#include "PlaylistInterface.h"
 
 #include <QFile>
 #include <QtPlugin>
@@ -14,6 +15,7 @@
 Boffin::Boffin()
 : QObject(0)
 , m_collection(0)
+, m_playlist(0)
 {
 	Q_INIT_RESOURCE(Boffin);
 }
@@ -35,21 +37,33 @@ QString Boffin::uniqueId() const
 
 void Boffin::addComponent(ComponentType type, QObject* component)
 {
-	if(type == Jerboa::Plugin::CollectionSource)
+	switch(type)
 	{
-		QSqlDatabase database = QSqlDatabase::database();
-		if(!database.tables().contains("Tags"))
+		case Jerboa::Plugin::CollectionSource:
 		{
-			QSqlQuery query;
-			QFile sql(":/Boffin/tables.sql");
-			sql.open(QIODevice::ReadOnly);
-			Q_FOREACH(const QString statement, QString(sql.readAll()).split("\n\n"))
+			QSqlDatabase database = QSqlDatabase::database();
+			if(!database.tables().contains("Tags"))
 			{
-				query.exec(statement);
+				QSqlQuery query;
+				QFile sql(":/Boffin/tables.sql");
+				sql.open(QIODevice::ReadOnly);
+				Q_FOREACH(const QString statement, QString(sql.readAll()).split("\n\n"))
+				{
+					query.exec(statement);
+				}
 			}
+			m_collection = qobject_cast<Jerboa::CollectionInterface*>(component);
+			Q_ASSERT(m_collection);
+			break;
 		}
-		m_collection = qobject_cast<Jerboa::CollectionInterface*>(component);
-		Q_ASSERT(m_collection);
+		case Jerboa::Plugin::PlaylistSource:
+		{
+			m_playlist = qobject_cast<Jerboa::PlaylistInterface*>(component);
+			Q_ASSERT(m_playlist);
+			break;
+		}
+		default:
+			break;
 	}
 }
 
@@ -64,7 +78,8 @@ QObject* Boffin::component(ComponentType type, QObject* parent)
 	{
 		case WidgetUsedWithPlaylist:
 			Q_ASSERT(m_collection);
-			return new TagsPane(m_collection, qobject_cast<QWidget*>(parent));
+			Q_ASSERT(m_playlist);
+			return new TagsPane(m_collection, m_playlist, qobject_cast<QWidget*>(parent));
 		default:
 			return Plugin::component(type, parent);
 	}

@@ -4,7 +4,11 @@
 
 #include <QObject>
 
-namespace Jerboa { class CollectionInterface; }
+namespace Jerboa
+{
+	class CollectionInterface;
+	class PlaylistInterface;
+}
 
 class Boffin: public QObject, public Jerboa::Plugin
 {
@@ -21,4 +25,5 @@ class Boffin: public QObject, public Jerboa::Plugin
 		QObject* component(ComponentType, QObject* parent);
 	private:
 		Jerboa::CollectionInterface* m_collection;
+		Jerboa::PlaylistInterface* m_playlist;
 };

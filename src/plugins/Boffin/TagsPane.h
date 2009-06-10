@@ -5,16 +5,21 @@
 class TagCloudModel;
 class TagCloudView;
 
-namespace Jerboa { class CollectionInterface; }
+namespace Jerboa {
+	class CollectionInterface;
+	class PlaylistInterface;
+}
 
 class TagsPane : public QWidget
 {
 	Q_OBJECT;
 	public:
-		TagsPane(Jerboa::CollectionInterface* collection, QWidget* parent);
+		TagsPane(Jerboa::CollectionInterface* collection, Jerboa::PlaylistInterface* m_playlist, QWidget* parent);
 	private slots:
 		void readTags();
 	private:
+		Jerboa::CollectionInterface* m_collection;
+		Jerboa::PlaylistInterface* m_playlist;
 		TagCloudModel* m_model;
 		TagCloudView* m_view;
 };

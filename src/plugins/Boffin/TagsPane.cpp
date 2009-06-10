@@ -1,22 +1,28 @@
 #include "TagsPane.h"
 
-#include "CollectionInterface.h"
-
 #include "CollectionTagFetcher.h"
 #include "TagCloudModel.h"
 #include "TagCloudView.h"
 #include "TagDelegate.h"
 #include "WeightedTag.h"
 
+#include "CollectionInterface.h"
+#include "PlaylistInterface.h"
+
 #include <QLabel>
 #include <QSqlQuery>
 #include <QVBoxLayout>
 
-TagsPane::TagsPane(Jerboa::CollectionInterface* collection, QWidget* parent)
+TagsPane::TagsPane(Jerboa::CollectionInterface* collection, Jerboa::PlaylistInterface* playlist, QWidget* parent)
 : QWidget(parent)
+, m_collection(collection)
+, m_playlist(playlist)
 , m_model(new TagCloudModel(this))
 , m_view(new TagCloudView(this))
 {
+	Q_ASSERT(collection);
+	Q_ASSERT(playlist);
+
 	m_view->setModel(m_model);
 	m_view->setItemDelegate(new TagDelegate(this));
 
