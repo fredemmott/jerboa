@@ -39,7 +39,7 @@ CollectionTagFetcher::CollectionTagFetcher(Jerboa::CollectionInterface* collecti
 	Q_FOREACH(const Jerboa::TrackData& track, collection->tracks())
 	{
 		const QString url = track.url().toString();
-		if(track.url().scheme() == "file" && !ignoredFiles.contains(url))
+		if(!ignoredFiles.contains(url))
 		{
 			const int id = m_urls.count();
 			m_urls.append(url);
