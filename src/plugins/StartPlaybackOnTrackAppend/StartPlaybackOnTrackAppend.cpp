@@ -51,7 +51,10 @@ void StartPlaybackOnTrackAppend::tracksAdded(int index, const QList<Jerboa::Trac
 	Q_ASSERT(m_player);
 	if(index + tracks.count() == m_playlist->tracks().count() && m_player->state() != Jerboa::PlayerInterface::Playing && m_player->state() != Jerboa::PlayerInterface::Loading)
 	{
-		m_player->skipTo(index);
+		if(!m_playlist->tracks().isEmpty())
+		{
+			m_player->skipTo(index);
+		}
 	}
 }
 
