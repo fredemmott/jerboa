@@ -19,6 +19,7 @@ class TagsPane : public QWidget
 		TagsPane(Jerboa::CollectionInterface* collection, Jerboa::PlaylistInterface* m_playlist, QWidget* parent);
 	private slots:
 		void readTags();
+		void addTracks();
 	private:
 		Jerboa::CollectionInterface* m_collection;
 		Jerboa::PlaylistInterface* m_playlist;

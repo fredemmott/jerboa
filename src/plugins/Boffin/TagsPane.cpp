@@ -9,10 +9,16 @@
 #include "CollectionInterface.h"
 #include "PlaylistInterface.h"
 
+#include <QHash>
 #include <QLabel>
 #include <QPushButton>
 #include <QSqlQuery>
 #include <QVBoxLayout>
+
+static inline uint qHash(const QUrl& url)
+{
+	return qHash(url.toString());
+}
 
 TagsPane::TagsPane(Jerboa::CollectionInterface* collection, Jerboa::PlaylistInterface* playlist, QWidget* parent)
 : QWidget(parent)
@@ -56,6 +62,49 @@ TagsPane::TagsPane(Jerboa::CollectionInterface* collection, Jerboa::PlaylistInte
 		fetcher,
 		SLOT(deleteLater())
 	);
+	connect(
+		m_addButton,
+		SIGNAL(clicked()),
+		this,
+		SLOT(addTracks())
+	);
+}
+
+void TagsPane::addTracks()
+{
+	QStringList tags = m_view->currentTags();
+	if(!tags.isEmpty())
+	{
+		QSqlQuery query;
+		query.exec("DROP TABLE IF EXISTS MatchingFiles;");
+		query.exec("CREATE TEMPORARY TABLE MatchingFiles (FileId NOT NULL);");
+		query.exec("INSERT INTO MatchingFiles (FileId) SELECT ID FROM TaggedFiles");
+		query.prepare("DELETE FROM MatchingFiles WHERE FileId NOT IN (SELECT FileId FROM Tags WHERE Tag = :tag);");
+		Q_FOREACH(const QString& tag, tags)
+		{
+			query.bindValue(":tag", tag);
+			query.exec();
+		}
+
+		QSet<QUrl> urls;
+		query.exec("SELECT DISTINCT FileName FROM MatchingFiles INNER JOIN TaggedFiles ON MatchingFiles.FileId = TaggedFiles.ID");
+		for(query.first(); query.isValid(); query.next())
+		{
+			urls.insert(QUrl(query.value(0).toString()));
+		}
+
+		QList<Jerboa::TrackData> tracks;
+		Q_FOREACH(const Jerboa::TrackData& track, m_collection->tracks())
+		{
+			if(urls.contains(track.url()))
+			{
+				tracks.append(track);
+			}
+		}
+		m_playlist->appendTracks(tracks);
+		
+		query.exec("DROP TABLE MatchingFiles");
+	}
 }
 
 void TagsPane::readTags()
