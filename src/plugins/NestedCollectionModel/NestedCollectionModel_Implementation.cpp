@@ -676,13 +676,15 @@ QVariant NestedCollectionModel::Implementation::data(const QModelIndex& index, i
 						);
 					case Item::TrackItem:
 						return tr(
-							"<b>%1</b><br />(%2 - %3)"
+							"<b>%1</b><br />(%2 - %3)<br /><font size='90%'>%4</font>"
 						).arg(
 							index.data(Qt::DisplayRole).toString()
 						).arg(
 							index.parent().data(Qt::DisplayRole).toString()
 						).arg(
 							index.parent().parent().data(Qt::DisplayRole).toString()
+						).arg(
+							item->data.url().toString()
 						);
 				}
 			}
