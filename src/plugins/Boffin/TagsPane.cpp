@@ -90,27 +90,33 @@ void TagsPane::addTracks()
 		}
 
 		query.exec("DROP TABLE IF EXISTS Results");
-		qexec("CREATE TEMPORARY TABLE Results (FileName TEXT NOT NULL, Weight FLOAT NOT NULL)");
+		// Weighting
+		qexec("CREATE TEMPORARY TABLE Results (FileId INTEGER NOT NULL, Weight FLOAT NOT NULL)");
 		qexec(
 			"INSERT INTO Results SELECT "
-				"FileName, "
+				"FileId, "
 				"SUM(Weight) AS TotalWeight "
 			"FROM Tags "
-			"JOIN TaggedFiles "
-				"ON Tags.FileId = TaggedFiles.ID "
 			"JOIN CurrentTags "
 				"ON Tags.Tag = CurrentTags.Tag "
 			"GROUP BY FileId "
 			"ORDER BY TotalWeight DESC"
 		);
-		const int wanted = query.numRowsAffected() / 2;
-		qexec(QString("SELECT FileName FROM Results ORDER BY Weight DESC LIMIT %1").arg(QString::number(wanted)));
+		// Filtering (AND)
+		query.prepare("DELETE FROM Results WHERE FileId NOT IN (SELECT FileId FROM Tags WHERE Tag = :tag)");
+		Q_FOREACH(const QString& tag, tags)
+		{
+			query.bindValue(":tag", tag);
+			query.exec();
+		}
+		qexec("SELECT FileName FROM Results JOIN TaggedFiles on Results.FileId = TaggedFiles.ID ORDER BY Weight DESC");
 
-		QSet<QUrl> urls;
+		QVector<QUrl> urls;
 		for(query.first(); query.isValid(); query.next())
 		{
-			urls.insert(QUrl(query.value(0).toString()));
+			urls.append(QUrl(query.value(0).toString()));
 		}
+		urls.resize(qMin(qMin(10, urls.count()), urls.count() / 2));
 
 		query.exec("DROP TABLE Results");
 		query.exec("DROP TABLE CurrentTags");
