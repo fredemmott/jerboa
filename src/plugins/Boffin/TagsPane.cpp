@@ -17,6 +17,8 @@
 #include <QSqlQuery>
 #include <QVBoxLayout>
 
+#define qexec(x) if(!query.exec(x)) { qDebug() << "Failed to execute" << (x) << query.lastError().text() << __LINE__; }
+
 static inline uint qHash(const QUrl& url)
 {
 	return qHash(url.toString());
@@ -74,28 +76,44 @@ TagsPane::TagsPane(Jerboa::CollectionInterface* collection, Jerboa::PlaylistInte
 
 void TagsPane::addTracks()
 {
-	QStringList tags = m_view->currentTags();
+	const QStringList tags = m_view->currentTags();
 	if(!tags.isEmpty())
 	{
 		QSqlQuery query;
-		query.exec("DROP TABLE IF EXISTS MatchingFiles;");
-		query.exec("CREATE TEMPORARY TABLE MatchingFiles (FileId INTEGER NOT NULL, Weight FLOAT NOT NULL DEFAULT 0);");
-		query.exec("INSERT INTO MatchingFiles (FileId) SELECT ID FROM TaggedFiles");
-		query.prepare("UPDATE MatchingFiles SET Weight = Weight + (SELECT Weight FROM Tags Where Tag = :tag AND FileId = MatchingFiles.FileId)");
+		query.exec("DROP TABLE IF EXISTS CurrentTags");
+		query.exec("CREATE TEMPORARY TABLE CurrentTags (Tag TEXT NOT NULL)");
+		query.prepare("INSERT INTO CurrentTags VALUES (:tag)");
 		Q_FOREACH(const QString& tag, tags)
 		{
 			query.bindValue(":tag", tag);
 			query.exec();
 		}
 
-		query.exec("DELETE FROM MatchingFiles WHERE Weight = 0");
+		query.exec("DROP TABLE IF EXISTS Results");
+		qexec("CREATE TEMPORARY TABLE Results (FileName TEXT NOT NULL, Weight FLOAT NOT NULL)");
+		qexec(
+			"INSERT INTO Results SELECT "
+				"FileName, "
+				"SUM(Weight) AS TotalWeight "
+			"FROM Tags "
+			"JOIN TaggedFiles "
+				"ON Tags.FileId = TaggedFiles.ID "
+			"JOIN CurrentTags "
+				"ON Tags.Tag = CurrentTags.Tag "
+			"GROUP BY FileId "
+			"ORDER BY TotalWeight DESC"
+		);
+		const int wanted = query.numRowsAffected() / 2;
+		qexec(QString("SELECT FileName FROM Results ORDER BY Weight DESC LIMIT %1").arg(QString::number(wanted)));
 
 		QSet<QUrl> urls;
-		query.exec("SELECT DISTINCT FileName FROM MatchingFiles INNER JOIN TaggedFiles ON MatchingFiles.FileId = TaggedFiles.ID WHERE MatchingFiles.Weight >= (SELECT AVG(MatchingFiles.Weight)) ORDER BY Weight ASC");
 		for(query.first(); query.isValid(); query.next())
 		{
 			urls.insert(QUrl(query.value(0).toString()));
 		}
+
+		query.exec("DROP TABLE Results");
+		query.exec("DROP TABLE CurrentTags");
 
 		QHash<QUrl, Jerboa::TrackData> urlTracks;
 		Q_FOREACH(const Jerboa::TrackData& track, m_collection->tracks())
