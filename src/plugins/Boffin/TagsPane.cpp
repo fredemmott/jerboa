@@ -13,6 +13,7 @@
 #include <QHash>
 #include <QLabel>
 #include <QPushButton>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QVBoxLayout>
 
@@ -78,14 +79,16 @@ void TagsPane::addTracks()
 	{
 		QSqlQuery query;
 		query.exec("DROP TABLE IF EXISTS MatchingFiles;");
-		query.exec("CREATE TEMPORARY TABLE MatchingFiles (FileId INTEGER NOT NULL);");
+		query.exec("CREATE TEMPORARY TABLE MatchingFiles (FileId INTEGER NOT NULL, Weight FLOAT NOT NULL DEFAULT 0);");
 		query.exec("INSERT INTO MatchingFiles (FileId) SELECT ID FROM TaggedFiles");
-		query.prepare("DELETE FROM MatchingFiles WHERE FileId NOT IN (SELECT FileId FROM Tags WHERE Tag = :tag);");
+		query.prepare("UPDATE MatchingFiles SET Weight = Weight + (SELECT Weight FROM Tags Where Tag = :tag AND FileId = MatchingFiles.FileId)");
 		Q_FOREACH(const QString& tag, tags)
 		{
 			query.bindValue(":tag", tag);
 			query.exec();
 		}
+
+		query.exec("DELETE FROM MatchingFiles WHERE Weight = 0");
 
 		QSet<QUrl> urls;
 		query.exec("SELECT DISTINCT FileName FROM MatchingFiles INNER JOIN TaggedFiles ON MatchingFiles.FileId = TaggedFiles.ID");
