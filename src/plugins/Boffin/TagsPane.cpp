@@ -91,18 +91,30 @@ void TagsPane::addTracks()
 		query.exec("DELETE FROM MatchingFiles WHERE Weight = 0");
 
 		QSet<QUrl> urls;
-		query.exec("SELECT DISTINCT FileName FROM MatchingFiles INNER JOIN TaggedFiles ON MatchingFiles.FileId = TaggedFiles.ID");
+		query.exec("SELECT DISTINCT FileName FROM MatchingFiles INNER JOIN TaggedFiles ON MatchingFiles.FileId = TaggedFiles.ID WHERE MatchingFiles.Weight >= (SELECT AVG(MatchingFiles.Weight)) ORDER BY Weight ASC");
 		for(query.first(); query.isValid(); query.next())
 		{
 			urls.insert(QUrl(query.value(0).toString()));
 		}
 
-		QList<Jerboa::TrackData> tracks;
+		QHash<QUrl, Jerboa::TrackData> urlTracks;
 		Q_FOREACH(const Jerboa::TrackData& track, m_collection->tracks())
 		{
 			if(urls.contains(track.url()))
 			{
-				tracks.append(track);
+				urlTracks.insert(track.url(), track);
+			}
+		}
+		QList<Jerboa::TrackData> tracks;
+		Q_FOREACH(const QUrl& url, urls)
+		{
+			if(urlTracks.contains(url))
+			{
+				tracks.append(urlTracks.value(url));
+			}
+			else
+			{
+				qDebug() << "NOT FOUND:" << url;
 			}
 		}
 		
@@ -111,10 +123,6 @@ void TagsPane::addTracks()
 		if(!tracks.isEmpty())
 		{
 			m_playlist->appendTracks(tracks);
-		}
-		else
-		{
-			qDebug() << "Matching urls:" << urls << "matching tags:" << tags;
 		}
 	}
 }
