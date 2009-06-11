@@ -111,12 +111,11 @@ void TagsPane::addTracks()
 		}
 		qexec("SELECT FileName FROM Results JOIN TaggedFiles on Results.FileId = TaggedFiles.ID ORDER BY Weight DESC");
 
-		QVector<QUrl> urls;
+		QList<QUrl> urls;
 		for(query.first(); query.isValid(); query.next())
 		{
 			urls.append(QUrl(query.value(0).toString()));
 		}
-		urls.resize(qMin(qMin(10, urls.count()), urls.count() / 2));
 
 		query.exec("DROP TABLE Results");
 		query.exec("DROP TABLE CurrentTags");
