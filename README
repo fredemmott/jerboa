@@ -5,6 +5,10 @@ and is just generally cleaner.
 
 Also has many performance issues fixed.
 
+New in jerboa-ng:
+- new tracks get added without restart
+- "Boffin" plugin
+
 Working:
 - Collection
 - Playback
@@ -21,5 +25,6 @@ Working:
 - Inital settings
 
 Not yet implemented:
+- removing items from playlist (not clear)
 - playlist persistence
 - changing settings
