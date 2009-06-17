@@ -3,6 +3,7 @@
 #include "CollectionScanner.h"
 #include "TrackData.h"
 
+#include <QtConcurrentRun>
 #include <QDebug>
 #include <QDir>
 #include <QFileSystemWatcher>
@@ -36,7 +37,7 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 		SLOT(applyChanges(QList<Jerboa::TrackData>,QList<Jerboa::TrackData>,QStringList))
 	);
 	m_watcher = new QFileSystemWatcher(this);
-	monitorDirectory(m_directory);
+	QtConcurrent::run(this, &Implementation::monitorDirectory, m_directory);
 	connect(
 		m_watcher,
 		SIGNAL(directoryChanged(QString)),
