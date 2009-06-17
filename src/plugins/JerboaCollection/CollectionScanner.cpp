@@ -124,7 +124,7 @@ void CollectionScanner::haveFileList(const QStringList& files)
 	for(query.first(); query.isValid(); query.next())
 	{
 		QString fileName = query.value(0).toString();
-		if(!QFile::exists(fileName))
+		if(!files.contains(fileName))
 		{
 			m_removedFiles.append(fileName);
 			--m_total;
