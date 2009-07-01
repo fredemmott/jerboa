@@ -104,7 +104,12 @@ void MainWindow::setupTabs()
 	if(m_leftWidgets.count() > 1)
 	{
 		QTabWidget* leftTabs = new QTabWidget(m_splitter);
+#ifdef Q_WS_MAC
+		leftTabs->setDocumentMode(true);
+		leftTabs->setProperty("SCOPE_BAR", true);
+#else
 		leftTabs->setTabPosition(QTabWidget::West);
+#endif
 
 		Q_FOREACH(QWidget* widget, m_leftWidgets)
 		{
@@ -121,7 +126,12 @@ void MainWindow::setupTabs()
 	if(m_rightWidgets.count() > 1)
 	{
 		QTabWidget* rightTabs = new QTabWidget(m_splitter);
+#ifdef Q_WS_MAC
+		rightTabs->setDocumentMode(true);
+		rightTabs->setProperty("SCOPE_BAR", true);
+#else
 		rightTabs->setTabPosition(QTabWidget::West);
+#endif
 
 		Q_FOREACH(QWidget* widget, m_rightWidgets)
 		{

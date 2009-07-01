@@ -27,6 +27,9 @@ SET(
 IF(UNIX AND NOT APPLE)
 	LIST(APPEND PLUGINS Mpris) # D-Bus requirement
 ENDIF()
+IF(APPLE)
+	LIST(APPEND PLUGINS MacStyle)
+ENDIF()
 
 ##### DON'T EDIT BELOW HERE (probably) #####
 
