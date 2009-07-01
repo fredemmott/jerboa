@@ -37,6 +37,10 @@ CollectionWidget::CollectionWidget(Jerboa::PlaylistInterface* playlist, QAbstrac
 
 	setLayout(new QVBoxLayout());
 	layout()->setContentsMargins(0, 0, 0, 0);
+#ifdef Q_WS_MAC
+	layout()->setSpacing(0);
+	m_treeView->setFrameShape(QFrame::NoFrame);
+#endif
 
 	m_searchBox = new SearchLineEdit(this);
 	layout()->addWidget(m_searchBox);

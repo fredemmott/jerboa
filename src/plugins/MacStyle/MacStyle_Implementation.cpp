@@ -25,12 +25,22 @@
 #include <QPainter>
 #include <QPixmapCache>
 #include <QStyleOption>
+#include <QTreeView>
 #include <QWidget>
 
 #define Q_DEBUG qDebug
 #undef qDebug
 #include <Carbon/Carbon.h>
 #define qDebug Q_DEBUG
+	
+QRect MacStyle::Implementation::subElementRect(SubElement element, const QStyleOption* option, const QWidget* widget) const
+{
+	if(element == QStyle::SE_ShapedFrameContents && qobject_cast<const QTreeView*>(widget))
+	{
+		return widget->rect();
+	}
+	return QMacStyle::subElementRect(element, option, widget);
+}
 
 MacStyle::Implementation::Implementation() : QMacStyle()
 {
@@ -41,6 +51,8 @@ int MacStyle::Implementation::pixelMetric(PixelMetric metric, const QStyleOption
 	const int upstream(QMacStyle::pixelMetric(metric, option, widget));
 	switch(metric)
 	{
+		case PM_SplitterWidth:
+			return 1;
 		case PM_TabBarBaseOverlap:
 			if(isSpecialTabWidget(option, widget))
 			{
@@ -124,6 +136,10 @@ void MacStyle::Implementation::drawScopeBar(const QStyleOption* option, QPainter
 
 void MacStyle::Implementation::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
 {
+	if(element == CE_FocusFrame)
+	{
+		return;
+	}
 	if(element == CE_Splitter)
 	{
 		// Horizontal QSplitters have vertical splitter handles
