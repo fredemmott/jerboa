@@ -1,7 +1,13 @@
 #include "CollectionWidget.h"
 
 #include "CollectionFilter.h"
+
+#ifdef Q_WS_MAC
+#include "SearchLineEdit_mac.h"
+typedef SearchLineEdit_mac SearchLineEdit;
+#else
 #include "SearchLineEdit.h"
+#endif
 
 #include <QApplication>
 #include <QDebug>
@@ -77,13 +83,15 @@ void CollectionWidget::expandArtists()
 
 void CollectionWidget::updateSearch()
 {
-	m_filter->setFilterString(m_searchBox->text());
+	SearchLineEdit* searchEdit = qobject_cast<SearchLineEdit*>(m_searchBox);
+	Q_ASSERT(searchEdit);
+	m_filter->setFilterString(searchEdit->text());
 
 	// Reset expansion
 	m_treeView->collapseAll();
 	// Expand artists
 	m_treeView->expandToDepth(0);
-	if(m_searchBox->text().simplified().isEmpty())
+	if(searchEdit->text().simplified().isEmpty())
 	{
 		// That's all, folks
 		return;
@@ -110,7 +118,8 @@ void CollectionWidget::updateSearch()
 
 void CollectionWidget::acceptSearch()
 {
-	m_filter->setFilterString(m_searchBox->text());
+	SearchLineEdit* searchEdit = qobject_cast<SearchLineEdit*>(m_searchBox);
+	m_filter->setFilterString(searchEdit->text());
 
 	QList<Jerboa::TrackData> tracks;
 	QAbstractItemModel* model = m_treeView->model();
@@ -123,7 +132,7 @@ void CollectionWidget::acceptSearch()
 		return;
 	}
 	m_playlist->appendTracks(tracks);
-	m_searchBox->clear();
+	searchEdit->clear();
 	updateSearch();
 }
 

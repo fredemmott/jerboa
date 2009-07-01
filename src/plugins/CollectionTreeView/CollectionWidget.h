@@ -9,7 +9,6 @@
 class CollectionFilter;
 
 class QAbstractItemModel;
-class QLineEdit;
 class QModelIndex;
 class QTreeView;
 
@@ -26,7 +25,7 @@ class CollectionWidget : public QWidget
 	private:
 		QTimer m_timer;
 		Jerboa::PlaylistInterface* m_playlist;
-		QLineEdit* m_searchBox;
+		QWidget* m_searchBox;
 		QTreeView* m_treeView;
 		CollectionFilter* m_filter;
 };

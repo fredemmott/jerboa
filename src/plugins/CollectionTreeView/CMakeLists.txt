@@ -6,6 +6,15 @@ SET(
 	SearchLineEdit
 )
 
+if(APPLE)
+	list(
+		APPEND CLASSES
+		QtCFString
+		SearchLineEdit_mac
+		SearchLineEdit_mac_p
+	)
+endif()
+
 SET(SOURCES)
 SET(HEADERS)
 FOREACH(class ${CLASSES})
