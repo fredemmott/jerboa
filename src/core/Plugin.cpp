@@ -10,6 +10,10 @@ namespace Jerboa
 		return QUrl();
 	}
 
+	Plugin::~Plugin()
+	{
+	}
+
 	void Plugin::addComponent(ComponentType, QObject*)
 	{
 	}

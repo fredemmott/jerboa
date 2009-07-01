@@ -32,6 +32,7 @@ namespace Jerboa
 	{
 		Q_GADGET
 		public:
+			virtual ~Plugin();
 			enum ComponentType {
 				Container, // Container
 				WidgetUsedWithPlaylist, // QWidget
