@@ -86,7 +86,7 @@ QSize SearchLineEdit_mac::Private::sizeHint() const
 	}
 	return QSize(
 		optimalBounds.size.width + 100, // make it a bit wider.
-		optimalBounds.size.height
+		optimalBounds.size.height - 5 // this would be a silly amount of vertical padding
 	);
 
 }

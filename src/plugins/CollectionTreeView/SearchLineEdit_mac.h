@@ -26,7 +26,6 @@ class SearchLineEdit_mac : public QWidget
 		SearchLineEdit_mac(QWidget* parent);
 
 		virtual void setFocus(Qt::FocusReason reason);
-		QSize sizeHint() const;
 
 		QString text() const;
 	public slots:

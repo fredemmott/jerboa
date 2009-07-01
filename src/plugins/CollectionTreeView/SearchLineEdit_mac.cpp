@@ -25,7 +25,9 @@ SearchLineEdit_mac::SearchLineEdit_mac(QWidget* parent)
 : QWidget(parent)
 , d(new SearchLineEdit_mac::Private(this))
 {
-	d->move(2, 2); // highlight frame space
+	QHBoxLayout* layout = new QHBoxLayout(this);
+	layout->addWidget(d);
+	layout->setContentsMargins(4, 5, 2, 2);
 
 	connect(
 		d,
@@ -42,11 +44,6 @@ SearchLineEdit_mac::SearchLineEdit_mac(QWidget* parent)
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 	setMinimumSize(sizeHint());
 	setFixedHeight(sizeHint().height());
-}
-
-QSize SearchLineEdit_mac::sizeHint() const
-{
-	return d->sizeHint() + QSize(6, 4);
 }
 
 void SearchLineEdit_mac::clear()
