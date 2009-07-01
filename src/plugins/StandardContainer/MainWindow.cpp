@@ -1,5 +1,9 @@
 #include "MainWindow.h"
 
+#ifdef Q_WS_MAC
+#include "SplitterHandleFuzzer.h"
+#endif
+
 #include "ToolBar.h"
 
 #include <QCoreApplication>
@@ -144,4 +148,8 @@ void MainWindow::setupTabs()
 	{
 		m_splitter->addWidget(m_rightWidgets.first());
 	}
+
+#ifdef Q_WS_MAC
+	new SplitterHandleFuzzer(m_splitter);
+#endif
 }

@@ -4,6 +4,13 @@ SET(
     StandardContainer
 )
 
+IF(APPLE)
+	LIST(
+		APPEND CLASSES
+		SplitterHandleFuzzer
+	)
+ENDIF()
+
 SET(SOURCES)
 SET(HEADERS)
 FOREACH(class ${CLASSES})
