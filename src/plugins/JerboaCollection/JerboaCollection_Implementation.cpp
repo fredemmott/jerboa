@@ -45,7 +45,7 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 		SLOT(rescanTree())
 	);
 
-	m_collectionScanner->run();
+	m_collectionScanner->start();
 
 	QSqlQuery query;
 	query.setForwardOnly(true);
@@ -82,8 +82,8 @@ JerboaCollection::Implementation::Implementation(Jerboa::TagReader* tagReader, Q
 
 void JerboaCollection::Implementation::rescanTree()
 {
-	m_collectionScanner->run();
-	monitorDirectory(m_directory);
+	m_collectionScanner->start();
+	QtConcurrent::run(this, &Implementation::monitorDirectory, m_directory);
 }
 
 void JerboaCollection::Implementation::applyChanges(const QList<Jerboa::TrackData>& added, const QList<Jerboa::TrackData>& modified, const QStringList& removed)

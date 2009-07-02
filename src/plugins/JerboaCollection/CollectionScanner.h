@@ -20,18 +20,18 @@
 #include "TrackData.h"
 
 #include <QMutex>
-#include <QObject>
 #include <QStringList>
+#include <QThread>
 
 class FileLister;
 /// Class for scanning a collection.
-class CollectionScanner : public QObject
+class CollectionScanner : public QThread
 {
 	Q_OBJECT
 	public:
 		/// Construct a CollectionScanner
 		CollectionScanner(Jerboa::TagReader* tagReader, QObject* parent);
-	public slots:
+	protected:
 		/// Start the collection scan
 		void run();
 	signals:

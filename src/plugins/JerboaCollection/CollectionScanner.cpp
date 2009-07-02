@@ -29,7 +29,7 @@
 #include <QSqlRecord>
 
 CollectionScanner::CollectionScanner(Jerboa::TagReader* tagReader, QObject* parent)
-: QObject(parent)
+: QThread(parent)
 , m_tagReader(tagReader->instance(this))
 , m_fileLister(new FileLister(this))
 , m_inProgress(false)
