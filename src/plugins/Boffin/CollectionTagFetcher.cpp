@@ -75,10 +75,7 @@ void CollectionTagFetcher::saveTags(const QMap<unsigned int, QList<WeightedTag> 
 		{
 			tagQuery.bindValue(":Tag", tag.name());
 			tagQuery.bindValue(":Weight", tag.weight());
-			if(!tagQuery.exec())
-			{
-				qDebug() <<tagQuery.lastError().text();
-			}
+			tagQuery.exec();
 		}
 	}
 	emit savedTags();

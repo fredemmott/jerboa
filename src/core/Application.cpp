@@ -150,7 +150,6 @@ namespace Jerboa
 			{
 				if(p->components().contains(component))
 				{
-					qDebug() << "\t- Provides component" << component;
 					componentProviders.insert(component, p);
 				}
 			}

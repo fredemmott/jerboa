@@ -17,8 +17,6 @@
 #include <QSqlQuery>
 #include <QVBoxLayout>
 
-#define qexec(x) if(!query.exec(x)) { qDebug() << "Failed to execute" << (x) << query.lastError().text() << __LINE__; }
-
 static inline uint qHash(const QUrl& url)
 {
 	return qHash(url.toString());
@@ -91,8 +89,8 @@ void TagsPane::addTracks()
 
 		query.exec("DROP TABLE IF EXISTS Results");
 		// Weighting
-		qexec("CREATE TEMPORARY TABLE Results (FileId INTEGER NOT NULL, Weight FLOAT NOT NULL)");
-		qexec(
+		query.exec("CREATE TEMPORARY TABLE Results (FileId INTEGER NOT NULL, Weight FLOAT NOT NULL)");
+		query.exec(
 			"INSERT INTO Results SELECT "
 				"FileId, "
 				"SUM(Weight) AS TotalWeight "
@@ -109,7 +107,7 @@ void TagsPane::addTracks()
 			query.bindValue(":tag", tag);
 			query.exec();
 		}
-		qexec("SELECT FileName FROM Results JOIN TaggedFiles on Results.FileId = TaggedFiles.ID ORDER BY Weight DESC");
+		query.exec("SELECT FileName FROM Results JOIN TaggedFiles on Results.FileId = TaggedFiles.ID ORDER BY Weight DESC");
 
 		QList<QUrl> urls;
 		for(query.first(); query.isValid(); query.next())
@@ -134,10 +132,6 @@ void TagsPane::addTracks()
 			if(urlTracks.contains(url))
 			{
 				tracks.append(urlTracks.value(url));
-			}
-			else
-			{
-				qDebug() << "NOT FOUND:" << url;
 			}
 		}
 		

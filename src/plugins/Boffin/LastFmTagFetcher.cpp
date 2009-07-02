@@ -63,7 +63,6 @@ void LastFmTagFetcher::parseReply(QNetworkReply* reply)
 			if(!parts.isEmpty())
 			{
 				bool ok;
-				qDebug() << "Checkign parts" << parts;;
 				const unsigned int id = parts.takeFirst().toInt(&ok);
 				Q_ASSERT(ok);
 				if(ok)
