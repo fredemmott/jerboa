@@ -28,7 +28,10 @@ VolumeToolBar::Implementation::Implementation(
 
 	QLabel* label = new QLabel(this);
 	QIcon icon = style()->standardIcon(QStyle::SP_MediaVolume);
-	label->setPixmap(icon.pixmap(icon.availableSizes().first()));
+	if(!icon.availableSizes().isEmpty())
+	{
+		label->setPixmap(icon.pixmap(icon.availableSizes().first()));
+	}
 	addWidget(label);
 	addWidget(m_slider);
 
