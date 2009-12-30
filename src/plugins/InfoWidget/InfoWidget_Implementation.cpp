@@ -213,14 +213,13 @@ void InfoWidget::Implementation::coverArtContextMenu(const QPoint& pos)
 
 void InfoWidget::Implementation::gotCoverArtAwsXML(QNetworkReply* reply)
 {
-	if(reply->error() != QNetworkReply::NoError)
+	QString url;
+	if(reply->error() == QNetworkReply::NoError)
 	{
-		ui.coverArtLabel->setText(tr("Couldn't Find Album Art"));
-		return;
+		const QByteArray data = reply->readAll();
+		url = QUrl(QString(data).replace(QRegExp(".+<MediumImage><URL>([^<]+)<.+"), "\\1")).toString();
 	}
-	const QByteArray data = reply->readAll();
 
-	const QString url = QUrl(QString(data).replace(QRegExp(".+<MediumImage><URL>([^<]+)<.+"), "\\1")).toString();
 
 	if(!url.contains(QRegExp("^http://")))
 	{
