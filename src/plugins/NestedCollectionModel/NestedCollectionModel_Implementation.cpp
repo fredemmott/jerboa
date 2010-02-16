@@ -307,11 +307,14 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 
 		const int first = batchNewTracks.indexOf(trackBatch.first());
 		const int count = trackBatch.count();
+		Q_ASSERT(first >= 0);
+
 		beginInsertRows(albumIndex, first, first + (count - 1));
 
 		m_tracksForAlbums[artistPosition][albumPosition] = batchNewTracks;
 
 		QVector< QSharedPointer<Item> >& trackItems = m_trackItems[artistPosition][albumPosition];
+		Q_ASSERT(first <= trackItems.count());
 		trackItems.insert(first, count, QSharedPointer<Item>());
 		for(int trackIndex = 0; trackIndex < count; ++ trackIndex)
 		{
