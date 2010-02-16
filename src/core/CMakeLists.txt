@@ -9,6 +9,7 @@ SET(
 	TagReader
 	ToolBar
 	TrackData
+	Uuid
 	Utilities
 	WizardPage
 )
