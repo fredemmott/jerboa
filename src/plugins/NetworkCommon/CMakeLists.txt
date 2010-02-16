@@ -1,7 +1,6 @@
 SET(
     CLASSES
-    NetworkClient
-    NetworkClient_ServerDiscoverer
+    NetworkCommon
 )
 
 SET(SOURCES)
@@ -14,7 +13,7 @@ ENDFOREACH()
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 QT4_WRAP_CPP(MOC_SOURCES ${HEADERS})
 ADD_LIBRARY(
-	NetworkClient
+	NetworkCommon
 	${SOURCES}
 	${MOC_SOURCES}
 )

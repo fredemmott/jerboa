@@ -1,5 +1,7 @@
 #include "NetworkServer_Implementation.h"
 
+#include "../NetworkCommon/NetworkCommon.h"
+
 #include "Uuid.h"
 
 #include <QDebug>
@@ -7,9 +9,6 @@
 #include <QSettings>
 #include <QTcpServer>
 #include <QUdpSocket>
-
-const quint16 PORT_NUMBER = 61719; // pseudo-random from private range
-const QByteArray DISCOVERY_MESSAGE = "Jerboa Network Discovery/1.0\n";
 
 NetworkServer::Implementation::Implementation(Jerboa::CollectionInterface* collection, Jerboa::PlayerInterface* player, Jerboa::PlaylistInterface* playlist)
 : QObject(0)
@@ -19,7 +18,7 @@ NetworkServer::Implementation::Implementation(Jerboa::CollectionInterface* colle
 , m_discoverySocket(new QUdpSocket(this))
 , m_server(new QTcpServer(this))
 {
-	const bool startedDiscovery = m_discoverySocket->bind(QHostAddress::Any, PORT_NUMBER);
+	const bool startedDiscovery = m_discoverySocket->bind(QHostAddress::Any, NetworkCommon::portNumber());
 	if(!startedDiscovery)
 	{
 		qDebug() << "Failed to start network discovery:" << m_discoverySocket->errorString();
@@ -109,7 +108,7 @@ void NetworkServer::Implementation::sendDiscoveryResponses()
 		QHostAddress source;
 		quint16 sourcePort;
 		m_discoverySocket->readDatagram(payload.data(), payload.size(), &source, &sourcePort);
-		if(payload == DISCOVERY_MESSAGE)
+		if(payload == NetworkCommon::discoveryMessage())
 		{
 			qDebug() << "Received a discovery message from" << QString("%1:%2").arg(source.toString()).arg(sourcePort);
 			// send a response

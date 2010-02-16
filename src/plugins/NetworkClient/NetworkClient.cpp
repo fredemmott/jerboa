@@ -1,4 +1,5 @@
 #include "NetworkClient.h"
+#include "NetworkClient_ServerDiscoverer.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -7,6 +8,7 @@
 NetworkClient::NetworkClient()
 : QObject(0)
 {
+	new ServerDiscoverer(this);
 }
 
 QString NetworkClient::pluginName() const
