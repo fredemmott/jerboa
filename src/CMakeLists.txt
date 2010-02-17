@@ -6,9 +6,6 @@ SET(
 	JerboaCollection
 	JerboaPlaylist
 	NestedCollectionModel
-	NetworkClient
-	NetworkCommon
-	NetworkServer
 	PhononPlayer
 	PlaylistModel
 	ReplayGain
@@ -24,7 +21,12 @@ SET(
 )
 SET(
 	DEFAULT_OFF_PLUGINS
-	Boffin # Privacy issues
+	# Privacy issues:
+	Boffin 
+	# WIP:
+	NetworkClient
+	NetworkCommon
+	NetworkServer
 )
 
 IF(UNIX AND NOT APPLE)
