@@ -47,7 +47,7 @@ namespace Jerboa
 			 * This should be in the text/x-jerboa-trackdata format.
 			 * \see mimeData
 			 */
-			TrackData(const QString& mimeData);
+			TrackData(const QByteArray& mimeData);
 
 			/// Copy constructor.
 			TrackData(const TrackData& other);
@@ -93,7 +93,7 @@ namespace Jerboa
 			/** Mime data for this track.
 			 * This is in the format text/x-jerboa-trackdata
 			 */
-			QString mimeData() const;
+			QByteArray mimeData() const;
 
 			/** MPRIS-formatted metadata.
 			 * This returns all the data for this track in an a{sv} format, suitable for use with

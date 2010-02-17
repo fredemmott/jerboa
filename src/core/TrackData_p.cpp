@@ -22,7 +22,7 @@ namespace Jerboa
 {
 	void TrackData::Private::populateMembers()
 	{
-		QStringList mimeData = this->mimeData.split("\t");
+		QStringList mimeData = QString::fromUtf8(this->mimeData).split("\t");
 		Q_ASSERT(mimeData.size() == 11);
 		url = QUrl::fromEncoded(mimeData[0].trimmed().toUtf8());
 		album = mimeData[1];

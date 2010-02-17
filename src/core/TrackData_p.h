@@ -35,7 +35,7 @@ namespace Jerboa
 			bool valid;
 
 			QUrl url;
-			QString mimeData;
+			QByteArray mimeData;
 			QString musicBrainzID;
 
 			qreal albumRG;

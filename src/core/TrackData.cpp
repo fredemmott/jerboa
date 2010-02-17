@@ -137,7 +137,7 @@ namespace Jerboa
 			   << QString::number(albumRG)
 			   << QString::number(trackRG)
 			   << musicBrainzID;
-		d->mimeData = mimeData.join("\t");
+		d->mimeData = mimeData.join("\t").toUtf8();
 		d->populateMembers();
 		d->valid = true;
 	};
@@ -204,7 +204,7 @@ namespace Jerboa
 	{
 	}
 
-	TrackData::TrackData(const QString& mimeData)
+	TrackData::TrackData(const QByteArray& mimeData)
 		: d(new Private)
 	{
 		d->mimeData = mimeData;
@@ -234,7 +234,7 @@ namespace Jerboa
 	qreal TrackData::trackReplayGain() const { Q_ASSERT(d->valid);  return d->trackRG; };
 	const QString& TrackData::musicBrainzId() const { Q_ASSERT(d->valid);  return d->musicBrainzID; };
 
-	QString TrackData::mimeData() const { Q_ASSERT(d->valid);  return d->mimeData; };
+	QByteArray TrackData::mimeData() const { Q_ASSERT(d->valid);  return d->mimeData; };
 
 	QVariantMap TrackData::mprisData() const
 	{
