@@ -6,6 +6,9 @@ SET(
 	JerboaCollection
 	JerboaPlaylist
 	NestedCollectionModel
+	NetworkClient
+	NetworkCommon
+	NetworkServer
 	PhononPlayer
 	PlaylistModel
 	ReplayGain

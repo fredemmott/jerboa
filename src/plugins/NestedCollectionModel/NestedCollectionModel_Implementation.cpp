@@ -313,6 +313,8 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 
 		m_tracksForAlbums[artistPosition][albumPosition] = batchNewTracks;
 
+		Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
+
 		QVector< QSharedPointer<Item> >& trackItems = m_trackItems[artistPosition][albumPosition];
 		Q_ASSERT(first <= trackItems.count());
 		trackItems.insert(first, count, QSharedPointer<Item>());
@@ -442,6 +444,7 @@ void NestedCollectionModel::Implementation::updateContiguousTracks(const QList<J
 	
 		emit dataChanged(index(firstPosition, 0, albumIndex), index(lastPosition, 0, albumIndex));
 	}
+	Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 }
 
 void NestedCollectionModel::Implementation::removeTracks(const QList<QUrl>& urls)
@@ -512,6 +515,7 @@ void NestedCollectionModel::Implementation::removeTracks(int first, int count)
 		m_tracksForAlbums[artistPosition][albumPosition].removeAt(childFirst);
 	}
 	endRemoveRows();
+	Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 }
 
 void NestedCollectionModel::Implementation::trimEmptyParents()
@@ -533,6 +537,7 @@ void NestedCollectionModel::Implementation::trimEmptyParents()
 				endRemoveRows();
 				--albumPosition;
 			}
+			Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 		}
 		if(rowCount(artistIndex) == 0)
 		{
