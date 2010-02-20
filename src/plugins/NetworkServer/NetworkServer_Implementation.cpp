@@ -1,6 +1,7 @@
 #include "NetworkServer_Implementation.h"
 
-#include "../NetworkCommon/NetworkCommon.h"
+#include "NetworkCommon.h"
+#include "NetworkMessage.h"
 
 #include "Uuid.h"
 
@@ -66,36 +67,8 @@ NetworkServer::Implementation::Implementation(Jerboa::CollectionInterface* colle
 		payload.append(port);
 		payload.append(',');
 
-		m_discoveryResponse = createMessage("ANNOUNCE", payload, UnsignedMessage);
+		m_discoveryResponse = NetworkMessage("ANNOUNCE", payload, NetworkMessage::UnsignedMessage).toByteArray();
 	}
-}
-
-QByteArray NetworkServer::Implementation::createMessage(const QByteArray& command, const QByteArray& payload, MessageType messageType) const
-{
-	// netstrings-influenced
-	// CommandLength,Command,PayloadLength,Payload,{U|S,timestamp-length,timestamp,message-uuid,signature};
-	//
-	// Examples:
-	// 3,foo,0,,U;
-	// 3,bar,3,baz,S,10,1266356591,{fc8d8c6c-2ede-4bb8-8685-2cc47cdd8b2b},0000000000000000000000000000000000000000
-	//
-	// Where:
-	// - timestamp is the number of seconds since 1970-01-01T00:00:00 UTC
-	// - message-uuid is a per-message UUID to prevent replays
-	// - signature is an HMAC-SHA1 of everything up to and including the previous comma
-	QByteArray out;
-	Q_ASSERT(messageType == UnsignedMessage);
-	Q_UNUSED(messageType);
-
-	out.append(QString::number(command.length()).toLatin1());
-	out.append(',');
-	out.append(command);
-	out.append(',');
-	out.append(QString::number(payload.length()).toLatin1());
-	out.append(',');
-	out.append(payload);
-	out.append(",U;");
-	return out;
 }
 
 void NetworkServer::Implementation::sendDiscoveryResponses()

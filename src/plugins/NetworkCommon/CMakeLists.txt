@@ -1,6 +1,7 @@
 SET(
     CLASSES
     NetworkCommon
+    NetworkMessage
 )
 
 SET(SOURCES)

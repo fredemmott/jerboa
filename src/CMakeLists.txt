@@ -25,7 +25,6 @@ SET(
 	Boffin 
 	# WIP:
 	NetworkClient
-	NetworkCommon
 	NetworkServer
 )
 
@@ -53,6 +52,12 @@ FOREACH(plugin ${DEFAULT_OFF_PLUGINS})
 	ENDIF()
 ENDFOREACH()
 
+# Library plugins
+IF(WITH_NetworkClient_PLUGIN OR WITH_NetworkServer_PLUGIN)
+	LIST(APPEND ACTIVE_PLUGINS NetworkCommon)
+ENDIF()
+
+# Write the header file defining our plugins
 SET(STATIC_PLUGINS_H "${CMAKE_CURRENT_BINARY_DIR}/StaticPlugins.h")
 FILE(WRITE ${STATIC_PLUGINS_H} "#include <QtPlugin>\n")
 FOREACH(plugin ${ACTIVE_PLUGINS})

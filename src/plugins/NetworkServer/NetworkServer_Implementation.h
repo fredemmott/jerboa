@@ -20,13 +20,6 @@ class NetworkServer::Implementation : public QObject
 	private slots:
 		void sendDiscoveryResponses();
 	private:
-		enum MessageType
-		{
-			UnsignedMessage,
-			SignedMessage
-		};
-		QByteArray createMessage(const QByteArray& command, const QByteArray& payload, MessageType messageType) const;
-
 		Jerboa::CollectionInterface* m_collection;
 		Jerboa::PlayerInterface* m_player;
 		Jerboa::PlaylistInterface* m_playlist;
