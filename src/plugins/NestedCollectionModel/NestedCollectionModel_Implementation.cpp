@@ -94,6 +94,7 @@ NestedCollectionModel::Implementation::Implementation(Jerboa::CollectionInterfac
 				trackItem->data = m_tracksForAlbums.at(artistPosition).at(albumPosition).at(trackPosition);
 				m_trackItems[artistPosition][albumPosition][trackPosition] = sharePtr(trackItem);
 			}
+			Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 		}
 	}
 
@@ -244,6 +245,7 @@ int NestedCollectionModel::Implementation::findOrCreateAlbum(const Jerboa::Track
 		// Expand the track list
 		m_tracksForAlbums[artistPosition].insert(albumPosition, QList<Jerboa::TrackData>());
 		m_trackItems[artistPosition].insert(albumPosition, QVector< QSharedPointer<Item> >());
+		Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 
 		endInsertRows();
 
