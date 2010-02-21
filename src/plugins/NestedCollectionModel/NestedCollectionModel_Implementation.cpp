@@ -303,6 +303,7 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 
 	Q_FOREACH(const QList<Jerboa::TrackData>& trackBatch, contiguousSets)
 	{
+		Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 		QList<Jerboa::TrackData> batchNewTracks = m_tracksForAlbums.at(artistPosition).at(albumPosition);
 		batchNewTracks.append(trackBatch);
 		qSort(batchNewTracks);
@@ -315,8 +316,6 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 
 		m_tracksForAlbums[artistPosition][albumPosition] = batchNewTracks;
 
-		Q_ASSERT(m_trackItems.at(artistPosition).count() == m_tracksForAlbums.at(artistPosition).count());
-		Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 
 		QVector< QSharedPointer<Item> >& trackItems = m_trackItems[artistPosition][albumPosition];
 		Q_ASSERT(first <= trackItems.count());
@@ -331,6 +330,7 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 		}
 		
 		endInsertRows();
+		Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 	}
 }
 
