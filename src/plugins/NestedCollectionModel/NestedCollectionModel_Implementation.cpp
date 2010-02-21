@@ -315,6 +315,7 @@ void NestedCollectionModel::Implementation::addTracksInSameAlbum(const QList<Jer
 
 		m_tracksForAlbums[artistPosition][albumPosition] = batchNewTracks;
 
+		Q_ASSERT(m_trackItems.at(artistPosition).count() == m_tracksForAlbums.at(artistPosition).count());
 		Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 
 		QVector< QSharedPointer<Item> >& trackItems = m_trackItems[artistPosition][albumPosition];
