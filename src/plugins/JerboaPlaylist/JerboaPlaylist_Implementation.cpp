@@ -187,7 +187,7 @@ void JerboaPlaylist::Implementation::adjustNextTrack()
 			return;
 		case ShuffleAlbums:
 			if(
-				m_tracks.count() >= m_currentTrack
+				m_tracks.count() > (m_currentTrack + 1)
 				&&
 				m_tracks.at(m_currentTrack).album() == m_tracks.at(m_currentTrack + 1).album()
 			)
