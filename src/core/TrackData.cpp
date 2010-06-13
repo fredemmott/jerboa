@@ -180,9 +180,7 @@ namespace Jerboa
 			return false;
 		}
 
-		const QString aTitleLower = a.title().toLower();
-		const QString bTitleLower = b.title().toLower();
-		if(aTitleLower < bTitleLower)
+		if(a.url() < b.url())
 		{
 			return true;
 		}
