@@ -175,7 +175,18 @@ namespace Jerboa
 		{
 			return true;
 		}
-	
+		if(b.trackNumber() > a.trackNumber())
+		{
+			return false;
+		}
+
+		const QString aTitleLower = a.title().toLower();
+		const QString bTitleLower = b.title().toLower();
+		if(aTitleLower < bTitleLower)
+		{
+			return true;
+		}
+
 		return false;
 	}
 
