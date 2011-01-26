@@ -57,6 +57,7 @@ int JerboaPlaylist::Implementation::appendTracks(const QList<Jerboa::TrackData>&
 {
 	Q_FOREACH(const Jerboa::TrackData& track, data)
 	{
+		Q_UNUSED(track); // For non-debug builds
 		Q_ASSERT(track.isValid());
 	}
 

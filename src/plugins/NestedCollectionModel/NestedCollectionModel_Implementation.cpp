@@ -739,12 +739,10 @@ int NestedCollectionModel::Implementation::rowCount(const QModelIndex& parent) c
 		return m_artists.count();
 	}
 	
-	Item* item = reinterpret_cast<Item*>(parent.internalPointer());
-
 	if(!parent.parent().isValid())
 	{
 		// Parent is an artist
-		Q_ASSERT(item->type == Item::ArtistItem);
+		Q_ASSERT(reinterpret_cast<Item*>(parent.internalPointer())->type == Item::ArtistItem);
 
 		return m_albumsForArtists.at(parent.row()).count();
 	}
