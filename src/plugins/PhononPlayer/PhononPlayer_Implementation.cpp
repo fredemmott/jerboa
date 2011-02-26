@@ -40,6 +40,12 @@ PhononPlayer::Implementation::Implementation(Jerboa::PlaylistInterface* playlist
 		this,
 		SLOT(emitPositionChanged(qint64))
 	);
+	connect(
+		m_player,
+		SIGNAL(currentSourceChanged(const Phonon::MediaSource&)),
+		this,
+		SLOT(updateCurrentTrack())
+	);
 }
 
 void PhononPlayer::Implementation::stopAndClear()
@@ -156,28 +162,33 @@ void PhononPlayer::Implementation::setCurrentTrack(const Jerboa::TrackData& trac
 	}
 }
 
+void PhononPlayer::Implementation::updateCurrentTrack()
+{
+	const Jerboa::TrackData& playlistTrack(
+		m_playlist->currentTrack() == -1
+		? Jerboa::TrackData()
+		: m_playlist->tracks().at(m_playlist->currentTrack())
+	);
+	if(playlistTrack != m_currentTrack)
+	{
+		const int nextTrackId = m_playlist->nextTrack();
+		if(nextTrackId != -1)
+		{
+			const Jerboa::TrackData& nextTrack = m_playlist->tracks().at(nextTrackId);
+			if(m_currentTrack == nextTrack)
+			{
+				m_playlist->setCurrentTrack(nextTrackId);
+			}
+		}
+	}
+}
+
 void PhononPlayer::Implementation::setState(State state)
 {
 	m_state = state;
 	if(state == Playing)
 	{
-		const Jerboa::TrackData& playlistTrack(
-			m_playlist->currentTrack() == -1
-			? Jerboa::TrackData()
-			: m_playlist->tracks().at(m_playlist->currentTrack())
-		);
-		if(playlistTrack != m_currentTrack)
-		{
-			const int nextTrackId = m_playlist->nextTrack();
-			if(nextTrackId != -1)
-			{
-				const Jerboa::TrackData& nextTrack = m_playlist->tracks().at(nextTrackId);
-				if(m_currentTrack == nextTrack)
-				{
-					m_playlist->setCurrentTrack(nextTrackId);
-				}
-			}
-		}
+		updateCurrentTrack();
 	}
 	emit stateChanged(state);
 }
