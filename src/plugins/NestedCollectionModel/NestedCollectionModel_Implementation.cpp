@@ -542,7 +542,6 @@ void NestedCollectionModel::Implementation::trimEmptyParents()
 				endRemoveRows();
 				--albumPosition;
 			}
-			Q_ASSERT(m_trackItems.at(artistPosition).at(albumPosition).count() == m_tracksForAlbums.at(artistPosition).at(albumPosition).count());
 		}
 		if(rowCount(artistIndex) == 0)
 		{
