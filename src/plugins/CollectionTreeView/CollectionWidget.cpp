@@ -2,7 +2,7 @@
 
 #include "CollectionFilter.h"
 
-#ifdef Q_WS_MAC
+#ifdef USE_CARBON
 #include "SearchLineEdit_mac.h"
 typedef SearchLineEdit_mac SearchLineEdit;
 #else

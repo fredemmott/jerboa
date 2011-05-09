@@ -6,7 +6,7 @@ SET(
 	SearchLineEdit
 )
 
-if(APPLE)
+if(USE_CARBON)
 	list(
 		APPEND CLASSES
 		QtCFString
