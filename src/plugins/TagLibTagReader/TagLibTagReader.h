@@ -1,7 +1,7 @@
 #ifndef _TAG_LIB_TAG_READER_H
 #define _TAG_LIB_TAG_READER_H
 
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 #include "TagReader.h"
 
 #include <QObject>

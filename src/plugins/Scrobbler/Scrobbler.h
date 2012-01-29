@@ -26,7 +26,7 @@
 
 #include "PlayerInterface.h"
 #include "TrackData.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 class Scrobbler : public QObject, public Jerboa::Plugin
 {

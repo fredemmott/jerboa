@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QObject>
 

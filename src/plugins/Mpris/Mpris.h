@@ -19,7 +19,7 @@
 
 #include "PlayerInterface.h"
 #include "PlaylistInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 class Mpris: public QObject, public Jerboa::Plugin
 {

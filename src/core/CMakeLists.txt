@@ -5,7 +5,7 @@ SET(
 	MimeData
 	PlayerInterface
 	PlaylistInterface
-	Plugin
+	JerboaPlugin
 	TagReader
 	ToolBar
 	TrackData

@@ -1,7 +1,7 @@
 #ifndef _MAIN_WINDOW_H
 #define _MAIN_WINDOW_H
 
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QList>
 #include <QMainWindow>

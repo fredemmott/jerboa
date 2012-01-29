@@ -2,7 +2,7 @@
 #define _PLAYLIST_MODEL_H
 
 #include "PlaylistInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 #include "TagReader.h"
 
 #include <QObject>

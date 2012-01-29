@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PlayerInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QObject>
 

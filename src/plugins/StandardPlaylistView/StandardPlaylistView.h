@@ -2,7 +2,7 @@
 #define _STANDARD_PLAYLIST_VIEW_H
 
 #include "PlayerInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>

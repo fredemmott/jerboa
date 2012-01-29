@@ -1,7 +1,7 @@
 #ifndef _JERBOA_CONTAINER_H
 #define _JERBOA_CONTAINER_H
 
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QObject>
 

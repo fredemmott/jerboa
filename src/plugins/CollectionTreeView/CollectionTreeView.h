@@ -2,7 +2,7 @@
 #define _COLLECTION_TREE_VIEW_H
 
 #include "PlaylistInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QAbstractItemModel>
 #include <QObject>

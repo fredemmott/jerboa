@@ -1,7 +1,7 @@
 #ifndef _JERBOA_PLAYLIST_H
 #define _JERBOA_PLAYLIST_H
 
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 #include "TagReader.h"
 
 #include <QObject>

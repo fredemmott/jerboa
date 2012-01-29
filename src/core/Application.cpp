@@ -21,7 +21,7 @@
 #include "Container.h"
 #include "FirstRunWizard.h"
 #include "PlaylistInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #ifdef WITH_DEBUG_FEATURES
 #include "modeltest.h"

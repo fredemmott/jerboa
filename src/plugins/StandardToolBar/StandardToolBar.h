@@ -3,7 +3,7 @@
 
 #include "PlayerInterface.h"
 #include "PlaylistInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QObject>
 

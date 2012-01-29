@@ -2,7 +2,7 @@
 #define _NESTED_COLLECTION_MODEL_H
 
 #include "CollectionInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QObject>
 

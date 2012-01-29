@@ -19,7 +19,7 @@
 #define _REPLAY_GAIN_H_
 
 #include "TrackData.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 class ReplayGain: public QObject, public Jerboa::Plugin
 {

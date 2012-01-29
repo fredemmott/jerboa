@@ -2,7 +2,7 @@
 #define _PHONON_PLAYER_H
 
 #include "PlaylistInterface.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QObject>
 

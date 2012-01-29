@@ -2,7 +2,7 @@
 #define _STANDARD_CONTAINER_H
 
 #include "Container.h"
-#include "Plugin.h"
+#include "JerboaPlugin.h"
 
 #include <QObject>
 
